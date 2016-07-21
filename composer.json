@@ -1,0 +1,30 @@
+{
+    "name": "dkplus/reflections",
+    "description": "Reflections facade that reflects classes without requiring them",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Dkplus\\Reflections\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "spec\\Dkplus\\Reflections\\": "spec/"
+        }
+    },
+    "require": {
+        "roave/better-reflection": "dev-master@dev",
+        "doctrine/annotations": "^1.2"
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.0",
+        "memio/spec-gen": "^0.6.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oskar Bley",
+            "email": "oskar@programming-php.net"
+        }
+    ]
+}
