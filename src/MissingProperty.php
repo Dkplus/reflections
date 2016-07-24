@@ -6,7 +6,7 @@ use Exception;
 /**
  * @api
  */
-final class MissingProperty extends Exception
+class MissingProperty extends Exception
 {
     public static function inClass(string $property, string $className): self
     {

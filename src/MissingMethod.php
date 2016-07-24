@@ -6,7 +6,7 @@ use Exception;
 /**
  * @api
  */
-final class MissingMethod extends Exception
+class MissingMethod extends Exception
 {
     public static function inClass(string $method, string $className): self
     {

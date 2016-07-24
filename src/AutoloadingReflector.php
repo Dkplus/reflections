@@ -12,10 +12,7 @@ use Composer\Autoload\ClassLoader;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
 use Dkplus\Reflections\Scanner\ImportScanner;
 
-/**
- * @api
- */
-class Reflections
+final class AutoloadingReflector implements Reflector
 {
     /** @var ImportScanner */
     private $importScanner;
@@ -42,11 +39,11 @@ class Reflections
         ]));
     }
 
-    public function reflectClass(string $className)
+    public function reflectClass(string $className): ClassReflection
     {
         try {
             $reflection = $this->classReflector->reflect($className);
-            return new ClassReflection(
+            return new BetterReflectionClassReflection(
                 $reflection,
                 $this->annotationsScanner,
                 $this->importScanner->scanForImports($reflection->getFileName())

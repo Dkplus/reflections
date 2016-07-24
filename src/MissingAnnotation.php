@@ -6,7 +6,7 @@ use Exception;
 /**
  * @api
  */
-final class MissingAnnotation extends Exception
+class MissingAnnotation extends Exception
 {
     public static function ofClass(string $className): self
     {

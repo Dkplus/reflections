@@ -1,65 +1,30 @@
 <?php
 namespace Dkplus\Reflections;
 
-use BetterReflection\Reflection\ReflectionClass;
-use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
-
 /**
  * @api
  */
-final class ClassReflection
+interface ClassReflection
 {
-    /** @var ReflectionClass */
-    private $reflectionClass;
+    public function name(): string;
 
-    /** @var AnnotationScanner */
-    private $annotations;
+    public function isFinal(): bool;
 
-    /** @var array */
-    private $imports;
+    public function isAbstract(): bool;
 
-    /**
-     * @internal
-     */
-    public function __construct(
-        ReflectionClass $reflectionClass,
-        AnnotationScanner $annotations,
-        array $imports
-    ) {
-        $this->reflectionClass = $reflectionClass;
-        $this->annotations = $annotations;
-        $this->imports = $imports;
-    }
+    public function isInvokable(): bool;
 
-    public function name(): string
-    {
-        return $this->reflectionClass->getName();
-    }
+    public function isSubclassOf(string $className): bool;
 
-    public function isFinal(): bool
-    {
-        return $this->reflectionClass->isFinal();
-    }
+    public function isCloneable(): bool;
 
-    public function annotations(): Annotations
-    {
-        return $this->annotations->scanForAnnotations(
-            $this->reflectionClass->getDocComment(),
-            $this->reflectionClass->getFileName(),
-            $this->imports
-        );
-    }
+    public function implementsInterface(string $className): bool;
 
-    public function fileName(): string
-    {
-        return $this->reflectionClass->getFileName();
-    }
+    public function annotations(): Annotations;
 
-    public function properties(): Properties
-    {
-        return new Properties($this->name(), array_map(function (ReflectionProperty $property) {
-            return new PropertyReflection($property, $this->annotations, $this->imports);
-        }, $this->reflectionClass->getProperties()));
-    }
+    public function fileName(): string;
+
+    public function properties(): Properties;
+
+    function methods(): Methods;
 }

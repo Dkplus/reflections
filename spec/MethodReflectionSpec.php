@@ -6,6 +6,7 @@ use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionType;
 use Dkplus\Reflections\MethodReflection;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
+use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\ObjectBehavior;
 
@@ -100,6 +101,11 @@ class MethodReflectionSpec extends ObjectBehavior
 
         $reflectionMethod->getReturnType()->willReturn(ReflectionType::createFromType(new String_(), false));
         $this->returnType()->shouldBe('string');
+    }
+
+    function its_return_type_might_be_a_generic_array(ReflectionMethod $reflectionMethod)
+    {
+        $reflectionMethod->getReturnType()->willReturn(ReflectionType::createFromType(new Array_(), false));
     }
 
     function it_might_be_a_getter(ReflectionMethod $reflectionMethod)

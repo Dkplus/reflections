@@ -6,7 +6,7 @@ use Exception;
 /**
  * @api
  */
-final class ClassNotFound extends Exception
+class ClassNotFound extends Exception
 {
     public static function named(string $className): self
     {

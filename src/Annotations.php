@@ -8,7 +8,7 @@ use IteratorAggregate;
 /**
  * @api
  */
-final class Annotations implements IteratorAggregate
+class Annotations implements IteratorAggregate
 {
     /** @var array */
     private $annotations;

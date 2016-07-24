@@ -2,19 +2,25 @@
 namespace spec\Dkplus\Reflections;
 
 use Dkplus\Reflections\Annotations;
+use Dkplus\Reflections\AutoloadingReflector;
 use Dkplus\Reflections\ClassNotFound;
 use Dkplus\Reflections\ClassReflection;
-use Dkplus\Reflections\Reflections;
+use Dkplus\Reflections\Reflector;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin Reflections
+ * @mixin AutoloadingReflector
  */
-class ReflectionsSpec extends ObjectBehavior
+class AutoloadingReflectorSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType(Reflections::class);
+        $this->shouldHaveType(AutoloadingReflector::class);
+    }
+
+    function it_implements_reflector()
+    {
+        $this->shouldImplement(Reflector::class);
     }
 
     function it_reflects_classes_from_class_name()
