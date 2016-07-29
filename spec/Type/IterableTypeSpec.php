@@ -3,6 +3,7 @@ namespace spec\Dkplus\Reflections\Type;
 
 use Dkplus\Reflections\Type\ArrayType;
 use Dkplus\Reflections\Type\BooleanType;
+use Dkplus\Reflections\Type\CollectionType;
 use Dkplus\Reflections\Type\ComposedType;
 use Dkplus\Reflections\Type\DecoratingType;
 use Dkplus\Reflections\Type\IntegerType;
@@ -72,6 +73,18 @@ class IterableTypeSpec extends ObjectBehavior
         $this->allows(new ClassType($traversable))->shouldBe(true);
         $this->allows(new ClassType($nonTraversable))->shouldBe(false);
     }
+
+    function it_allows_collections_instances_if_its_decorated_type_matches_the_generic_type()
+    {
+        $this->beConstructedWith(new StringType());
+        $matchingType = new StringType();
+        $notMatchingType = new MixedType();
+        $classReflection = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
+
+        $this->allows(new CollectionType(new ClassType($classReflection), $matchingType))->shouldBe(true);
+        $this->allows(new CollectionType(new ClassType($classReflection), $notMatchingType))->shouldBe(false);
+    }
+
     function it_allows_composed_types_if_all_parts_are_allowed()
     {
         $this->beConstructedWith(new BooleanType());

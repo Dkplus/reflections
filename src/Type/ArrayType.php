@@ -27,7 +27,7 @@ final class ArrayType implements DecoratingType
         return false;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return $this->type instanceof MixedType
             ? 'array'

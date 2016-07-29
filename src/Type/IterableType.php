@@ -26,13 +26,13 @@ final class IterableType implements DecoratingType
         if ($this->type instanceof MixedType && $type instanceof ClassType) {
             return $type->reflection()->implementsInterface(Traversable::class);
         }
-        if ($type instanceof self || $type instanceof ArrayType) {
+        if ($type instanceof self || $type instanceof ArrayType || $type instanceof CollectionType) {
             return $this->decoratedType()->allows($type->decoratedType());
         }
         return false;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         if ($this->type instanceof ComposedType) {
             return "({$this->type})[]";

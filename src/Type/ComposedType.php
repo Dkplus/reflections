@@ -19,7 +19,7 @@ class ComposedType implements Type
         }, $this->decoratedTypes()));
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return implode('|', array_map('strval', $this->decoratedTypes()));
     }

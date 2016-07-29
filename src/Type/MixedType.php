@@ -8,7 +8,7 @@ final class MixedType implements Type
         return ! $type instanceof VoidType;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return 'mixed';
     }

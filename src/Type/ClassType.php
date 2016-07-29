@@ -25,7 +25,7 @@ class ClassType implements Type
             || $type->reflection->isSubclassOf($this->reflection->name());
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return $this->reflection->name();
     }

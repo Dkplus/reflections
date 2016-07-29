@@ -8,7 +8,7 @@ final class ResourceType implements Type
         return $type instanceof self;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return 'resource';
     }

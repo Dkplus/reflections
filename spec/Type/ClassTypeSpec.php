@@ -3,9 +3,12 @@ namespace spec\Dkplus\Reflections\Type;
 
 use Dkplus\Reflections\ClassReflection;
 use Dkplus\Reflections\Type\ClassType;
+use Dkplus\Reflections\Type\CollectionType;
+use Dkplus\Reflections\Type\StringType;
 use Dkplus\Reflections\Type\Type;
 use PhpSpec\ObjectBehavior;
 use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use Traversable;
 
 /**
  * @mixin ClassType
@@ -57,6 +60,20 @@ class ClassTypeSpec extends ObjectBehavior
         $anotherClass = ClassReflectionStubBuilder::build()->extend('MyClass')->finish();
 
         $this->allows(new ClassType($anotherClass))->shouldBe(true);
+    }
+
+    function it_allows_collections_if_the_collection_class_is_of_this_class(ClassReflection $reflection)
+    {
+        $sameClassReflection = ClassReflectionStubBuilder::build()
+            ->implement(Traversable::class)
+            ->withClassName('MyClass')
+            ->finish();
+        $anotherClassReflection = ClassReflectionStubBuilder::build()
+            ->implement(Traversable::class)
+            ->finish();
+
+        $this->allows(new CollectionType(new ClassType($sameClassReflection), new StringType()))->shouldBe(true);
+        $this->allows(new CollectionType(new ClassType($anotherClassReflection), new StringType()))->shouldBe(false);
     }
 
     function it_does_not_allow_other_types(Type $type)

@@ -14,7 +14,7 @@ final class CallableType implements Type
         return false;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return 'callable';
     }

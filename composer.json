@@ -13,7 +13,7 @@
         }
     },
     "require": {
-        "roave/better-reflection": "dev-master@dev",
+        "roave/better-reflection": "^1.1",
         "doctrine/annotations": "^1.2"
     },
     "require-dev": {

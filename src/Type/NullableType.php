@@ -25,7 +25,7 @@ final class NullableType implements DecoratingType
         return $this->decorated->allows($type);
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         if ($this->decorated instanceof ComposedType) {
             return "?({$this->decorated})";

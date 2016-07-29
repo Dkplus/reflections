@@ -8,12 +8,10 @@ final class BooleanType implements Type
         if ($type instanceof ComposedType) {
             return ! in_array(false, array_map([$this, 'allows'], $type->decoratedTypes()));
         }
-        return $type instanceof self
-            || $type instanceof TrueType
-            || $type instanceof FalseType;
+        return $type instanceof self;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return 'bool';
     }

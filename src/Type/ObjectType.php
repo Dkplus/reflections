@@ -9,7 +9,7 @@ class ObjectType implements Type
             || $type instanceof ClassType;
     }
 
-    public function __toString(): String
+    public function __toString(): string
     {
         return 'object';
     }
