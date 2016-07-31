@@ -38,8 +38,8 @@ final class AutoloadingReflector implements Reflector
         $this->classReflector = new ClassReflector(new AggregateSourceLocator([
             new PhpInternalSourceLocator(),
             new EvaledCodeSourceLocator(),
-            new AutoloadSourceLocator(),
-            new ComposerSourceLocator($this->classLoader)
+            new ComposerSourceLocator($this->classLoader),
+            new AutoloadSourceLocator()
         ]));
         $this->typeFactory = $typeFactory;
     }
