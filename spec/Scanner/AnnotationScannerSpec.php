@@ -47,4 +47,20 @@ CODE;
             )
             ->shouldBeLike(new Annotations([$expected]));
     }
+
+    function it_ignores_phpdoc_tags()
+    {
+        $docBlock = <<<'CODE'
+/**
+ * @var string
+ * @param test
+ * @return bool
+ * @see
+ */
+CODE;
+
+        $this
+            ->scanForAnnotations($docBlock, '/var/www/src/MyFile.php', [])
+            ->shouldBeLike(new Annotations([]));
+    }
 }

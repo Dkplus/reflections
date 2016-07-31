@@ -21,6 +21,7 @@ class AnnotationScanner
             array_values($imports)
         );
         $parser = new DocParser();
+        $parser->setIgnoreNotImportedAnnotations(true);
         $parser->setImports($imports);
         return new Annotations($parser->parse($docBlock, $context));
     }
