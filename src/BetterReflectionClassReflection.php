@@ -3,8 +3,11 @@ namespace Dkplus\Reflections;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
+use BetterReflection\Reflection\ReflectionParameter;
 use BetterReflection\Reflection\ReflectionProperty;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
+use Dkplus\Reflections\Type\TypeFactory;
+use phpDocumentor\Reflection\Types\Mixed;
 
 /**
  * @api
@@ -20,17 +23,27 @@ class BetterReflectionClassReflection implements ClassReflection
     /** @var array */
     private $imports;
 
+    /** @var TypeFactory */
+    private $typeFactory;
+
+    /** @var Reflector */
+    private $reflector;
+
     /**
      * @internal
      */
     public function __construct(
         ReflectionClass $reflectionClass,
         AnnotationScanner $annotations,
+        Reflector $reflector,
+        TypeFactory $typeFactory,
         array $imports
     ) {
         $this->reflectionClass = $reflectionClass;
         $this->annotations = $annotations;
         $this->imports = $imports;
+        $this->reflector = $reflector;
+        $this->typeFactory = $typeFactory;
     }
 
     public function name(): string
@@ -85,14 +98,42 @@ class BetterReflectionClassReflection implements ClassReflection
     public function properties(): Properties
     {
         return new Properties($this->name(), array_map(function (ReflectionProperty $property) {
-            return new PropertyReflection($property, $this->annotations, $this->imports);
+            return new Property(
+                $property,
+                $this->typeFactory->create($this->reflector, new Mixed(), $property->getDocBlockTypeStrings(), false),
+                $this->annotations->scanForAnnotations($property->getDocComment(), $this->fileName(), $this->imports)
+            );
         }, $this->reflectionClass->getProperties()));
     }
 
     function methods(): Methods
     {
         return new Methods($this->name(), array_map(function (ReflectionMethod $method) {
-            return new MethodReflection($method, $this->annotations, $this->imports);
+            $returnType = $this->typeFactory->create(
+                $this->reflector,
+                $method->getReturnType() ? $method->getReturnType()->getTypeObject() : new Mixed(),
+                $method->getDocBlockReturnTypes(),
+                $method->getReturnType() ? $method->getReturnType()->allowsNull() : false
+            );
+            $parameters = array_map(function (ReflectionParameter $parameter) {
+                return new Parameter(
+                    $parameter,
+                    $this->typeFactory->create(
+                        $this->reflector,
+                        $parameter->getTypeHint(),
+                        $parameter->getDocBlockTypeStrings(),
+                        $parameter->allowsNull()
+                    ),
+                    $parameter->getPosition(),
+                    $parameter->isOptional()
+                );
+            }, $method->getParameters());
+            return new Method(
+                $method,
+                $this->annotations->scanForAnnotations($method->getDocComment(), $this->fileName(), $this->imports),
+                new Parameters($this->name() . '::' . $method->getName(), $parameters),
+                $returnType
+            );
         }, $this->reflectionClass->getMethods()));
     }
 }

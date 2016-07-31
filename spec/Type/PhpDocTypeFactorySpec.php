@@ -30,9 +30,9 @@ use Traversable;
  */
 class PhpDocTypeFactorySpec extends ObjectBehavior
 {
-    function let(Reflector $reflector, TypeFactory $decorated)
+    function let(TypeFactory $decorated)
     {
-        $this->beConstructedWith($reflector, $decorated);
+        $this->beConstructedWith($decorated);
     }
 
     function it_is_initializable()
@@ -45,54 +45,54 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_creates_a_string_type_if_a_phpdoc_string_is_given()
+    function it_creates_a_string_type_if_a_phpdoc_string_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['string'], false)->shouldBeAnInstanceOf(StringType::class);
+        $this->create($reflector, new Mixed(), ['string'], false)->shouldBeAnInstanceOf(StringType::class);
     }
 
-    function it_creates_an_integer_type_if_a_phpdoc_integer_is_given()
+    function it_creates_an_integer_type_if_a_phpdoc_integer_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['integer'], false)->shouldBeAnInstanceOf(IntegerType::class);
-        $this->create(new Mixed(), ['int'], false)->shouldBeAnInstanceOf(IntegerType::class);
+        $this->create($reflector, new Mixed(), ['integer'], false)->shouldBeAnInstanceOf(IntegerType::class);
+        $this->create($reflector, new Mixed(), ['int'], false)->shouldBeAnInstanceOf(IntegerType::class);
     }
 
-    function it_creates_a_float_type_if_a_phpdoc_float_is_given()
+    function it_creates_a_float_type_if_a_phpdoc_float_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['float'], false)->shouldBeAnInstanceOf(FloatType::class);
-        $this->create(new Mixed(), ['double'], false)->shouldBeAnInstanceOf(FloatType::class);
+        $this->create($reflector, new Mixed(), ['float'], false)->shouldBeAnInstanceOf(FloatType::class);
+        $this->create($reflector, new Mixed(), ['double'], false)->shouldBeAnInstanceOf(FloatType::class);
     }
 
-    function it_creates_a_bool_type_if_a_phpdoc_boolean_is_given()
+    function it_creates_a_bool_type_if_a_phpdoc_boolean_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['boolean'], false)->shouldBeAnInstanceOf(BooleanType::class);
-        $this->create(new Mixed(), ['bool'], false)->shouldBeAnInstanceOf(BooleanType::class);
-        $this->create(new Mixed(), ['Bool'], false)->shouldBeAnInstanceOf(BooleanType::class);
+        $this->create($reflector, new Mixed(), ['boolean'], false)->shouldBeAnInstanceOf(BooleanType::class);
+        $this->create($reflector, new Mixed(), ['bool'], false)->shouldBeAnInstanceOf(BooleanType::class);
+        $this->create($reflector, new Mixed(), ['Bool'], false)->shouldBeAnInstanceOf(BooleanType::class);
     }
 
-    function it_creates_a_callable_if_a_phpdoc_callable_is_given()
+    function it_creates_a_callable_if_a_phpdoc_callable_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['callable'], false)->shouldBeAnInstanceOf(CallableType::class);
-        $this->create(new Mixed(), ['callback'], false)->shouldBeAnInstanceOf(CallableType::class);
+        $this->create($reflector, new Mixed(), ['callable'], false)->shouldBeAnInstanceOf(CallableType::class);
+        $this->create($reflector, new Mixed(), ['callback'], false)->shouldBeAnInstanceOf(CallableType::class);
     }
 
-    function it_creates_a_resource_type_if_a_phpdoc_resource_is_given()
+    function it_creates_a_resource_type_if_a_phpdoc_resource_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['resource'], false)->shouldBeAnInstanceOf(ResourceType::class);
+        $this->create($reflector, new Mixed(), ['resource'], false)->shouldBeAnInstanceOf(ResourceType::class);
     }
 
-    function it_creates_a_void_type_if_a_phpdoc_void_is_given()
+    function it_creates_a_void_type_if_a_phpdoc_void_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['void'], false)->shouldBeAnInstanceOf(VoidType::class);
+        $this->create($reflector, new Mixed(), ['void'], false)->shouldBeAnInstanceOf(VoidType::class);
     }
 
-    function it_creates_an_object_type_if_a_phpdoc_object_is_given()
+    function it_creates_an_object_type_if_a_phpdoc_object_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['object'], false)->shouldBeAnInstanceOf(ObjectType::class);
+        $this->create($reflector, new Mixed(), ['object'], false)->shouldBeAnInstanceOf(ObjectType::class);
     }
 
-    function it_creates_an_array_type_if_a_phpdoc_array_is_given()
+    function it_creates_an_array_type_if_a_phpdoc_array_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['array'], false)->shouldBeAnInstanceOf(ArrayType::class);
+        $this->create($reflector, new Mixed(), ['array'], false)->shouldBeAnInstanceOf(ArrayType::class);
     }
 
     function it_creates_a_class_type_if_a_class_phpdoc_is_given(Reflector $reflector)
@@ -100,48 +100,50 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
         $classReflection = ClassReflectionStubBuilder::build()->withClassName('stdClass')->finish();
         $reflector->reflectClass('stdClass')->willReturn($classReflection);
 
-        $this->create(new Mixed(), ['stdClass'], false)->shouldBeAReflectionOfClass('stdClass');
+        $this->create($reflector, new Mixed(), ['stdClass'], false)->shouldBeAReflectionOfClass('stdClass');
     }
 
-    function it_creates_an_iterable_type_if_a_phpdoc_iterable_is_given()
+    function it_creates_an_iterable_type_if_a_phpdoc_iterable_is_given(Reflector $reflector)
     {
-        $this->create(new Mixed(), ['iterable'], false)->shouldBeAnInstanceOf(IterableType::class);
+        $this->create($reflector, new Mixed(), ['iterable'], false)->shouldBeAnInstanceOf(IterableType::class);
     }
 
     function it_let_the_decorated_factory_create_the_type_if_no_phpdocs_are_given(
+        Reflector $reflector,
         TypeFactory $decorated,
         Type $type
     ) {
-        $decorated->create(Argument::any(), Argument::any(), Argument::any())->willReturn($type);
-        $this->create(new Mixed(), [], false)->shouldBe($type);
+        $decorated->create($reflector, Argument::any(), Argument::any(), Argument::any())->willReturn($type);
+        $this->create($reflector, new Mixed(), [], false)->shouldBe($type);
     }
 
-    function it_creates_a_combined_type_if_multiple_phpdoc_types_are_given()
+    function it_creates_a_combined_type_if_multiple_phpdoc_types_are_given(Reflector $reflector)
     {
         $this
-            ->create(new Mixed(), ['string', 'int'], false)
+            ->create($reflector, new Mixed(), ['string', 'int'], false)
             ->shouldBeComposedOf(StringType::class, IntegerType::class);
     }
 
-    function it_creates_traversables_if_only_iterable_phpdoc_types_are_given()
+    function it_creates_traversables_if_only_iterable_phpdoc_types_are_given(Reflector $reflector)
     {
         $this
-            ->create(new Mixed(), ['string[]'], false)
+            ->create($reflector, new Mixed(), ['string[]'], false)
             ->shouldBeAnIterableOf(StringType::class);
 
         $this
-            ->create(new Mixed(), ['string[]', 'int[]'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'int[]'], false)
             ->shouldBeAnIterableOf(StringType::class, IntegerType::class);
     }
 
-    function it_creates_a_typed_array_type_if_only_iterable_phpdoc_types_and_an_array_phpdoc_type_are_given()
-    {
+    function it_creates_a_typed_array_type_if_only_iterable_phpdoc_types_and_an_array_phpdoc_type_are_given(
+        Reflector $reflector
+    ) {
         $this
-            ->create(new Mixed(), ['string[]', 'array'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'array'], false)
             ->shouldBeAnArrayOf(StringType::class);
 
         $this
-            ->create(new Mixed(), ['string[]', 'int[]', 'array'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'int[]', 'array'], false)
             ->shouldBeAnArrayOf(StringType::class, IntegerType::class);
     }
 
@@ -155,15 +157,15 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
         $reflector->reflectClass('stdClass')->willReturn($nonTraversableClass);
 
         $this
-            ->create(new Mixed(), ['string[]', 'Collection'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'Collection'], false)
             ->shouldBeACollectionOf(StringType::class);
 
         $this
-            ->create(new Mixed(), ['string[]', 'int[]', 'Collection'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'int[]', 'Collection'], false)
             ->shouldBeACollectionOf(StringType::class, IntegerType::class);
 
         $this
-            ->create(new Mixed(), ['string[]', 'stdClass'], false)
+            ->create($reflector, new Mixed(), ['string[]', 'stdClass'], false)
             ->shouldBeAnInstanceOf(ComposedType::class);
     }
 

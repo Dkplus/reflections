@@ -6,6 +6,7 @@ use Dkplus\Reflections\AutoloadingReflector;
 use Dkplus\Reflections\ClassNotFound;
 use Dkplus\Reflections\ClassReflection;
 use Dkplus\Reflections\Reflector;
+use Dkplus\Reflections\Type\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -13,6 +14,11 @@ use PhpSpec\ObjectBehavior;
  */
 class AutoloadingReflectorSpec extends ObjectBehavior
 {
+    function let(TypeFactory $typeFactory)
+    {
+        $this->beConstructedWith($typeFactory);
+    }
+
     function it_is_initializable()
     {
         $this->shouldHaveType(AutoloadingReflector::class);

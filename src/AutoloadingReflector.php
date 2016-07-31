@@ -11,6 +11,7 @@ use BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Composer\Autoload\ClassLoader;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
 use Dkplus\Reflections\Scanner\ImportScanner;
+use Dkplus\Reflections\Type\TypeFactory;
 
 final class AutoloadingReflector implements Reflector
 {
@@ -26,7 +27,10 @@ final class AutoloadingReflector implements Reflector
     /** @var ClassLoader */
     private $classLoader;
 
-    public function __construct()
+    /** @var TypeFactory */
+    private $typeFactory;
+
+    public function __construct(TypeFactory $typeFactory)
     {
         $this->importScanner = new ImportScanner();
         $this->annotationsScanner = new AnnotationScanner();
@@ -37,6 +41,7 @@ final class AutoloadingReflector implements Reflector
             new AutoloadSourceLocator(),
             new ComposerSourceLocator($this->classLoader)
         ]));
+        $this->typeFactory = $typeFactory;
     }
 
     public function reflectClass(string $className): ClassReflection
@@ -46,6 +51,8 @@ final class AutoloadingReflector implements Reflector
             return new BetterReflectionClassReflection(
                 $reflection,
                 $this->annotationsScanner,
+                $this,
+                $this->typeFactory,
                 $this->importScanner->scanForImports($reflection->getFileName())
             );
         } catch (IdentifierNotFound $exception) {

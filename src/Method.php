@@ -4,29 +4,39 @@ namespace Dkplus\Reflections;
 
 use BetterReflection\Reflection\ReflectionMethod;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
+use Dkplus\Reflections\Type\Type;
 
 /**
  * @api
  */
-class MethodReflection
+class Method
 {
     /** @var ReflectionMethod */
     private $reflection;
 
-    /** @var AnnotationScanner */
-    private $annotationScanner;
+    /** @var Annotations */
+    private $annotations;
 
     /** @var array */
     private $imports;
 
-    /**
-     * @internal
-     */
-    public function __construct(ReflectionMethod $reflection, AnnotationScanner $annotationScanner, array $imports)
-    {
+    /** @var Type */
+    private $returnType;
+
+    /** @var Parameters */
+    private $parameters;
+
+    /** @internal */
+    public function __construct(
+        ReflectionMethod $reflection,
+        Annotations $annotations,
+        Parameters $parameters,
+        Type $returnType
+    ) {
         $this->reflection = $reflection;
-        $this->annotationScanner = $annotationScanner;
-        $this->imports = $imports;
+        $this->annotations = $annotations;
+        $this->returnType = $returnType;
+        $this->parameters = $parameters;
     }
 
     public function name(): string
@@ -66,9 +76,7 @@ class MethodReflection
 
     public function returnType()
     {
-        return $this->reflection->getReturnType()
-            ? (string) $this->reflection->getReturnType()->getTypeObject()
-            : null;
+        return $this->returnType;
     }
 
     public function isGetterOf(string $property): bool
@@ -80,5 +88,20 @@ class MethodReflection
     public function countParameters(): int
     {
         return $this->reflection->getNumberOfParameters();
+    }
+
+    public function parameters(): Parameters
+    {
+        return $this->parameters;
+    }
+
+    public function allowsToBePassed(Type ...$types): bool
+    {
+        return $this->parameters()->allows(...$types);
+    }
+
+    public function annotations(): Annotations
+    {
+        return $this->annotations;
     }
 }

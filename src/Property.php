@@ -2,30 +2,30 @@
 namespace Dkplus\Reflections;
 
 use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
+use Dkplus\Reflections\Type\Type;
 
 /**
  * @api
  */
-class PropertyReflection
+class Property
 {
     /** @var ReflectionProperty */
     private $reflection;
 
-    /** @var AnnotationScanner */
+    /** @var Annotations */
     private $annotations;
 
-    /** @var array */
-    private $imports;
+    /** @var Type */
+    private $type;
 
     /**
      * @internal
      */
-    public function __construct(ReflectionProperty $reflection, AnnotationScanner $annotations, array $imports)
+    public function __construct(ReflectionProperty $reflection, Type $type, Annotations $annotations)
     {
         $this->reflection = $reflection;
+        $this->type = $type;
         $this->annotations = $annotations;
-        $this->imports = $imports;
     }
 
     public function name(): string
@@ -48,24 +48,19 @@ class PropertyReflection
         return $this->reflection->isPrivate();
     }
 
-    public function types(): array
+    public function type(): Type
     {
-        return $this->reflection->getDocBlockTypeStrings();
+        return $this->type;
     }
 
-    public function mainType(): string
+    public function allows(Type $type)
     {
-        $types = $this->types();
-        return current($types);
+        return $this->type->allows($type);
     }
 
     public function annotations(): Annotations
     {
-        return $this->annotations->scanForAnnotations(
-            $this->reflection->getDocComment(),
-            $this->reflection->getDeclaringClass()->getFileName(),
-            $this->imports
-        );
+        return $this->annotations;
     }
 
     public function isStatic(): bool

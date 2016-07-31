@@ -7,14 +7,14 @@ class Properties
     /** @var string */
     private $className;
 
-    /** @var PropertyReflection[] */
+    /** @var Property[] */
     private $properties;
 
     public function __construct(string $className, array $properties)
     {
         $this->className = $className;
         $this->properties = array_combine(
-            array_map(function (PropertyReflection $reflection) {
+            array_map(function (Property $reflection) {
                 return $reflection->name();
             }, $properties),
             $properties
@@ -36,7 +36,7 @@ class Properties
         return array_values($this->properties);
     }
 
-    public function named(string $name): PropertyReflection
+    public function named(string $name): Property
     {
         if ($this->contains($name)) {
             return $this->properties[$name];

@@ -2,10 +2,8 @@
 namespace spec\Dkplus\Reflections;
 
 use BetterReflection\Reflection\ReflectionParameter;
-use BetterReflection\Reflection\ReflectionType;
 use Dkplus\Reflections\Parameter;
-use phpDocumentor\Reflection\Types\Array_;
-use phpDocumentor\Reflection\Types\String_;
+use Dkplus\Reflections\Type\Type;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -13,9 +11,9 @@ use PhpSpec\ObjectBehavior;
  */
 class ParameterSpec extends ObjectBehavior
 {
-    function let(ReflectionParameter $parameter)
+    function let(ReflectionParameter $parameter, Type $type)
     {
-        $this->beConstructedWith($parameter);
+        $this->beConstructedWith($parameter, $type, 0, true);
     }
 
     function it_is_initializable()
@@ -29,38 +27,27 @@ class ParameterSpec extends ObjectBehavior
         $this->name()->shouldBe('id');
     }
 
-    function it_has_a_type(ReflectionParameter $parameter)
+    function it_has_a_position()
     {
-        $parameter->getType()->willReturn(ReflectionType::createFromType(new String_(), true));
-        $this->type()->shouldBe('string');
+        $this->position()->shouldBe(0);
     }
 
-    function its_type_is_mixed_if_no_type_hint_has_been_set(ReflectionParameter $parameter)
+    function it_has_a_type(Type $type)
     {
-        $parameter->getType()->willReturn(null);
-        $this->type()->shouldBe('mixed');
+        $this->type()->shouldBe($type);
     }
 
-    function it_might_allow_null(ReflectionParameter $parameter)
+    function it_might_allow_types_to_be_passed(Type $type, Type $anotherType)
     {
-        $parameter->getType()->willReturn(ReflectionType::createFromType(new String_(), true));
-        $this->allowsNull()->shouldBe(true);
+        $type->allows($anotherType)->willReturn(false);
+        $this->allows($anotherType)->shouldBe(false);
 
-        $parameter->getType()->willReturn(ReflectionType::createFromType(new String_(), false));
-        $this->allowsNull()->shouldBe(false);
+        $type->allows($anotherType)->willReturn(true);
+        $this->allows($anotherType)->shouldBe(true);
     }
 
-    function it_allows_null_if_its_type_is_mixed(ReflectionParameter $parameter)
+    function it_may_be_omitted()
     {
-        $parameter->getType()->willReturn(null);
-        $this->allowsNull()->shouldBe(true);
-    }
-
-    function its_type_might_be_a_generic_array(ReflectionParameter $parameter)
-    {
-        $parameter->getType()->willReturn(ReflectionType::createFromType(new Array_(), false));
-        $parameter->getDocBlockTypeStrings()->willReturn([]);
-
-        $this->type()->shouldBe('array');
+        $this->canBeOmitted()->shouldBe(true);
     }
 }

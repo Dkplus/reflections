@@ -1,7 +1,7 @@
 <?php
 namespace spec\Dkplus\Reflections\Type;
 
-use Dkplus\Reflections\Type\DecoratingType;
+use Dkplus\Reflections\Reflector;
 use Dkplus\Reflections\Type\MixedType;
 use Dkplus\Reflections\Type\NullableType;
 use Dkplus\Reflections\Type\NullableTypeFactory;
@@ -34,48 +34,51 @@ class NullableTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_decorates_types_if_nullable_is_passed(TypeFactory $decorated, Type $type)
+    function it_decorates_types_if_nullable_is_passed(Reflector $reflector, TypeFactory $decorated, Type $type)
     {
-        $decorated->create(Argument::any(), Argument::any(), false)->willReturn($type);
+        $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn($type);
 
-        $this->create(new String_(), [], true)->shouldBeANullableVersionOf($type);
+        $this->create($reflector, new String_(), [], true)->shouldBeANullableVersionOf($type);
     }
 
-    function it_decorates_types_if_no_type_is_passed_but_phpdoc_null_is_passed(TypeFactory $decorated, Type $type)
-    {
-        $decorated->create(Argument::any(), ['null'], false)->willReturn(new NullType());
-        $decorated->create(Argument::any(), ['string'], false)->willReturn($type);
+    function it_decorates_types_if_no_type_is_passed_but_phpdoc_null_is_passed(
+        Reflector $reflector,
+        TypeFactory $decorated,
+        Type $type
+    ) {
+        $decorated->create($reflector, Argument::any(), ['null'], false)->willReturn(new NullType());
+        $decorated->create($reflector, Argument::any(), ['string'], false)->willReturn($type);
 
-        $this->create(new Mixed(), ['null'], false)->shouldBeAnInstanceOf(NullType::class);
-        $this->create(new Mixed(), ['string', 'null'], false)->shouldBeANullableVersionOf($type);
+        $this->create($reflector, new Mixed(), ['null'], false)->shouldBeAnInstanceOf(NullType::class);
+        $this->create($reflector, new Mixed(), ['string', 'null'], false)->shouldBeANullableVersionOf($type);
     }
 
-    function it_does_not_decorate_mixed(TypeFactory $decorated)
+    function it_does_not_decorate_mixed(Reflector $reflector, TypeFactory $decorated)
     {
-        $decorated->create(Argument::any(), Argument::any(), false)->willReturn(new MixedType());
+        $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new MixedType());
 
-        $this->create(new Mixed(), [], true)->shouldBeAnInstanceOf(MixedType::class);
+        $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(MixedType::class);
     }
 
-    function it_does_not_decorate_void(TypeFactory $decorated)
+    function it_does_not_decorate_void(Reflector $reflector, TypeFactory $decorated)
     {
-        $decorated->create(Argument::any(), Argument::any(), false)->willReturn(new VoidType());
+        $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new VoidType());
 
-        $this->create(new Mixed(), [], true)->shouldBeAnInstanceOf(VoidType::class);
+        $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(VoidType::class);
     }
 
-    function it_does_not_decorate_null(TypeFactory $decorated)
+    function it_does_not_decorate_null(Reflector $reflector, TypeFactory $decorated)
     {
-        $decorated->create(Argument::any(), Argument::any(), false)->willReturn(new NullType());
+        $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new NullType());
 
-        $this->create(new Mixed(), [], true)->shouldBeAnInstanceOf(NullType::class);
+        $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(NullType::class);
     }
 
-    function it_does_not_decorate_if_its_not_nullable(TypeFactory $decorated, Type $type)
+    function it_does_not_decorate_if_its_not_nullable(Reflector $reflector, TypeFactory $decorated, Type $type)
     {
-        $decorated->create(Argument::any(), Argument::any(), false)->willReturn($type);
+        $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn($type);
 
-        $this->create(new Mixed(), ['string'], false)->shouldBe($type);
+        $this->create($reflector, new Mixed(), ['string'], false)->shouldBe($type);
     }
 
     public function getMatchers()

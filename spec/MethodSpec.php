@@ -4,34 +4,28 @@ namespace spec\Dkplus\Reflections;
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionType;
-use Dkplus\Reflections\MethodReflection;
+use Dkplus\Reflections\Annotations;
+use Dkplus\Reflections\Method;
+use Dkplus\Reflections\Parameters;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
+use Dkplus\Reflections\Type\Type;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin MethodReflection
+ * @mixin Method
  */
-class MethodReflectionSpec extends ObjectBehavior
+class MethodSpec extends ObjectBehavior
 {
-    private $imports = [
-        'Target' => 'Doctrine\\Common\\Annotations\\Annotation\\Target',
-    ];
-
-    private $fileName = '/var/www/MyClass.php';
-
-    function let(ReflectionMethod $reflectionMethod, ReflectionClass $class, AnnotationScanner $annotations)
+    function let(ReflectionMethod $reflectionMethod, Annotations $annotations, Parameters $parameters, Type $returnType)
     {
-        $this->beConstructedWith($reflectionMethod, $annotations, $this->imports);
-
-        $class->getFileName()->willReturn($this->fileName);
-        $reflectionMethod->getDeclaringClass()->willReturn($class);
+        $this->beConstructedWith($reflectionMethod, $annotations, $parameters, $returnType);
     }
     
     function it_is_initializable()
     {
-        $this->shouldHaveType(MethodReflection::class);
+        $this->shouldHaveType(Method::class);
     }
 
     function it_has_a_name(ReflectionMethod $reflectionMethod)
@@ -94,18 +88,9 @@ class MethodReflectionSpec extends ObjectBehavior
         $this->isAbstract()->shouldBe(true);
     }
 
-    function it_might_have_a_return_type(ReflectionMethod $reflectionMethod)
+    function it_has_a_return_type(Type $returnType)
     {
-        $reflectionMethod->getReturnType()->willReturn(null);
-        $this->returnType()->shouldBe(null);
-
-        $reflectionMethod->getReturnType()->willReturn(ReflectionType::createFromType(new String_(), false));
-        $this->returnType()->shouldBe('string');
-    }
-
-    function its_return_type_might_be_a_generic_array(ReflectionMethod $reflectionMethod)
-    {
-        $reflectionMethod->getReturnType()->willReturn(ReflectionType::createFromType(new Array_(), false));
+        $this->returnType()->shouldBe($returnType);
     }
 
     function it_might_be_a_getter(ReflectionMethod $reflectionMethod)
@@ -124,9 +109,28 @@ class MethodReflectionSpec extends ObjectBehavior
         $this->isGetterOf('myProperty')->shouldBe(false);
     }
 
-    function it_has_parameters(ReflectionMethod $reflectionMethod)
+    function it_can_count_its_parameters(ReflectionMethod $reflectionMethod)
     {
         $reflectionMethod->getNumberOfParameters()->willReturn(3);
         $this->countParameters()->shouldBe(3);
+    }
+
+    function it_has_parameters(Parameters $parameters)
+    {
+        $this->parameters()->shouldBe($parameters);
+    }
+
+    function it_might_types_to_be_passed(Parameters $parameters, Type $type)
+    {
+        $parameters->allows($type)->willReturn(true);
+        $this->allowsToBePassed($type)->shouldBe(true);
+
+        $parameters->allows($type)->willReturn(false);
+        $this->allowsToBePassed($type)->shouldBe(false);
+    }
+
+    function it_has_annotations(Annotations $annotations)
+    {
+        $this->annotations()->shouldBe($annotations);
     }
 }

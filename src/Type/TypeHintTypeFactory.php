@@ -14,19 +14,15 @@ use phpDocumentor\Reflection\Types\Void;
 
 class TypeHintTypeFactory implements TypeFactory
 {
-    /** @var Reflector */
-    private $reflector;
-
     /** @var TypeFactory */
     private $decorated;
 
-    public function __construct(Reflector $reflector, TypeFactory $decorated)
+    public function __construct(TypeFactory $decorated)
     {
-        $this->reflector = $reflector;
         $this->decorated = $decorated;
     }
 
-    public function create(PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(Reflector $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
     {
         if ($type instanceof String_) {
             return new StringType();
@@ -47,15 +43,21 @@ class TypeHintTypeFactory implements TypeFactory
             return new VoidType();
         }
         if ($type instanceof Array_) {
-            return $this->decorated->create($type, array_unique(array_merge($phpDocTypes, ['array'])), $nullable);
+            return $this->decorated->create(
+                $reflector,
+                $type,
+                array_unique(array_merge($phpDocTypes, ['array'])),
+                $nullable
+            );
         }
         if (! $type instanceof Object_) {
-            return $this->decorated->create($type, $phpDocTypes, $nullable);
+            return $this->decorated->create($reflector, $type, $phpDocTypes, $nullable);
         }
         if ($type->getFqsen() === null) {
             return new ObjectType();
         }
         return $this->decorated->create(
+            $reflector,
             $type,
             array_unique(array_merge($phpDocTypes, [$type->getFqsen()->getName()])),
             $nullable

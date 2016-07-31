@@ -6,10 +6,16 @@ use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionProperty;
 use Dkplus\Reflections\Annotations;
 use Dkplus\Reflections\BetterReflectionClassReflection;
+use Dkplus\Reflections\Reflector;
 use Dkplus\Reflections\Scanner\AnnotationScanner;
 use Dkplus\Reflections\ClassReflection;
+use Dkplus\Reflections\Type\StringType;
+use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflections\Type\TypeFactory;
 use Doctrine\Common\Annotations\Annotation\Target;
+use phpDocumentor\Reflection\Types\Mixed;
 use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
 
 /**
  * @mixin BetterReflectionClassReflection
@@ -22,9 +28,13 @@ class BetterReflectionClassReflectionSpec extends ObjectBehavior
     ];
     private $fileName = '/var/www/MyClass.php';
 
-    function let(ReflectionClass $reflectionClass, AnnotationScanner $annotations)
-    {
-        $this->beConstructedWith($reflectionClass, $annotations, $this->imports);
+    function let(
+        ReflectionClass $reflectionClass,
+        AnnotationScanner $annotations,
+        TypeFactory $typeFactory,
+        Reflector $reflector
+    ) {
+        $this->beConstructedWith($reflectionClass, $annotations, $reflector, $typeFactory, $this->imports);
 
         $reflectionClass->getFileName()->willReturn($this->fileName);
     }
@@ -95,29 +105,76 @@ BLOCK;
         $this->fileName()->shouldBe('/var/www/Bar.php');
     }
 
-    function it_has_properties(ReflectionClass $reflectionClass, ReflectionProperty $property)
-    {
+    function it_has_properties(
+        ReflectionClass $reflectionClass,
+        ReflectionProperty $property,
+        AnnotationScanner $annotations,
+        TypeFactory $typeFactory
+    ) {
         $reflectionClass->getName()->willReturn('MyClass');
         $property->getName()->willReturn('id');
+        $property->getDocBlockTypeStrings()->willReturn(['string']);
+        $property->getDocComment()->willReturn('/** @Target("CLASS") */');
+
+        $typeFactory
+            ->create(Argument::any(), Argument::type(Mixed::class), ['string'], false)
+            ->willReturn(new StringType());
+
         $reflectionClass->getProperties()->willReturn([$property]);
+
+        $annotations
+            ->scanForAnnotations('/** @Target("CLASS") */', '/var/www/MyClass.php', $this->imports)
+            ->willReturn(new Annotations([new Target(['value' => "CLASS"])]));
 
         $this->properties()->shouldHaveSize(1);
     }
 
-    function it_has_methods(ReflectionClass $reflectionClass, ReflectionMethod $method)
-    {
+    function it_has_methods(
+        ReflectionClass $reflectionClass,
+        ReflectionMethod $method,
+        AnnotationScanner $annotations,
+        TypeFactory $typeFactory,
+        Type $type,
+        Annotations $methodAnnotations
+    ) {
         $reflectionClass->getName()->willReturn('MyClass');
-        $method->getName()->willReturn('getId');
+        $method->getName()->willReturn('__invoke');
+        $method->getReturnType()->willReturn(null);
+        $method->getDocBlockReturnTypes()->willReturn([]);
+        $method->getParameters()->willReturn([]);
+        $method->getDocComment()->willReturn('');
         $reflectionClass->getMethods()->willReturn([$method]);
+
+        $annotations
+            ->scanForAnnotations(Argument::any(), Argument::any(), $this->imports)
+            ->willReturn($methodAnnotations);
+
+        $typeFactory->create(Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn($type);
 
         $this->methods()->shouldHaveSize(1);
     }
 
-    function it_might_be_invokable(ReflectionClass $reflectionClass, ReflectionMethod $method)
-    {
+    function it_might_be_invokable(
+        ReflectionClass $reflectionClass,
+        ReflectionMethod $method,
+        AnnotationScanner $annotations,
+        TypeFactory $typeFactory,
+        Type $type,
+        Annotations $methodAnnotations
+    ) {
         $reflectionClass->getName()->willReturn('MyClass');
         $method->getName()->willReturn('__invoke');
+        $method->getReturnType()->willReturn(null);
+        $method->getDocBlockReturnTypes()->willReturn([]);
+        $method->getParameters()->willReturn([]);
+        $method->getDocComment()->willReturn('');
         $reflectionClass->getMethods()->willReturn([$method]);
+
+        $annotations
+            ->scanForAnnotations(Argument::any(), Argument::any(), $this->imports)
+            ->willReturn($methodAnnotations);
+
+        $typeFactory->create(Argument::any(), Argument::any(), Argument::any(), Argument::any())->willReturn($type);
 
         $this->isInvokable()->shouldBe(true);
 
