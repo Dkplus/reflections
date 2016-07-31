@@ -53,7 +53,7 @@ final class AutoloadingReflector implements Reflector
                 $this->annotationsScanner,
                 $this,
                 $this->typeFactory,
-                $this->importScanner->scanForImports($reflection->getFileName())
+                $reflection->getFileName() ? $this->importScanner->scanForImports($reflection->getFileName()) : []
             );
         } catch (IdentifierNotFound $exception) {
             throw ClassNotFound::named($className);
