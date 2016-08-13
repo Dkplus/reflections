@@ -31,7 +31,7 @@ class Properties
         return isset($this->properties[$name]);
     }
 
-    function all(): array
+    public function all(): array
     {
         return array_values($this->properties);
     }
