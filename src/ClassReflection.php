@@ -26,5 +26,5 @@ interface ClassReflection
 
     public function properties(): Properties;
 
-    function methods(): Methods;
+    public function methods(): Methods;
 }

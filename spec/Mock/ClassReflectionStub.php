@@ -82,7 +82,7 @@ final class ClassReflectionStub implements ClassReflection
         return new Properties($this->name(), []);
     }
 
-    function methods(): Methods
+    public function methods(): Methods
     {
         return new Methods($this->name(), []);
     }

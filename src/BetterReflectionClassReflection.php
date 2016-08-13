@@ -106,7 +106,7 @@ class BetterReflectionClassReflection implements ClassReflection
         }, $this->reflectionClass->getProperties()));
     }
 
-    function methods(): Methods
+    public function methods(): Methods
     {
         return new Methods($this->name(), array_map(function (ReflectionMethod $method) {
             $returnType = $this->typeFactory->create(

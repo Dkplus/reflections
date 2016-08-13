@@ -1,9 +1,7 @@
 <?php
-
 namespace Dkplus\Reflections;
 
 use BetterReflection\Reflection\ReflectionMethod;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
 use Dkplus\Reflections\Type\Type;
 
 /**
@@ -16,9 +14,6 @@ class Method
 
     /** @var Annotations */
     private $annotations;
-
-    /** @var array */
-    private $imports;
 
     /** @var Type */
     private $returnType;

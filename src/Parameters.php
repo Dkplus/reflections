@@ -60,8 +60,10 @@ class Parameters
                 return false;
             }
         }
-        if ($this->size() > count($types)) {
-            for ($i = count($types); $i < $this->size(); ++$i) {
+
+        $size = $this->size();
+        if ($size > count($types)) {
+            for ($i = count($types); $i < $size; ++$i) {
                 if (! $this->atPosition($i)->canBeOmitted()) {
                     return false;
                 }
