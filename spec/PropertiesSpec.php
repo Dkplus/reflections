@@ -1,9 +1,9 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\MissingProperty;
-use Dkplus\Reflections\Properties;
-use Dkplus\Reflections\Property;
+use Dkplus\Reflection\MissingProperty;
+use Dkplus\Reflection\Properties;
+use Dkplus\Reflection\PropertyReflection;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -11,7 +11,7 @@ use PhpSpec\ObjectBehavior;
  */
 class PropertiesSpec extends ObjectBehavior
 {
-    function let(Property $property)
+    function let(PropertyReflection $property)
     {
         $property->name()->willReturn('foo');
         $this->beConstructedWith('MyClass', [$property]);
@@ -33,12 +33,12 @@ class PropertiesSpec extends ObjectBehavior
         $this->contains('bar')->shouldBe(false);
     }
 
-    function it_provides_all_properties(Property $property)
+    function it_provides_all_properties(PropertyReflection $property)
     {
         $this->all()->shouldBeLike([$property]);
     }
 
-    function it_provides_a_property_by_name(Property $property)
+    function it_provides_a_property_by_name(PropertyReflection $property)
     {
         $this->named('foo')->shouldBe($property);
 

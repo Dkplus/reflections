@@ -1,20 +1,18 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\ClassReflection;
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\CollectionType;
-use Dkplus\Reflections\Type\DecoratingType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\CollectionType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 use Traversable;
 
-/**
- * @mixin CollectionType
- */
 class CollectionTypeSpec extends ObjectBehavior
 {
     function let(ClassType $collection, ClassReflection $reflection, Type $generic)

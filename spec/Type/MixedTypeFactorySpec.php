@@ -1,16 +1,15 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Type\MixedType;
-use Dkplus\Reflections\Type\MixedTypeFactory;
-use Dkplus\Reflections\Type\TypeFactory;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\MixedTypeFactory;
+use Dkplus\Reflection\Type\TypeFactory;
 use phpDocumentor\Reflection\Types\Mixed;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin MixedTypeFactory
- */
 class MixedTypeFactorySpec extends ObjectBehavior
 {
     function it_is_initializable()

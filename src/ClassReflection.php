@@ -1,9 +1,8 @@
 <?php
-namespace Dkplus\Reflections;
+declare(strict_types=1);
 
-/**
- * @api
- */
+namespace Dkplus\Reflection;
+
 interface ClassReflection
 {
     public function name(): string;

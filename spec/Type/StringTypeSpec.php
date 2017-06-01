@@ -1,13 +1,12 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\StringType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\StringType;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin StringType
- */
 class StringTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

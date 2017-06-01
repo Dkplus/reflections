@@ -1,20 +1,20 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionType;
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\Method;
-use Dkplus\Reflections\Parameters;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\MethodReflection;
+use Dkplus\Reflection\Parameters;
+use Dkplus\Reflection\Scanner\AnnotationScanner;
+use Dkplus\Reflection\Type\Type;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin Method
+ * @mixin MethodReflection
  */
 class MethodSpec extends ObjectBehavior
 {
@@ -25,7 +25,7 @@ class MethodSpec extends ObjectBehavior
     
     function it_is_initializable()
     {
-        $this->shouldHaveType(Method::class);
+        $this->shouldHaveType(MethodReflection::class);
     }
 
     function it_has_a_name(ReflectionMethod $reflectionMethod)

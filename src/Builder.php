@@ -1,12 +1,12 @@
 <?php
 
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
-use Dkplus\Reflections\Type\MixedTypeFactory;
-use Dkplus\Reflections\Type\NullableTypeFactory;
-use Dkplus\Reflections\Type\PhpDocTypeFactory;
-use Dkplus\Reflections\Type\TypeFactory;
-use Dkplus\Reflections\Type\TypeHintTypeFactory;
+use Dkplus\Reflection\Type\MixedTypeFactory;
+use Dkplus\Reflection\Type\NullableTypeFactory;
+use Dkplus\Reflection\Type\PhpDocTypeFactory;
+use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\TypeHintTypeFactory;
 
 class Builder
 {

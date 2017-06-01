@@ -1,9 +1,9 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionParameter;
-use Dkplus\Reflections\Parameter;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Parameter;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
 /**

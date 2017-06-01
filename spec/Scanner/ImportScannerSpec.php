@@ -1,7 +1,7 @@
 <?php
-namespace spec\Dkplus\Reflections\Scanner;
+namespace spec\Dkplus\Reflection\Scanner;
 
-use Dkplus\Reflections\Scanner\ImportScanner;
+use Dkplus\Reflection\Scanner\ImportScanner;
 use PhpSpec\ObjectBehavior;
 
 class ImportScannerSpec extends ObjectBehavior

@@ -1,5 +1,5 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 use Exception;
 

@@ -1,22 +1,21 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Type\MixedType;
-use Dkplus\Reflections\Type\NullableType;
-use Dkplus\Reflections\Type\NullableTypeFactory;
-use Dkplus\Reflections\Type\NullType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\TypeFactory;
-use Dkplus\Reflections\Type\VoidType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\NullableType;
+use Dkplus\Reflection\Type\NullableTypeFactory;
+use Dkplus\Reflection\Type\NullType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\VoidType;
 use phpDocumentor\Reflection\Types\Mixed;
 use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-/**
- * @mixin NullableTypeFactory
- */
 class NullableTypeFactorySpec extends ObjectBehavior
 {
     function let(TypeFactory $decorated)

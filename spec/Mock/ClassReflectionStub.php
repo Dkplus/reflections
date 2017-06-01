@@ -1,10 +1,10 @@
 <?php
-namespace spec\Dkplus\Reflections\Mock;
+namespace spec\Dkplus\Reflection\Mock;
 
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\ClassReflection;
-use Dkplus\Reflections\Methods;
-use Dkplus\Reflections\Properties;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\Methods;
+use Dkplus\Reflection\Properties;
 
 final class ClassReflectionStub implements ClassReflection
 {

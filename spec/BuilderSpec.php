@@ -1,9 +1,9 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\AutoloadingReflector;
-use Dkplus\Reflections\Builder;
-use Dkplus\Reflections\Type\TypeFactory;
+use Dkplus\Reflection\AutoloadingReflector;
+use Dkplus\Reflection\Builder;
+use Dkplus\Reflection\Type\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
 /**

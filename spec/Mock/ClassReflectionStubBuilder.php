@@ -1,5 +1,5 @@
 <?php
-namespace spec\Dkplus\Reflections\Mock;
+namespace spec\Dkplus\Reflection\Mock;
 
 final class ClassReflectionStubBuilder
 {

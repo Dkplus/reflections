@@ -1,7 +1,7 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Type\Type;
 
 class Parameters
 {

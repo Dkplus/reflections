@@ -1,7 +1,9 @@
 <?php
-namespace Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\ClassReflection;
+namespace Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\ClassReflection;
 
 class ClassType implements Type
 {

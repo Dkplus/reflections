@@ -1,20 +1,17 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ArrayType;
-use Dkplus\Reflections\Type\BooleanType;
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\DecoratingType;
-use Dkplus\Reflections\Type\IntegerType;
-use Dkplus\Reflections\Type\MixedType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\TrueType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ArrayType;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\DecoratingType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\StringType;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin ArrayType
- */
 class ArrayTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

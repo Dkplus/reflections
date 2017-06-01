@@ -1,33 +1,32 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Type\ArrayType;
-use Dkplus\Reflections\Type\BooleanType;
-use Dkplus\Reflections\Type\CallableType;
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\CollectionType;
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\FloatType;
-use Dkplus\Reflections\Type\IntegerType;
-use Dkplus\Reflections\Type\IterableType;
-use Dkplus\Reflections\Type\ObjectType;
-use Dkplus\Reflections\Type\PhpDocTypeFactory;
-use Dkplus\Reflections\Type\ResourceType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\TypeFactory;
-use Dkplus\Reflections\Type\VoidType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Type\ArrayType;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\CallableType;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\CollectionType;
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\FloatType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\IterableType;
+use Dkplus\Reflection\Type\ObjectType;
+use Dkplus\Reflection\Type\PhpDocTypeFactory;
+use Dkplus\Reflection\Type\ResourceType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\VoidType;
 use phpDocumentor\Reflection\Types\Mixed;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 use Traversable;
 
 
-/**
- * @mixin PhpDocTypeFactory
- */
 class PhpDocTypeFactorySpec extends ObjectBehavior
 {
     function let(TypeFactory $decorated)
@@ -98,7 +97,7 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
     function it_creates_a_class_type_if_a_class_phpdoc_is_given(Reflector $reflector)
     {
         $classReflection = ClassReflectionStubBuilder::build()->withClassName('stdClass')->finish();
-        $reflector->reflectClass('stdClass')->willReturn($classReflection);
+        $reflector->reflectClassLike('stdClass')->willReturn($classReflection);
 
         $this->create($reflector, new Mixed(), ['stdClass'], false)->shouldBeAReflectionOfClass('stdClass');
     }
@@ -153,8 +152,8 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
         $traversableClass = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
         $nonTraversableClass = ClassReflectionStubBuilder::build()->finish();
 
-        $reflector->reflectClass('Collection')->willReturn($traversableClass);
-        $reflector->reflectClass('stdClass')->willReturn($nonTraversableClass);
+        $reflector->reflectClassLike('Collection')->willReturn($traversableClass);
+        $reflector->reflectClassLike('stdClass')->willReturn($nonTraversableClass);
 
         $this
             ->create($reflector, new Mixed(), ['string[]', 'Collection'], false)
@@ -239,7 +238,7 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
                     }
                 }
                 return true;
-            }
+            },
         ];
     }
 }

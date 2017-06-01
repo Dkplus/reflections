@@ -1,17 +1,17 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\BetterReflectionClassReflection;
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
-use Dkplus\Reflections\ClassReflection;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\TypeFactory;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\BetterReflectionClassReflection;
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Scanner\AnnotationScanner;
+use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\TypeFactory;
 use Doctrine\Common\Annotations\Annotation\Target;
 use phpDocumentor\Reflection\Types\Mixed;
 use PhpSpec\ObjectBehavior;

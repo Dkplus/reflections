@@ -1,8 +1,8 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\MissingAnnotation;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\MissingAnnotation;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use Doctrine\Common\Annotations\Annotation\Target;
 use PhpSpec\ObjectBehavior;

@@ -1,13 +1,13 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionMethod;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Type\Type;
 
 /**
  * @api
  */
-class Method
+class MethodReflection
 {
     /** @var ReflectionMethod */
     private $reflection;

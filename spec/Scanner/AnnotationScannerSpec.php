@@ -1,8 +1,8 @@
 <?php
-namespace spec\Dkplus\Reflections\Scanner;
+namespace spec\Dkplus\Reflection\Scanner;
 
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;
 use PhpSpec\ObjectBehavior;

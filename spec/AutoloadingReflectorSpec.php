@@ -1,12 +1,12 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\AutoloadingReflector;
-use Dkplus\Reflections\ClassNotFound;
-use Dkplus\Reflections\ClassReflection;
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Type\TypeFactory;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\AutoloadingReflector;
+use Dkplus\Reflection\ClassNotFound;
+use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Type\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -31,7 +31,7 @@ class AutoloadingReflectorSpec extends ObjectBehavior
 
     function it_reflects_classes_from_class_name()
     {
-        $this->reflectClass(Annotations::class)->shouldBeAReflectionOfClass(Annotations::class);
+        $this->reflectClassLike(Annotations::class)->shouldBeAReflectionOfClass(Annotations::class);
     }
 
     function it_throws_an_exception_if_it_could_not_find_a_class()
@@ -44,13 +44,13 @@ class AutoloadingReflectorSpec extends ObjectBehavior
     function it_allows_to_register_additional_psr4_paths()
     {
         $this->addPsr4Path('AnotherNamespace\\', __DIR__ . '/assets/');
-        $this->reflectClass('AnotherNamespace\\TestClass')->shouldBeAReflectionOfClass('AnotherNamespace\\TestClass');
+        $this->reflectClassLike('AnotherNamespace\\TestClass')->shouldBeAReflectionOfClass('AnotherNamespace\\TestClass');
     }
 
     function it_allows_to_register_additional_files()
     {
         $this->addClassInFile('AnotherNamespace\\TestClass', __DIR__ . '/assets/TestClass.php');
-        $this->reflectClass('AnotherNamespace\\TestClass')->shouldBeAReflectionOfClass('AnotherNamespace\\TestClass');
+        $this->reflectClassLike('AnotherNamespace\\TestClass')->shouldBeAReflectionOfClass('AnotherNamespace\\TestClass');
     }
 
     function getMatchers()

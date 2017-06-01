@@ -1,19 +1,18 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\NullableType;
-use Dkplus\Reflections\Type\NullType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\DecoratingType;
-use Dkplus\Reflections\Type\VoidType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\NullableType;
+use Dkplus\Reflection\Type\NullType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\DecoratingType;
+use Dkplus\Reflection\Type\VoidType;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-/**
- * @mixin NullableType
- */
 class NullableTypeSpec extends ObjectBehavior
 {
     function let(Type $decorated)

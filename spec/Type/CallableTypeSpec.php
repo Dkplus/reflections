@@ -1,15 +1,14 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\CallableType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\CallableType;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 
-/**
- * @mixin CallableType
- */
 class CallableTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

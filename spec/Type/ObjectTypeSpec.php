@@ -1,15 +1,14 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\ObjectType;
-use Dkplus\Reflections\Type\Type;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\ObjectType;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 
-/**
- * @mixin ObjectType
- */
 class ObjectTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

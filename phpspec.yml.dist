@@ -1,7 +1,4 @@
 suites:
     dkplus_suite:
-        namespace: Dkplus\Reflections
-        psr4_prefix: Dkplus\Reflections
-
-extensions:
-    Memio\SpecGen\MemioSpecGenExtension: ~
+        namespace: Dkplus\Reflection
+        psr4_prefix: Dkplus\Reflection

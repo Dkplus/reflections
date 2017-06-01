@@ -1,18 +1,20 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Reflector;
-use Dkplus\Reflections\Type\BooleanType;
-use Dkplus\Reflections\Type\CallableType;
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\FloatType;
-use Dkplus\Reflections\Type\IntegerType;
-use Dkplus\Reflections\Type\ObjectType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\TypeFactory;
-use Dkplus\Reflections\Type\TypeHintTypeFactory;
-use Dkplus\Reflections\Type\VoidType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\CallableType;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\FloatType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\ObjectType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\TypeHintTypeFactory;
+use Dkplus\Reflection\Type\VoidType;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -22,13 +24,10 @@ use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Mixed;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\String_;
-use phpDocumentor\Reflection\Types\Void;
+use phpDocumentor\Reflection\Types\Void_;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-/**
- * @mixin TypeHintTypeFactory
- */
 class TypeHintTypeFactorySpec extends ObjectBehavior
 {
     function let(TypeFactory $decorated)
@@ -73,7 +72,7 @@ class TypeHintTypeFactorySpec extends ObjectBehavior
 
     function it_creates_a_void_type_if_a_void_type_is_given(Reflector $reflector)
     {
-        $this->create($reflector, new Void(), [], false)->shouldBeAnInstanceOf(VoidType::class);
+        $this->create($reflector, new Void_(), [], false)->shouldBeAnInstanceOf(VoidType::class);
     }
 
     function it_creates_an_object_type_if_an_empty_object_type_is_given(Reflector $reflector)

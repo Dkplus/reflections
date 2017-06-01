@@ -1,7 +1,9 @@
 <?php
-namespace Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Reflector;
+namespace Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Reflector;
 use phpDocumentor\Reflection\Type as PhpDocumentorType;
 
 class MixedTypeFactory implements TypeFactory

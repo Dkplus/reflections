@@ -1,5 +1,5 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 use BetterReflection\Reflector\ClassReflector;
 use BetterReflection\Reflector\Exception\IdentifierNotFound;
@@ -9,9 +9,9 @@ use BetterReflection\SourceLocator\Type\ComposerSourceLocator;
 use BetterReflection\SourceLocator\Type\EvaledCodeSourceLocator;
 use BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Composer\Autoload\ClassLoader;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
-use Dkplus\Reflections\Scanner\ImportScanner;
-use Dkplus\Reflections\Type\TypeFactory;
+use Dkplus\Reflection\Scanner\AnnotationScanner;
+use Dkplus\Reflection\Scanner\ImportScanner;
+use Dkplus\Reflection\Type\TypeFactory;
 
 final class AutoloadingReflector implements Reflector
 {
@@ -44,7 +44,7 @@ final class AutoloadingReflector implements Reflector
         $this->typeFactory = $typeFactory;
     }
 
-    public function reflectClass(string $className): ClassReflection
+    public function reflectClassLike(string $className): ClassReflection
     {
         try {
             $reflection = $this->classReflector->reflect($className);

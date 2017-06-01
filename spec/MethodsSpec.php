@@ -1,15 +1,15 @@
 <?php
 
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\Method;
-use Dkplus\Reflections\Methods;
-use Dkplus\Reflections\MissingMethod;
+use Dkplus\Reflection\MethodReflection;
+use Dkplus\Reflection\Methods;
+use Dkplus\Reflection\MissingMethod;
 use PhpSpec\ObjectBehavior;
 
 class MethodsSpec extends ObjectBehavior
 {
-    function let(Method $method)
+    function let(MethodReflection $method)
     {
         $method->name()->willReturn('getFoo');
         $this->beConstructedWith('MyClass', [$method]);
@@ -31,19 +31,19 @@ class MethodsSpec extends ObjectBehavior
         $this->contains('getBar')->shouldBe(false);
     }
 
-    function it_provides_all_methods(Method $method)
+    function it_provides_all_methods(MethodReflection $method)
     {
         $this->all()->shouldBeLike([$method]);
     }
 
-    function it_provides_a_method_by_name(Method $method)
+    function it_provides_a_method_by_name(MethodReflection $method)
     {
         $this->named('getFoo')->shouldBe($method);
 
         $this->shouldThrow(MissingMethod::inClass('getBar', 'MyClass'))->during('named', ['getBar']);
     }
 
-    function it_knows_whether_one_method_is_a_getter(Method $method)
+    function it_knows_whether_one_method_is_a_getter(MethodReflection $method)
     {
         $method->isGetterOf('foo')->willReturn(true);
         $method->isGetterOf('bar')->willReturn(false);

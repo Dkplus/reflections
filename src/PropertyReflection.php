@@ -1,13 +1,15 @@
 <?php
-namespace Dkplus\Reflections;
+declare(strict_types=1);
 
-use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Type\Type;
+namespace Dkplus\Reflection;
+
+use Dkplus\Reflection\Type\Type;
+use ReflectionProperty;
 
 /**
  * @api
  */
-class Property
+class PropertyReflection
 {
     /** @var ReflectionProperty */
     private $reflection;
@@ -18,9 +20,7 @@ class Property
     /** @var Type */
     private $type;
 
-    /**
-     * @internal
-     */
+    /** @internal */
     public function __construct(ReflectionProperty $reflection, Type $type, Annotations $annotations)
     {
         $this->reflection = $reflection;
@@ -53,7 +53,7 @@ class Property
         return $this->type;
     }
 
-    public function allows(Type $type)
+    public function allows(Type $type): bool
     {
         return $this->type->allows($type);
     }

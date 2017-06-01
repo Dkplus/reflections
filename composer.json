@@ -1,24 +1,28 @@
 {
-    "name": "dkplus/reflections",
-    "description": "Reflections facade that reflects classes without requiring them",
+    "name": "dkplus/reflection",
+    "description": "Reflection on PHP classes that provides as many information about classes as possible",
     "type": "library",
     "autoload": {
         "psr-4": {
-            "Dkplus\\Reflections\\": "src/"
+            "Dkplus\\Reflection\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "spec\\Dkplus\\Reflections\\": "spec/"
+            "spec\\Dkplus\\Reflection\\": "spec/"
         }
     },
     "require": {
-        "roave/better-reflection": "^1.1",
-        "doctrine/annotations": "^1.2"
     },
     "require-dev": {
-        "phpspec/phpspec": "^3.0",
-        "memio/spec-gen": "^0.6.1"
+        "object-calisthenics/phpcs-calisthenics-rules": "^3.0.0-RC1",
+        "phpunit/phpunit": "^6.0",
+        "phpspec/phpspec": "^3.4",
+        "roave/better-reflection": "^1.2",
+        "squizlabs/php_codesniffer": "3.0.0RC4"
+    },
+    "suggest": {
+        "roave/better-reflection": "^1.2"
     },
     "license": "MIT",
     "authors": [

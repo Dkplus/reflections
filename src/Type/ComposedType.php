@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-namespace Dkplus\Reflections\Type;
+namespace Dkplus\Reflection\Type;
 
 class ComposedType implements Type
 {

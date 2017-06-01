@@ -1,12 +1,12 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionParameter;
 use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Scanner\AnnotationScanner;
-use Dkplus\Reflections\Type\TypeFactory;
+use Dkplus\Reflection\Scanner\AnnotationScanner;
+use Dkplus\Reflection\Type\TypeFactory;
 use phpDocumentor\Reflection\Types\Mixed;
 
 /**
@@ -98,7 +98,7 @@ class BetterReflectionClassReflection implements ClassReflection
     public function properties(): Properties
     {
         return new Properties($this->name(), array_map(function (ReflectionProperty $property) {
-            return new Property(
+            return new PropertyReflection(
                 $property,
                 $this->typeFactory->create($this->reflector, new Mixed(), $property->getDocBlockTypeStrings(), false),
                 $this->annotations->scanForAnnotations($property->getDocComment(), $this->fileName(), $this->imports)
@@ -128,7 +128,7 @@ class BetterReflectionClassReflection implements ClassReflection
                     $parameter->isOptional()
                 );
             }, $method->getParameters());
-            return new Method(
+            return new MethodReflection(
                 $method,
                 $this->annotations->scanForAnnotations($method->getDocComment(), $this->fileName(), $this->imports),
                 new Parameters($this->name() . '::' . $method->getName(), $parameters),

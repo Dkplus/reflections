@@ -1,16 +1,15 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\IntegerType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\Type;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
-/**
- * @mixin ComposedType
- */
 class ComposedTypeSpec extends ObjectBehavior
 {
     function let()

@@ -1,10 +1,10 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflections\MissingParameter;
-use Dkplus\Reflections\Parameter;
-use Dkplus\Reflections\Parameters;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\MissingParameter;
+use Dkplus\Reflection\Parameter;
+use Dkplus\Reflection\Parameters;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
 /**

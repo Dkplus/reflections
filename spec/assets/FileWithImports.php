@@ -1,5 +1,5 @@
 <?php
-namespace spec\Dkplus\Reflections\assets;
+namespace spec\Dkplus\Reflection\assets;
 
 use DateTimeImmutable;
 use Prophecy\Argument\ArgumentsWildcard as Wildcard;

@@ -1,24 +1,22 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ArrayType;
-use Dkplus\Reflections\Type\BooleanType;
-use Dkplus\Reflections\Type\CollectionType;
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\DecoratingType;
-use Dkplus\Reflections\Type\IntegerType;
-use Dkplus\Reflections\Type\IterableType;
-use Dkplus\Reflections\Type\MixedType;
-use Dkplus\Reflections\Type\ClassType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\TrueType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ArrayType;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\CollectionType;
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\DecoratingType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\IterableType;
+use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\StringType;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflections\Mock\ClassReflectionStubBuilder;
+use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 use Traversable;
 
-/**
- * @mixin IterableType
- */
 class IterableTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

@@ -1,5 +1,7 @@
 <?php
-namespace Dkplus\Reflections\Type;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Type;
 
 final class MixedType implements Type
 {

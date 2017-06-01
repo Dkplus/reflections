@@ -1,13 +1,12 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\NullType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\NullType;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin NullType
- */
 class NullTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

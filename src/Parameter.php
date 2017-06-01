@@ -1,8 +1,8 @@
 <?php
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionParameter;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Type\Type;
 
 class Parameter
 {

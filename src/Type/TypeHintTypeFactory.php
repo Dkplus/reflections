@@ -1,8 +1,10 @@
 <?php
-namespace Dkplus\Reflections\Type;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Type;
 
 use phpDocumentor\Reflection\Type as PhpDocumentorType;
-use Dkplus\Reflections\Reflector;
+use Dkplus\Reflection\Reflector;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Callable_;
@@ -10,7 +12,7 @@ use phpDocumentor\Reflection\Types\Float_;
 use phpDocumentor\Reflection\Types\Integer;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\String_;
-use phpDocumentor\Reflection\Types\Void;
+use phpDocumentor\Reflection\Types\Void_;
 
 class TypeHintTypeFactory implements TypeFactory
 {
@@ -39,7 +41,7 @@ class TypeHintTypeFactory implements TypeFactory
         if ($type instanceof Callable_) {
             return new CallableType();
         }
-        if ($type instanceof Void) {
+        if ($type instanceof Void_) {
             return new VoidType();
         }
         if ($type instanceof Array_) {

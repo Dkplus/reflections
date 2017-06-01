@@ -1,7 +1,7 @@
 <?php
-namespace Dkplus\Reflections\Scanner;
+namespace Dkplus\Reflection\Scanner;
 
-use Dkplus\Reflections\Annotations;
+use Dkplus\Reflection\Annotations;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\DocParser;
 

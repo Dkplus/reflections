@@ -1,14 +1,14 @@
 <?php
-namespace spec\Dkplus\Reflections;
+namespace spec\Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionProperty;
-use Dkplus\Reflections\Annotations;
-use Dkplus\Reflections\Property;
-use Dkplus\Reflections\Type\Type;
+use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\PropertyReflection;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin Property
+ * @mixin PropertyReflection
  */
 class PropertySpec extends ObjectBehavior
 {
@@ -19,7 +19,7 @@ class PropertySpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(Property::class);
+        $this->shouldHaveType(PropertyReflection::class);
     }
 
     function it_has_a_name(ReflectionProperty $reflectionProperty)

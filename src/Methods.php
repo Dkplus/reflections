@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkplus\Reflections;
+namespace Dkplus\Reflection;
 
 class Methods
 {
@@ -14,7 +14,7 @@ class Methods
     {
         $this->className = $className;
         $this->methods = array_combine(
-            array_map(function (Method $method) {
+            array_map(function (MethodReflection $method) {
                 return $method->name();
             }, $methods),
             $methods
@@ -36,7 +36,7 @@ class Methods
         return array_values($this->methods);
     }
 
-    public function named(string $name): Method
+    public function named(string $name): MethodReflection
     {
         if ($this->contains($name)) {
             return $this->methods[$name];
@@ -46,7 +46,7 @@ class Methods
 
     public function containsGetterFor(string $property)
     {
-        return count(array_filter($this->methods, function (Method $reflection) use ($property) {
+        return count(array_filter($this->methods, function (MethodReflection $reflection) use ($property) {
             return $reflection->isGetterOf($property);
         })) > 0;
     }

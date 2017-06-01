@@ -1,13 +1,12 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\VoidType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\VoidType;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin VoidType
- */
 class VoidTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

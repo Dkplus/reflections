@@ -1,13 +1,12 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ResourceType;
-use Dkplus\Reflections\Type\Type;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\ResourceType;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin ResourceType
- */
 class ResourceTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

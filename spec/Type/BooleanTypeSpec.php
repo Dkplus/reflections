@@ -1,17 +1,14 @@
 <?php
-namespace spec\Dkplus\Reflections\Type;
+declare(strict_types=1);
 
-use Dkplus\Reflections\Type\ComposedType;
-use Dkplus\Reflections\Type\FalseType;
-use Dkplus\Reflections\Type\StringType;
-use Dkplus\Reflections\Type\TrueType;
-use Dkplus\Reflections\Type\Type;
-use Dkplus\Reflections\Type\BooleanType;
+namespace spec\Dkplus\Reflection\Type;
+
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin BooleanType
- */
 class BooleanTypeSpec extends ObjectBehavior
 {
     function it_is_initializable()

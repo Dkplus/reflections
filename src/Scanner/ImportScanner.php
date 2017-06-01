@@ -1,5 +1,5 @@
 <?php
-namespace Dkplus\Reflections\Scanner;
+namespace Dkplus\Reflection\Scanner;
 
 use Zend\Code\Scanner\FileScanner;
 
