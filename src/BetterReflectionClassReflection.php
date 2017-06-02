@@ -9,10 +9,7 @@ use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Dkplus\Reflection\Type\TypeFactory;
 use phpDocumentor\Reflection\Types\Mixed;
 
-/**
- * @api
- */
-class BetterReflectionClassReflection implements ClassReflection
+class BetterReflectionClassReflection
 {
     /** @var ReflectionClass */
     private $reflectionClass;

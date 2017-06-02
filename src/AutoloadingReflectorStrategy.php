@@ -9,11 +9,13 @@ use BetterReflection\SourceLocator\Type\ComposerSourceLocator;
 use BetterReflection\SourceLocator\Type\EvaledCodeSourceLocator;
 use BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Composer\Autoload\ClassLoader;
+use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Dkplus\Reflection\Scanner\ImportScanner;
 use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflections\BetterReflectionClassReflection;
 
-final class AutoloadingReflector implements Reflector
+final class AutoloadingReflectorStrategy implements ReflectorStrategy
 {
     /** @var ImportScanner */
     private $importScanner;
@@ -44,7 +46,7 @@ final class AutoloadingReflector implements Reflector
         $this->typeFactory = $typeFactory;
     }
 
-    public function reflectClassLike(string $className): ClassReflection
+    public function reflectClass(string $className): ClassReflection_
     {
         try {
             $reflection = $this->classReflector->reflect($className);

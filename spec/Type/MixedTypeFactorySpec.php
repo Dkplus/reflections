@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\MixedType;
 use Dkplus\Reflection\Type\MixedTypeFactory;
 use Dkplus\Reflection\Type\TypeFactory;
@@ -22,7 +22,7 @@ class MixedTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_creates_mixed_types(Reflector $reflector)
+    function it_creates_mixed_types(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(MixedType::class);
     }

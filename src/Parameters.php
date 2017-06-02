@@ -1,9 +1,19 @@
 <?php
+declare(strict_types=1);
+
 namespace Dkplus\Reflection;
 
+use ArrayIterator;
+use Countable;
+use Dkplus\Reflection\Exception\MissingParameter;
 use Dkplus\Reflection\Type\Type;
+use IteratorIterator;
+use function array_combine;
+use function array_map;
+use function array_shift;
+use function array_values;
 
-class Parameters
+class Parameters extends IteratorIterator implements Countable
 {
     /** @var string */
     private $method;
@@ -11,8 +21,9 @@ class Parameters
     /** @var Parameter[] */
     private $parameters;
 
-    public function __construct(string $method, array $parameters)
+    public function __construct(string $method, Parameter ...$parameters)
     {
+        parent::__construct(new ArrayIterator($parameters));
         $this->method = $method;
         $this->parameters = array_combine(
             array_map(function (Parameter $reflection) {
@@ -22,7 +33,13 @@ class Parameters
         );
     }
 
-    public function size(): int
+    /** @return Parameter|false */
+    public function current()
+    {
+        return parent::current();
+    }
+
+    public function count(): int
     {
         return count($this->parameters);
     }
@@ -30,11 +47,6 @@ class Parameters
     public function contains(string $name): bool
     {
         return isset($this->parameters[$name]);
-    }
-
-    public function all(): array
-    {
-        return array_values($this->parameters);
     }
 
     public function named(string $name): Parameter
@@ -47,26 +59,23 @@ class Parameters
 
     public function atPosition(int $position): Parameter
     {
-        if ($position >= 0 && $this->size() > $position) {
+        if ($position >= 0 && $this->count() > $position) {
             return array_values($this->parameters)[$position];
         }
         throw MissingParameter::atPosition($position, $this->method);
     }
 
-    public function allows(Type ...$types)
+    public function allows(Type ...$types): bool
     {
-        foreach ($types as $position => $type) {
-            if (! $this->atPosition($position)->allows($type)) {
+        $parameters = array_values($this->parameters);
+        /* @var $parameter Parameter */
+        while ($parameter = array_shift($parameters)) {
+            $type = array_shift($types);
+            if (! $type && ! $parameter->canBeOmitted()) {
                 return false;
             }
-        }
-
-        $size = $this->size();
-        if ($size > count($types)) {
-            for ($i = count($types); $i < $size; ++$i) {
-                if (! $this->atPosition($i)->canBeOmitted()) {
-                    return false;
-                }
+            if ($type && ! $parameter->allows($type)) {
+                return false;
             }
         }
         return true;

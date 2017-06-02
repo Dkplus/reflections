@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use phpDocumentor\Reflection\Type as PhpDocumentorType;
 use phpDocumentor\Reflection\Types\Mixed;
 
@@ -17,7 +17,7 @@ class NullableTypeFactory implements TypeFactory
         $this->decorated = $decorated;
     }
 
-    public function create(Reflector $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(ReflectorStrategy $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
     {
         if ($type instanceof Mixed && count($phpDocTypes) > 1 && in_array('null', $phpDocTypes)) {
             $nullable = true;

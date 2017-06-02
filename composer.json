@@ -9,10 +9,12 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "spec\\Dkplus\\Reflection\\": "spec/"
+            "spec\\Dkplus\\Reflection\\": "spec/",
+            "test\\Dkplus\\Reflection\\": "tests/"
         }
     },
     "require": {
+        "doctrine/annotations": "^1.4"
     },
     "require-dev": {
         "object-calisthenics/phpcs-calisthenics-rules": "^3.0.0-RC1",

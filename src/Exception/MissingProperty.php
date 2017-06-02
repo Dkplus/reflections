@@ -1,12 +1,11 @@
 <?php
-namespace Dkplus\Reflection;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Exception;
 
 use Exception;
 
-/**
- * @api
- */
-class MissingProperty extends Exception
+final class MissingProperty extends Exception
 {
     public static function inClass(string $property, string $className): self
     {

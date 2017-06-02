@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\CollectionType;
 use Dkplus\Reflection\Type\StringType;
@@ -15,7 +15,7 @@ use Traversable;
 
 class CollectionTypeSpec extends ObjectBehavior
 {
-    function let(ClassType $collection, ClassReflection $reflection, Type $generic)
+    function let(ClassType $collection, ClassReflection_ $reflection, Type $generic)
     {
         $reflection->implementsInterface(Traversable::class)->willReturn(true);
         $collection->reflection()->willReturn($reflection);
@@ -37,7 +37,7 @@ class CollectionTypeSpec extends ObjectBehavior
         $this->decoratedType()->shouldBe($generic);
     }
 
-    function its_class_must_be_traversable(ClassReflection $reflection)
+    function its_class_must_be_traversable(ClassReflection_ $reflection)
     {
         $reflection->name()->willReturn('stdClass');
         $reflection->implementsInterface(Traversable::class)->willReturn(false);

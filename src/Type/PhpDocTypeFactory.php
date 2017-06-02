@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection\Type;
 
 use phpDocumentor\Reflection\Type as PhpDocumentorType;
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use phpDocumentor\Reflection\Types\Mixed;
 use Traversable;
 
@@ -18,7 +18,7 @@ class PhpDocTypeFactory implements TypeFactory
         $this->decorated = $decorated;
     }
 
-    public function create(Reflector $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(ReflectorStrategy $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
     {
         if (count($phpDocTypes) > 1 || substr((string) current($phpDocTypes), -2) === '[]') {
             $nonTraversableDocTypes = array_filter($phpDocTypes, function (string $type) {
@@ -83,7 +83,7 @@ class PhpDocTypeFactory implements TypeFactory
                 case 'iterable':
                     return new IterableType();
                 default:
-                    return new ClassType($reflector->reflectClassLike(current($phpDocTypes)));
+                    return new ClassType($reflector->reflectClass(current($phpDocTypes)));
             }
         }
         return $this->decorated->create($reflector, $type, $phpDocTypes, $nullable);

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\MixedType;
 use Dkplus\Reflection\Type\NullableType;
 use Dkplus\Reflection\Type\NullableTypeFactory;
@@ -33,7 +33,7 @@ class NullableTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_decorates_types_if_nullable_is_passed(Reflector $reflector, TypeFactory $decorated, Type $type)
+    function it_decorates_types_if_nullable_is_passed(ReflectorStrategy $reflector, TypeFactory $decorated, Type $type)
     {
         $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn($type);
 
@@ -41,7 +41,7 @@ class NullableTypeFactorySpec extends ObjectBehavior
     }
 
     function it_decorates_types_if_no_type_is_passed_but_phpdoc_null_is_passed(
-        Reflector $reflector,
+        ReflectorStrategy $reflector,
         TypeFactory $decorated,
         Type $type
     ) {
@@ -52,28 +52,28 @@ class NullableTypeFactorySpec extends ObjectBehavior
         $this->create($reflector, new Mixed(), ['string', 'null'], false)->shouldBeANullableVersionOf($type);
     }
 
-    function it_does_not_decorate_mixed(Reflector $reflector, TypeFactory $decorated)
+    function it_does_not_decorate_mixed(ReflectorStrategy $reflector, TypeFactory $decorated)
     {
         $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new MixedType());
 
         $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(MixedType::class);
     }
 
-    function it_does_not_decorate_void(Reflector $reflector, TypeFactory $decorated)
+    function it_does_not_decorate_void(ReflectorStrategy $reflector, TypeFactory $decorated)
     {
         $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new VoidType());
 
         $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(VoidType::class);
     }
 
-    function it_does_not_decorate_null(Reflector $reflector, TypeFactory $decorated)
+    function it_does_not_decorate_null(ReflectorStrategy $reflector, TypeFactory $decorated)
     {
         $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn(new NullType());
 
         $this->create($reflector, new Mixed(), [], true)->shouldBeAnInstanceOf(NullType::class);
     }
 
-    function it_does_not_decorate_if_its_not_nullable(Reflector $reflector, TypeFactory $decorated, Type $type)
+    function it_does_not_decorate_if_its_not_nullable(ReflectorStrategy $reflector, TypeFactory $decorated, Type $type)
     {
         $decorated->create($reflector, Argument::any(), Argument::any(), false)->willReturn($type);
 

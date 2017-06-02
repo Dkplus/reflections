@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Adapter\BetterReflection;
+namespace Dkplus\Reflection\ReflectorStrategy;
 
 use BetterReflection\Reflector\ClassReflector;
 use BetterReflection\SourceLocator\Type\SourceLocator;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\PropertyReflection;
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 
-final class BetterReflector implements Reflector
+final class BetterReflectorStrategy implements ReflectorStrategy
 {
     /** @var ClassReflector */
     private $classReflector;
@@ -25,7 +25,7 @@ final class BetterReflector implements Reflector
         $this->classReflector->getAllClasses()
     }
 
-    public function reflectClassLike(string $className): ClassReflection
+    public function reflectClass(string $className): ClassReflection
     {
         // TODO: Implement reflectClassLike() method.
     }

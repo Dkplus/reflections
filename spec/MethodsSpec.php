@@ -1,18 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection;
 
+use Dkplus\Reflection\Exception\MissingMethod;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Methods;
-use Dkplus\Reflection\MissingMethod;
 use PhpSpec\ObjectBehavior;
 
+/**
+ * @method shouldIterateAs($data)
+ */
 class MethodsSpec extends ObjectBehavior
 {
     function let(MethodReflection $method)
     {
         $method->name()->willReturn('getFoo');
-        $this->beConstructedWith('MyClass', [$method]);
+        $this->beConstructedWith('MyClass', $method);
     }
 
     function it_is_initializable()
@@ -20,34 +24,29 @@ class MethodsSpec extends ObjectBehavior
         $this->shouldHaveType(Methods::class);
     }
 
-    function it_has_a_size()
+    function it_can_be_counted()
     {
-        $this->size()->shouldBe(1);
+        $this->shouldHaveCount(1);
     }
 
-    function it_contains_methods()
+    function it_can_be_queried_whether_it_contains_methods_with_specific_names()
     {
         $this->contains('getFoo')->shouldBe(true);
         $this->contains('getBar')->shouldBe(false);
     }
 
-    function it_provides_all_methods(MethodReflection $method)
+    function it_can_iterate_over_the_methods(MethodReflection $first, MethodReflection $second)
     {
-        $this->all()->shouldBeLike([$method]);
+        $first->name()->willReturn('getFoo');
+        $second->name()->willReturn('getBar');
+        $this->beConstructedWith('MyClass', $first, $second);
+        $this->shouldIterateAs([$first, $second]);
     }
 
-    function it_provides_a_method_by_name(MethodReflection $method)
+    function it_provides_to_a_method_by_name(MethodReflection $method)
     {
         $this->named('getFoo')->shouldBe($method);
 
         $this->shouldThrow(MissingMethod::inClass('getBar', 'MyClass'))->during('named', ['getBar']);
-    }
-
-    function it_knows_whether_one_method_is_a_getter(MethodReflection $method)
-    {
-        $method->isGetterOf('foo')->willReturn(true);
-        $method->isGetterOf('bar')->willReturn(false);
-        $this->containsGetterFor('foo')->shouldBe(true);
-        $this->containsGetterFor('bar')->shouldBe(false);
     }
 }

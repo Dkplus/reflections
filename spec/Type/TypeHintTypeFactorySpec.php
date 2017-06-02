@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\BooleanType;
 use Dkplus\Reflection\Type\CallableType;
 use Dkplus\Reflection\Type\ClassType;
@@ -45,43 +45,43 @@ class TypeHintTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_creates_a_string_type_if_a_string_type_is_given(Reflector $reflector)
+    function it_creates_a_string_type_if_a_string_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new String_(), [], false)->shouldBeAnInstanceOf(StringType::class);
     }
 
-    function it_creates_an_integer_type_if_an_integer_type_is_given(Reflector $reflector)
+    function it_creates_an_integer_type_if_an_integer_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Integer(), [], false)->shouldBeAnInstanceOf(IntegerType::class);
     }
 
-    function it_creates_a_float_type_if_a_float_type_is_given(Reflector $reflector)
+    function it_creates_a_float_type_if_a_float_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Float_(), [], false)->shouldBeAnInstanceOf(FloatType::class);
     }
 
-    function it_creates_a_bool_type_if_a_bool_type_is_given(Reflector $reflector)
+    function it_creates_a_bool_type_if_a_bool_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Boolean(), [], false)->shouldBeAnInstanceOf(BooleanType::class);
     }
 
-    function it_creates_a_callable_if_a_callable_type_is_given(Reflector $reflector)
+    function it_creates_a_callable_if_a_callable_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Callable_(), [], false)->shouldBeAnInstanceOf(CallableType::class);
     }
 
-    function it_creates_a_void_type_if_a_void_type_is_given(Reflector $reflector)
+    function it_creates_a_void_type_if_a_void_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Void_(), [], false)->shouldBeAnInstanceOf(VoidType::class);
     }
 
-    function it_creates_an_object_type_if_an_empty_object_type_is_given(Reflector $reflector)
+    function it_creates_an_object_type_if_an_empty_object_type_is_given(ReflectorStrategy $reflector)
     {
         $this->create($reflector, new Object_(), [], false)->shouldBeAnInstanceOf(ObjectType::class);
     }
 
     function it_let_the_decorated_factory_create_the_type_if_a_object_type_with_fqsen_is_given(
-        Reflector $reflector,
+        ReflectorStrategy $reflector,
         TypeFactory $decorated,
         Type $type
     ) {
@@ -93,7 +93,7 @@ class TypeHintTypeFactorySpec extends ObjectBehavior
     }
 
     function it_let_the_decorated_factory_create_the_type_if_a_array_type_is_given(
-        Reflector $reflector,
+        ReflectorStrategy $reflector,
         TypeFactory $decorated,
         Type $type
     ) {
@@ -104,7 +104,7 @@ class TypeHintTypeFactorySpec extends ObjectBehavior
     }
 
     function it_let_the_decorated_factory_create_the_type_if_a_mixed_type_is_given(
-        Reflector $reflector,
+        ReflectorStrategy $reflector,
         TypeFactory $decorated,
         Type $type
     ) {

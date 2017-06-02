@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\ClassReflection_;
 
 class ClassType implements Type
 {
-    /** @var ClassReflection */
+    /** @var ClassReflection_ */
     private $reflection;
 
-    public function __construct(ClassReflection $reflection)
+    public function __construct(ClassReflection_ $reflection)
     {
         $this->reflection = $reflection;
     }
@@ -32,7 +32,7 @@ class ClassType implements Type
         return $this->reflection->name();
     }
 
-    public function reflection(): ClassReflection
+    public function reflection(): ClassReflection_
     {
         return $this->reflection;
     }

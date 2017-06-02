@@ -6,9 +6,6 @@ namespace Dkplus\Reflection;
 use Dkplus\Reflection\Type\Type;
 use ReflectionProperty;
 
-/**
- * @api
- */
 class PropertyReflection
 {
     /** @var ReflectionProperty */

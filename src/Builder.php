@@ -24,8 +24,8 @@ class Builder
         return new NullableTypeFactory(new TypeHintTypeFactory(new PhpDocTypeFactory(new MixedTypeFactory())));
     }
 
-    public function reflector(TypeFactory $typeFactory): Reflector
+    public function reflector(TypeFactory $typeFactory): ReflectorStrategy
     {
-        return new AutoloadingReflector($typeFactory);
+        return new AutoloadingReflectorStrategy($typeFactory);
     }
 }

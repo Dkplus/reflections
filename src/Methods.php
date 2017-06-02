@@ -1,8 +1,16 @@
 <?php
+declare(strict_types=1);
 
 namespace Dkplus\Reflection;
 
-class Methods
+use ArrayIterator;
+use Countable;
+use Dkplus\Reflection\Exception\MissingMethod;
+use IteratorIterator;
+use function array_combine;
+use function array_map;
+
+class Methods extends IteratorIterator implements Countable
 {
     /** @var string */
     private $className;
@@ -10,8 +18,9 @@ class Methods
     /** @var array */
     private $methods;
 
-    public function __construct(string $className, array $methods)
+    public function __construct(string $className, MethodReflection ...$methods)
     {
+        parent::__construct(new ArrayIterator($methods));
         $this->className = $className;
         $this->methods = array_combine(
             array_map(function (MethodReflection $method) {
@@ -21,7 +30,13 @@ class Methods
         );
     }
 
-    public function size(): int
+    /** @return MethodReflection|false */
+    public function current()
+    {
+        return parent::current();
+    }
+
+    public function count(): int
     {
         return count($this->methods);
     }
@@ -31,23 +46,11 @@ class Methods
         return isset($this->methods[$name]);
     }
 
-    public function all(): array
-    {
-        return array_values($this->methods);
-    }
-
     public function named(string $name): MethodReflection
     {
         if ($this->contains($name)) {
             return $this->methods[$name];
         }
         throw MissingMethod::inClass($name, $this->className);
-    }
-
-    public function containsGetterFor(string $property)
-    {
-        return count(array_filter($this->methods, function (MethodReflection $reflection) use ($property) {
-            return $reflection->isGetterOf($property);
-        })) > 0;
     }
 }

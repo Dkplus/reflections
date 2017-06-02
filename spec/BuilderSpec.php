@@ -1,7 +1,7 @@
 <?php
 namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflection\AutoloadingReflector;
+use Dkplus\Reflection\AutoloadingReflectorStrategy;
 use Dkplus\Reflection\Builder;
 use Dkplus\Reflection\Type\TypeFactory;
 use PhpSpec\ObjectBehavior;
@@ -28,6 +28,6 @@ class BuilderSpec extends ObjectBehavior
 
     function it_creates_a_reflector(TypeFactory $typeFactory)
     {
-        $this->reflector($typeFactory)->shouldBeAnInstanceOf(AutoloadingReflector::class);
+        $this->reflector($typeFactory)->shouldBeAnInstanceOf(AutoloadingReflectorStrategy::class);
     }
 }

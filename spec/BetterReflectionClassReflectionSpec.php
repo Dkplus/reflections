@@ -6,9 +6,9 @@ use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionProperty;
 use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\BetterReflectionClassReflection;
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
-use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Type\StringType;
 use Dkplus\Reflection\Type\Type;
 use Dkplus\Reflection\Type\TypeFactory;
@@ -32,7 +32,7 @@ class BetterReflectionClassReflectionSpec extends ObjectBehavior
         ReflectionClass $reflectionClass,
         AnnotationScanner $annotations,
         TypeFactory $typeFactory,
-        Reflector $reflector
+        ReflectorStrategy $reflector
     ) {
         $this->beConstructedWith($reflectionClass, $annotations, $reflector, $typeFactory, $this->imports);
 
@@ -46,7 +46,7 @@ class BetterReflectionClassReflectionSpec extends ObjectBehavior
 
     function it_is_a_class_reflection()
     {
-        $this->shouldImplement(ClassReflection::class);
+        $this->shouldImplement(ClassReflection_::class);
     }
 
     function it_might_be_final(ReflectionClass $reflectionClass)

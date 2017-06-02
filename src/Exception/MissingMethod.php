@@ -1,12 +1,11 @@
 <?php
-namespace Dkplus\Reflection;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Exception;
 
 use Exception;
 
-/**
- * @api
- */
-class MissingMethod extends Exception
+final class MissingMethod extends Exception
 {
     public static function inClass(string $method, string $className): self
     {

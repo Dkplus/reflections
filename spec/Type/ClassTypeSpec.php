@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\CollectionType;
 use Dkplus\Reflection\Type\StringType;
@@ -14,7 +14,7 @@ use Traversable;
 
 class ClassTypeSpec extends ObjectBehavior
 {
-    function let(ClassReflection $reflection)
+    function let(ClassReflection_ $reflection)
     {
         $reflection->name()->willReturn('MyClass');
         $this->beConstructedWith($reflection);
@@ -30,7 +30,7 @@ class ClassTypeSpec extends ObjectBehavior
         $this->shouldImplement(Type::class);
     }
 
-    function it_has_a_reflection(ClassReflection $reflection)
+    function it_has_a_reflection(ClassReflection_ $reflection)
     {
         $this->reflection()->shouldBe($reflection);
     }
@@ -61,7 +61,7 @@ class ClassTypeSpec extends ObjectBehavior
         $this->allows(new ClassType($anotherClass))->shouldBe(true);
     }
 
-    function it_allows_collections_if_the_collection_class_is_of_this_class(ClassReflection $reflection)
+    function it_allows_collections_if_the_collection_class_is_of_this_class(ClassReflection_ $reflection)
     {
         $sameClassReflection = ClassReflectionStubBuilder::build()
             ->implement(Traversable::class)

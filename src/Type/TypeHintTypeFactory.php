@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection\Type;
 
 use phpDocumentor\Reflection\Type as PhpDocumentorType;
-use Dkplus\Reflection\Reflector;
+use Dkplus\Reflection\ReflectorStrategy;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Callable_;
@@ -24,7 +24,7 @@ class TypeHintTypeFactory implements TypeFactory
         $this->decorated = $decorated;
     }
 
-    public function create(Reflector $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(ReflectorStrategy $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
     {
         if ($type instanceof String_) {
             return new StringType();

@@ -1,12 +1,11 @@
 <?php
-namespace Dkplus\Reflection;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Exception;
 
 use Exception;
 
-/**
- * @api
- */
-class MissingAnnotation extends Exception
+final class MissingAnnotation extends Exception
 {
     public static function ofClass(string $className): self
     {

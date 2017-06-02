@@ -2,11 +2,11 @@
 namespace spec\Dkplus\Reflection\Mock;
 
 use Dkplus\Reflection\Annotations;
-use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Methods;
 use Dkplus\Reflection\Properties;
 
-final class ClassReflectionStub implements ClassReflection
+final class ClassReflectionStub implements ClassReflection_
 {
     /** @var string */
     private $className;

@@ -1,12 +1,11 @@
 <?php
-namespace Dkplus\Reflection;
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Exception;
 
 use Exception;
 
-/**
- * @api
- */
-class MissingParameter extends Exception
+final class MissingParameter extends Exception
 {
     public static function named(string $parameter, string $method): self
     {

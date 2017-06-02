@@ -1,16 +1,15 @@
 <?php
+declare(strict_types=1);
+
 namespace spec\Dkplus\Reflection;
 
-use BetterReflection\Reflection\ReflectionProperty;
 use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\PropertyReflection;
 use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
+use ReflectionProperty;
 
-/**
- * @mixin PropertyReflection
- */
-class PropertySpec extends ObjectBehavior
+class PropertyReflectionSpec extends ObjectBehavior
 {
     function let(ReflectionProperty $reflectionProperty, Type $type, Annotations $annotations)
     {
@@ -75,6 +74,6 @@ class PropertySpec extends ObjectBehavior
 
     function it_has_annotations(Annotations $annotations)
     {
-        $this->annotations()->shouldbe($annotations);
+        $this->annotations()->shouldBe($annotations);
     }
 }
