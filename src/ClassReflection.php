@@ -10,7 +10,10 @@ class ClassReflection
     /** @var ReflectionClass */
     private $reflection;
 
+    /** @var Annotations */
+    private $annotations;
     /** @var ReflectionClass[] */
+
     private $immediateParentClasses;
 
     /** @var ReflectionClass[] */
@@ -25,6 +28,7 @@ class ClassReflection
     /** @var Methods */
     private $methods;
 
+
     /**
      * @param ClassReflection[] $parentClasses
      * @param ClassReflection[] $parentClasses
@@ -33,6 +37,7 @@ class ClassReflection
      */
     public function __construct(
         ReflectionClass $reflection,
+        Annotations $annotations,
         Classes $parentClasses,
         Classes $implementedInterfaces,
         Classes $usedTraits,
@@ -40,6 +45,7 @@ class ClassReflection
         Methods $methods
     ) {
         $this->reflection = $reflection;
+        $this->annotations = $annotations;
         $this->immediateParentClasses = $parentClasses;
         $this->immediateImplementedInterfaces = $implementedInterfaces;
         $this->immediateUsedTraits = $usedTraits;
@@ -168,6 +174,10 @@ class ClassReflection
     }
 
     public function method(string $name): MethodReflection
+    {
+    }
+
+    public function annotations(): Annotations
     {
     }
 }
