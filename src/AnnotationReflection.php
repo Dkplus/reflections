@@ -51,7 +51,7 @@ final class AnnotationReflection
         return $this->class;
     }
 
-    public function values()
+    public function attributes()
     {
         return $this->values;
     }

@@ -45,7 +45,7 @@ class AnnotationsSpec extends ObjectBehavior
         $expectedAnnotation = new Target(['value' => 'CLASS']);
         $this->beConstructedWith([$expectedAnnotation]);
 
-        $this->oneOfClass(Target::class)->shouldBeLike($expectedAnnotation);
+        $this->oneNamed(Target::class)->shouldBeLike($expectedAnnotation);
     }
 
     function it_throws_an_exception_if_it_could_not_provide_a_requested_annotation()
@@ -65,7 +65,7 @@ class AnnotationsSpec extends ObjectBehavior
         $expectedAnnotations = [new Target(['value' => 'CLASS']), new Target(['value' => 'CLASS'])];
         $this->beConstructedWith(array_merge($expectedAnnotations, [new Enum(['value' => ['BAR']])]));
 
-        $this->ofClass(Target::class)->shouldBeAnInstanceOf(Annotations::class);
-        $this->ofClass(Target::class)->shouldIterateAs($expectedAnnotations);
+        $this->named(Target::class)->shouldBeAnInstanceOf(Annotations::class);
+        $this->named(Target::class)->shouldIterateAs($expectedAnnotations);
     }
 }

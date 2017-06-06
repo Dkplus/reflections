@@ -7,8 +7,8 @@ use Exception;
 
 final class MissingAnnotation extends Exception
 {
-    public static function ofClass(string $className): self
+    public static function named(string $name): self
     {
-        return new self("There is no annotation of class $className within the doc block");
+        return new self("There is no annotation of name $name within the doc block");
     }
 }

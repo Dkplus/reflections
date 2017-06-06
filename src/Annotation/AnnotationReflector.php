@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection\Annotation;
 
 use Dkplus\Reflection\Annotations;
+use phpDocumentor\Reflection\Types\Context;
 
 final class AnnotationReflector
 {
@@ -25,6 +26,6 @@ final class AnnotationReflector
             $docBlock,
             new AnnotationVisitor($this->annotationFactory, $context)
         );
-        return new Annotations($annotations);
+        return new Annotations(...$annotations);
     }
 }

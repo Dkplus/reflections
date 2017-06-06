@@ -1,0 +1,32 @@
+<?php
+declare(strict_types=1);
+
+namespace Dkplus\Reflection\Annotation\AttributeFormatter;
+
+use phpDocumentor\Reflection\FqsenResolver;
+use phpDocumentor\Reflection\Types\Context;
+
+final class FqsenResolvingAttributeFormatter implements AttributeFormatter
+{
+    /** @var AttributeFormatter */
+    private $decorated;
+
+    /** @var FqsenResolver */
+    private $fqsenResolver;
+
+    public function __construct(AttributeFormatter $decorated, FqsenResolver $fqsenResolver)
+    {
+        $this->decorated = $decorated;
+        $this->fqsenResolver = $fqsenResolver;
+    }
+
+    public function format(array $attributes, Context $context): array
+    {
+        $attributes = $this->decorated->format($attributes, $context);
+        if (! isset($attributes['fqsen'])) {
+            return $attributes;
+        }
+        $attributes['fqsen'] = $this->fqsenResolver->resolve($attributes['fqsen'], $context);
+        return $attributes;
+    }
+}

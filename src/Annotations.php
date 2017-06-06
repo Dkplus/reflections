@@ -10,13 +10,19 @@ use IteratorIterator;
 
 class Annotations extends IteratorIterator implements Countable
 {
-    /** @var array */
+    /** @var AnnotationReflection[] */
     private $annotations;
 
-    public function __construct(array $annotations)
+    public function __construct(AnnotationReflection ...$annotations)
     {
         parent::__construct(new ArrayIterator($annotations));
         $this->annotations = $annotations;
+    }
+
+    /** @return AnnotationReflection|null */
+    public function current()
+    {
+        return parent::current();
     }
 
     public function count(): int
@@ -24,24 +30,24 @@ class Annotations extends IteratorIterator implements Countable
         return count($this->annotations);
     }
 
-    public function oneOfClass(string $className)
+    public function oneNamed(string $name): AnnotationReflection
     {
-        $ofClass = $this->ofClass($className);
+        $ofClass = $this->named($name);
         if (count($ofClass) === 0) {
-            throw MissingAnnotation::ofClass($className);
+            throw MissingAnnotation::named($name);
         }
         return current($ofClass->annotations);
     }
 
-    public function contains(string $className): bool
+    public function contains(string $name): bool
     {
-        return count($this->ofClass($className)) > 0;
+        return count($this->named($name)) > 0;
     }
 
-    public function ofClass(string $className): Annotations
+    public function named(string $name): Annotations
     {
-        return new self(array_filter($this->annotations, function ($annotation) use ($className) {
-            return $annotation instanceof $className;
+        return new self(...array_filter($this->annotations, function (AnnotationReflection $annotation) use ($name) {
+            return $annotation->name() === $name;
         }));
     }
 }

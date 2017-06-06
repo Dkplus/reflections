@@ -1,13 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\AnnotationReader\Exception;
+namespace Dkplus\Reflection\Exception;
 
 use Hoa\Compiler\Exception as HoaException;
+use RuntimeException;
 
-final class ParserException extends AnnotationException
+final class ParserException extends RuntimeException
 {
 
+    /**
+     * @param \Hoa\Compiler\Exception $exception
+     * @param string $context
+     *
+     * @return ParserException
+     */
     public static function hoaException(HoaException $exception, string $context): self
     {
         $code = $exception->getCode();
@@ -26,5 +33,4 @@ final class ParserException extends AnnotationException
     {
         return new self(sprintf("Couldn't find constant %s.", $identifier));
     }
-
 }

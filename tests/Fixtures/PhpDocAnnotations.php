@@ -9,15 +9,20 @@ use RuntimeException;
  * @author My Name
  * @author My Name <my.name@example.com>
  * @copyright 2017-2018 by some company
+ * @deprecated
  * @deprecated 1.0.0
  * @deprecated 1.0.0 because we replaced it
  * @deprecated because we replaced it
+ * @ignore
  * @ignore this tag
+ * @internal
+ * @internal again because we need a description
  * @license GPL
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @link https://phpdoc.org/docs/latest/references/phpdoc/tags/link.html with description
  * @link https://phpdoc.org/docs/latest/references/phpdoc/tags/link.html
  * @method string getString()
+ * @method setString(string $param1, $param2)
  * @package Foo\Bar
  * @subpackage Baz
  * @property string $property3
@@ -29,6 +34,7 @@ use RuntimeException;
  * @see PhpDocAnnotations::$property1
  * @see PhpDocAnnotations::$property2 with description
  * @see http://example.org/
+ * @see http://example.org/ description
  * @since 1.0.0
  * @since 1.0.0 with description
  * @source
@@ -38,11 +44,11 @@ use RuntimeException;
  * @source 40 with description
  * @source 40 10 with description
  * @todo something is missing
- * @uses PhpDocAnnotations without description
+ * @uses PhpDocAnnotations::exampleFunction()
  * @uses PhpDocAnnotations with description
  * @version
- * @version 3.0
- * @version 3.0 with description
+ * @version 3.0.0
+ * @version 3.0.0 with description
  */
 final class PhpDocAnnotations
 {
