@@ -24,13 +24,13 @@ class FloatTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('float');
     }
 
-    function it_allows_strings()
+    function it_accepts_floats()
     {
-        $this->allows(new FloatType())->shouldBe(true);
+        $this->accepts(new FloatType())->shouldBe(true);
     }
 
-    function it_allows_no_other_types(Type $type)
+    function it_accepts_no_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

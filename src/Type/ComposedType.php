@@ -13,10 +13,10 @@ class ComposedType implements Type
         $this->types = array_merge([$firstType, $secondType], $moreTypes);
     }
 
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         return in_array(true, array_map(function (Type $decorated) use ($type) {
-            return $decorated->allows($type);
+            return $decorated->accepts($type);
         }, $this->decoratedTypes()));
     }
 

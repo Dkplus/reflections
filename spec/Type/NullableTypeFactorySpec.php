@@ -18,6 +18,7 @@ use Prophecy\Argument;
 
 class NullableTypeFactorySpec extends ObjectBehavior
 {
+    a
     function let(TypeFactory $decorated)
     {
         $this->beConstructedWith($decorated);

@@ -5,13 +5,13 @@ namespace Dkplus\Reflection\Type;
 
 final class CallableType implements Type
 {
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         if ($type instanceof self) {
             return true;
         }
         if ($type instanceof ClassType) {
-            return $type->reflection()->isInvokable();
+            return $type->isInvokable();
         }
         return false;
     }

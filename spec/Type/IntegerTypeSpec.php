@@ -24,13 +24,13 @@ class IntegerTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('int');
     }
 
-    function it_allows_integers()
+    function it_accepts_integers()
     {
-        $this->allows(new IntegerType())->shouldBe(true);
+        $this->accepts(new IntegerType())->shouldBe(true);
     }
 
-    function it_allows_no_other_types(Type $type)
+    function it_does_not_accept_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

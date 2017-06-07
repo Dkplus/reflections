@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection;
 use ReflectionClass;
 
 class ClassType implements Type
@@ -16,25 +15,40 @@ class ClassType implements Type
         $this->reflection = $reflection;
     }
 
-    public function allows(Type $type): bool
+    protected function reflection(): ReflectionClass
+    {
+        return $this->reflection;
+    }
+
+    public function className(): string
+    {
+        return '\\' . $this->reflection->getName();
+    }
+
+    public function accepts(Type $type): bool
     {
         if (! $type instanceof self) {
             return false;
         }
-        if ($type->reflection->name == $this->reflection->name) {
+        if ($type->className() === $this->className()) {
             return true;
         }
-        return $type->reflection->implementsInterface($this->reflection->name)
-            || $type->reflection->isSubclassOf($this->reflection->name);
+        return $type->implementsOrIsSubClassOf($this->className());
     }
 
-    public function __toString(): string
+    public function implementsOrIsSubClassOf(string $className): bool
     {
-        return (string) '\\' . $this->reflection->name;
+        return $this->reflection->implementsInterface($className)
+            || $this->reflection->isSubclassOf($className);
     }
 
     public function isInvokable(): bool
     {
         return $this->reflection->hasMethod('__invoke');
+    }
+
+    public function __toString(): string
+    {
+        return $this->className();
     }
 }

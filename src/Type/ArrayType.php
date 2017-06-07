@@ -18,13 +18,13 @@ final class ArrayType implements DecoratingType
         return $this->type;
     }
 
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         if ($type instanceof ComposedType) {
-            return ! in_array(false, array_map([$this, 'allows'], $type->decoratedTypes()));
+            return ! in_array(false, array_map([$this, 'accepts'], $type->decoratedTypes()));
         }
         if ($type instanceof self) {
-            return $this->decoratedType()->allows($type->decoratedType());
+            return $this->decoratedType()->accepts($type->decoratedType());
         }
         return false;
     }

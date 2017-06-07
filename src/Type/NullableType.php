@@ -13,18 +13,18 @@ final class NullableType implements DecoratingType
         $this->decorated = $decorated;
     }
 
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         if ($type instanceof ComposedType) {
-            return ! in_array(false, array_map([$this, 'allows'], $type->decoratedTypes()));
+            return ! in_array(false, array_map([$this, 'accepts'], $type->decoratedTypes()));
         }
         if ($type instanceof NullType) {
             return true;
         }
         if ($type instanceof self) {
-            return $this->decorated->allows($type->decorated);
+            return $this->decorated->accepts($type->decorated);
         }
-        return $this->decorated->allows($type);
+        return $this->decorated->accepts($type);
     }
 
     public function __toString(): string

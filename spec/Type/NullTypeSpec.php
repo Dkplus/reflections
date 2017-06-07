@@ -24,13 +24,13 @@ class NullTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('null');
     }
 
-    function it_allows_null_values()
+    function it_accepts_null_values()
     {
-        $this->allows(new NullType())->shouldBe(true);
+        $this->accepts(new NullType())->shouldBe(true);
     }
 
-    function it_allows_no_other_values(Type $type)
+    function it_does_not_accept_other_values(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

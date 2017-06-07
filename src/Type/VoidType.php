@@ -10,7 +10,7 @@ final class VoidType implements Type
         return 'void';
     }
 
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         return false;
     }

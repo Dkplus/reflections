@@ -30,6 +30,7 @@ use Prophecy\Argument;
 
 class TypeHintTypeFactorySpec extends ObjectBehavior
 {
+    a
     function let(TypeFactory $decorated)
     {
         $this->beConstructedWith($decorated);

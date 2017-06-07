@@ -24,13 +24,13 @@ class ResourceTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('resource');
     }
 
-    function it_allows_resources()
+    function it_accepts_resources()
     {
-        $this->allows(new ResourceType())->shouldBe(true);
+        $this->accepts(new ResourceType())->shouldBe(true);
     }
 
-    function it_allows_no_other_types(Type $type)
+    function it_accepts_no_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

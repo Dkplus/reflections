@@ -19,6 +19,7 @@ use Traversable;
 
 class IterableTypeSpec extends ObjectBehavior
 {
+    a
     function it_is_initializable()
     {
         $this->shouldHaveType(IterableType::class);
@@ -50,17 +51,17 @@ class IterableTypeSpec extends ObjectBehavior
     {
         $this->beConstructedWith(new StringType());
 
-        $this->allows(new StringType())->shouldBe(false);
-        $this->allows(new IterableType(new StringType()))->shouldBe(true);
-        $this->allows(new IterableType(new IntegerType()))->shouldBe(false);
+        $this->accepts(new StringType())->shouldBe(false);
+        $this->accepts(new IterableType(new StringType()))->shouldBe(true);
+        $this->accepts(new IterableType(new IntegerType()))->shouldBe(false);
     }
 
     function it_allows_arrays_of_allowed_decorated_types()
     {
         $this->beConstructedWith(new StringType());
 
-        $this->allows(new ArrayType(new StringType()))->shouldBe(true);
-        $this->allows(new ArrayType(new IntegerType()))->shouldBe(false);
+        $this->accepts(new ArrayType(new StringType()))->shouldBe(true);
+        $this->accepts(new ArrayType(new IntegerType()))->shouldBe(false);
     }
 
     function it_allows_traversable_objects_instances_if_its_decorated_type_is_mixed()
@@ -68,8 +69,8 @@ class IterableTypeSpec extends ObjectBehavior
         $traversable = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
         $nonTraversable = ClassReflectionStubBuilder::build()->finish();
 
-        $this->allows(new ClassType($traversable))->shouldBe(true);
-        $this->allows(new ClassType($nonTraversable))->shouldBe(false);
+        $this->accepts(new ClassType($traversable))->shouldBe(true);
+        $this->accepts(new ClassType($nonTraversable))->shouldBe(false);
     }
 
     function it_allows_collections_instances_if_its_decorated_type_matches_the_generic_type()
@@ -79,8 +80,8 @@ class IterableTypeSpec extends ObjectBehavior
         $notMatchingType = new MixedType();
         $classReflection = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
 
-        $this->allows(new CollectionType(new ClassType($classReflection), $matchingType))->shouldBe(true);
-        $this->allows(new CollectionType(new ClassType($classReflection), $notMatchingType))->shouldBe(false);
+        $this->accepts(new CollectionType(new ClassType($classReflection), $matchingType))->shouldBe(true);
+        $this->accepts(new CollectionType(new ClassType($classReflection), $notMatchingType))->shouldBe(false);
     }
 
     function it_allows_composed_types_if_all_parts_are_allowed()
@@ -88,10 +89,10 @@ class IterableTypeSpec extends ObjectBehavior
         $this->beConstructedWith(new BooleanType());
 
         $this
-            ->allows(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new BooleanType())))
+            ->accepts(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new BooleanType())))
             ->shouldBe(true);
         $this
-            ->allows(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new StringType())))
+            ->accepts(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new StringType())))
             ->shouldBe(false);
     }
 }

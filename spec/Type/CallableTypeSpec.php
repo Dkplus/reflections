@@ -7,7 +7,6 @@ use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\Type;
 use Dkplus\Reflection\Type\CallableType;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
 
 class CallableTypeSpec extends ObjectBehavior
 {
@@ -26,23 +25,22 @@ class CallableTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('callable');
     }
 
-    function it_allows_callables()
+    function it_accepts_callables()
     {
-        $this->allows(new CallableType())->shouldBe(true);
+        $this->accepts(new CallableType())->shouldBe(true);
     }
 
-    function it_allows_invokable_classes()
+    function it_accepts_invokable_classes(ClassType $invokable, ClassType $nonInvokable)
     {
-        $this
-            ->allows(new ClassType(ClassReflectionStubBuilder::build()->withInvokable(true)->finish()))
-            ->shouldBe(true);
-        $this
-            ->allows(new ClassType(ClassReflectionStubBuilder::build()->withInvokable(false)->finish()))
-            ->shouldBe(false);
+        $invokable->isInvokable()->willReturn(true);
+        $nonInvokable->isInvokable()->willReturn(false);
+
+        $this->accepts($invokable)->shouldBe(true);
+        $this->accepts($nonInvokable)->shouldBe(false);
     }
 
-    function it_allows_no_other_types(Type $type)
+    function it_does_not_accept_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

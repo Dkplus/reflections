@@ -5,7 +5,7 @@ namespace Dkplus\Reflection\Type;
 
 final class ResourceType implements Type
 {
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         return $type instanceof self;
     }

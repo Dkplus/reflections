@@ -43,7 +43,7 @@ class Parameter
 
     public function allows(Type $type): bool
     {
-        return $this->type->allows($type);
+        return $this->type->accepts($type);
     }
 
     public function canBeOmitted(): bool

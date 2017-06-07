@@ -6,38 +6,38 @@ namespace Dkplus\Reflection\Type;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Traversable;
 
-class CollectionType extends ClassType
+class CollectionType extends ClassType implements DecoratingType
 {
     /** @var ClassType */
     private $class;
 
     /** @var IterableType */
-    private $generic;
+    private $iterableGeneric;
 
     public function __construct(ClassType $class, Type $generic)
     {
         $this->class = $class;
-        $this->generic = new IterableType($generic);
-        if (! $class->reflection()->implementsInterface(Traversable::class)) {
-            throw new InvalidArgumentException('Class ' . $class->reflection()->name() . ' is not traversable');
+        $this->iterableGeneric = new IterableType($generic);
+        if (! $class->implementsOrIsSubClassOf(Traversable::class)) {
+            throw new InvalidArgumentException('Class ' . $class->className() . ' is not traversable');
         }
         parent::__construct($class->reflection());
     }
 
-    public function allows(Type $type): bool
+    public function accepts(Type $type): bool
     {
         return $type instanceof self
-            && $this->class->allows($type->class)
-            && $this->generic->allows($type->generic);
+            && $this->class->accepts($type->class)
+            && $this->iterableGeneric->accepts($type->iterableGeneric);
     }
 
     public function decoratedType(): Type
     {
-        return $this->generic->decoratedType();
+        return $this->iterableGeneric->decoratedType();
     }
 
     public function __toString(): string
     {
-        return "{$this->class}|{$this->generic}";
+        return "{$this->class}|{$this->iterableGeneric}";
     }
 }

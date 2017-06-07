@@ -29,10 +29,10 @@ class PropertyReflectionSpec extends ObjectBehavior
 
     function it_may_allow_a_type(Type $type, Type $anotherType)
     {
-        $type->allows($anotherType)->willReturn(true);
+        $type->accepts($anotherType)->willReturn(true);
         $this->allows($anotherType)->shouldBe(true);
 
-        $type->allows($anotherType)->willReturn(false);
+        $type->accepts($anotherType)->willReturn(false);
         $this->allows($anotherType)->shouldBe(false);
     }
 

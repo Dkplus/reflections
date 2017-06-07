@@ -33,16 +33,16 @@ class ComposedTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('string|int');
     }
 
-    function it_allows_a_type_if_one_of_the_decorated_types_allows_it(Type $firstType, Type $secondType)
+    function it_accepts_a_type_if_one_of_the_decorated_types_allows_it(Type $firstType, Type $secondType)
     {
         $this->beConstructedWith($firstType, $secondType);
-        $firstType->allows(Argument::type(StringType::class))->willReturn(false);
-        $secondType->allows(Argument::type(StringType::class))->willReturn(true);
+        $firstType->accepts(Argument::type(StringType::class))->willReturn(false);
+        $secondType->accepts(Argument::type(StringType::class))->willReturn(true);
 
-        $this->allows(new StringType())->shouldBe(true);
+        $this->accepts(new StringType())->shouldBe(true);
 
-        $secondType->allows(Argument::type(StringType::class))->willReturn(false);
+        $secondType->accepts(Argument::type(StringType::class))->willReturn(false);
 
-        $this->allows(new StringType())->shouldBe(false);
+        $this->accepts(new StringType())->shouldBe(false);
     }
 }

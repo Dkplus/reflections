@@ -3,23 +3,22 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\CollectionType;
 use Dkplus\Reflection\Type\StringType;
 use Dkplus\Reflection\Type\Type;
 use InvalidArgumentException;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
+use Prophecy\Argument;
+use ReflectionClass;
 use Traversable;
 
 class CollectionTypeSpec extends ObjectBehavior
 {
-    function let(ClassType $collection, ClassReflection_ $reflection, Type $generic)
+    function let(ReflectionClass $reflection, Type $generic)
     {
         $reflection->implementsInterface(Traversable::class)->willReturn(true);
-        $collection->reflection()->willReturn($reflection);
-        $this->beConstructedWith($collection, $generic);
+        $this->beConstructedWith(new ClassType($reflection->getWrappedObject()), $generic);
     }
 
     function it_is_initializable()
@@ -37,64 +36,85 @@ class CollectionTypeSpec extends ObjectBehavior
         $this->decoratedType()->shouldBe($generic);
     }
 
-    function its_class_must_be_traversable(ClassReflection_ $reflection)
+    function its_class_must_be_traversable(ReflectionClass $reflection)
     {
-        $reflection->name()->willReturn('stdClass');
+        $reflection->getName()->willReturn('stdClass');
         $reflection->implementsInterface(Traversable::class)->willReturn(false);
-        $this->shouldThrow(new InvalidArgumentException('Class stdClass is not traversable'))->duringInstantiation();
+        $reflection->isSubclassOf(Traversable::class)->willReturn(false);
+        $this->shouldThrow(new InvalidArgumentException('Class \\stdClass is not traversable'))->duringInstantiation();
     }
 
     function its_string_representation_includes_the_collection_class_and_the_generic_type(
-        ClassType $collection,
+        ReflectionClass $reflection,
         Type $generic
     ) {
-        $collection->__toString()->willReturn('Collection');
+        $reflection->getName()->willReturn('Collection');
         $generic->__toString()->willReturn('string');
 
-        $this->__toString()->shouldBe('Collection|string[]');
+        $this->__toString()->shouldBe('\\Collection|string[]');
     }
 
-    function it_allows_other_generic_collections_of_the_same_type(ClassType $collection, Type $generic)
+    function it_allows_other_generic_collections_of_the_same_type(ReflectionClass $reflection, Type $generic)
     {
-        $allowedCollectionClass = new ClassType(
-            ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish()
-        );
+        $reflection->getName()->willReturn('MyClass');
+        $allowedCollectionClass = new ClassType($reflection->getWrappedObject());
         $allowedGeneric = new StringType();
 
-        $collection->allows($allowedCollectionClass)->willReturn(true);
-        $generic->allows($allowedGeneric)->willReturn(true);
+        $generic->accepts($allowedGeneric)->willReturn(true);
 
-        $this->allows(new CollectionType($allowedCollectionClass, $allowedGeneric))->shouldBe(true);
+        $this->accepts(new CollectionType($allowedCollectionClass, $allowedGeneric))->shouldBe(true);
     }
 
-    function it_does_not_allow_collections_of_other_classes_with_the_same_generic(ClassType $collection, Type $generic)
-    {
-        $notAllowedCollectionClass = new ClassType(
-            ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish()
-        );
+    function it_allows_other_generic_collections_of_subtypes(
+        ReflectionClass $reflection,
+        ReflectionClass $otherClass,
+        Type $generic
+    ) {
+        $reflection->getName()->willReturn('MyClass');
+        $otherClass->getName()->willReturn('AnotherClass');
+        $otherClass->implementsInterface(Traversable::class)->willReturn(true);
+        $otherClass->implementsInterface('\\MyClass')->willReturn(false);
+        $otherClass->isSubclassOf('\\MyClass')->willReturn(true);
+
+        $allowedCollectionClass = new ClassType($otherClass->getWrappedObject());
         $allowedGeneric = new StringType();
 
-        $collection->allows($notAllowedCollectionClass)->willReturn(false);
-        $generic->allows($allowedGeneric)->willReturn(true);
+        $generic->accepts($allowedGeneric)->willReturn(true);
 
-        $this->allows(new CollectionType($notAllowedCollectionClass, $allowedGeneric))->shouldBe(false);
+        $this->accepts(new CollectionType($allowedCollectionClass, $allowedGeneric))->shouldBe(true);
     }
 
-    function it_does_not_allow_collections_of_other_generics(ClassType $collection, Type $generic)
+    function it_does_not_allow_collections_of_other_classes_with_the_same_generic(
+        ReflectionClass $reflection,
+        ReflectionClass $otherClass,
+        Type $generic
+    ) {
+        $reflection->getName()->willReturn('MyClass');
+        $otherClass->getName()->willReturn('AnotherClass');
+        $otherClass->implementsInterface(Argument::any())->willReturn(false);
+        $otherClass->isSubclassOf(Argument::any())->willReturn(false);
+        $otherClass->implementsInterface(Traversable::class)->willReturn(true);
+        $notAllowedCollectionClass = new ClassType($otherClass->getWrappedObject());
+        $allowedGeneric = new StringType();
+
+        $generic->accepts($allowedGeneric)->willReturn(true);
+
+        $this->accepts(new CollectionType($notAllowedCollectionClass, $allowedGeneric))->shouldBe(false);
+    }
+
+    function it_does_not_allow_collections_of_other_generics(ReflectionClass $reflection, Type $generic)
     {
-        $allowedCollectionClass = new ClassType(
-            ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish()
-        );
+        $reflection->getName()->willReturn('MyClass');
+        $allowedCollectionClass = new ClassType($reflection->getWrappedObject());
         $notAllowedGeneric = new StringType();
 
-        $collection->allows($allowedCollectionClass)->willReturn(true);
-        $generic->allows($notAllowedGeneric)->willReturn(false);
+        $generic->accepts($notAllowedGeneric)->willReturn(false);
 
-        $this->allows(new CollectionType($allowedCollectionClass, $notAllowedGeneric))->shouldBe(false);
+        $this->accepts(new CollectionType($allowedCollectionClass, $notAllowedGeneric))->shouldBe(false);
     }
 
     function it_does_not_allow_other_types(Type $anotherType)
     {
-        $this->allows($anotherType)->shouldBe(false);
+        $this->accepts($anotherType)->shouldBe(false);
     }
 }

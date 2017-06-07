@@ -24,13 +24,13 @@ class StringTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('string');
     }
 
-    function it_allows_strings()
+    function it_accepts_strings()
     {
-        $this->allows(new StringType())->shouldBe(true);
+        $this->accepts(new StringType())->shouldBe(true);
     }
 
-    function it_allows_no_other_types(Type $type)
+    function it_accepts_no_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

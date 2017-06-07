@@ -25,13 +25,9 @@ class NullableTypeSpec extends ObjectBehavior
         $this->shouldHaveType(NullableType::class);
     }
 
-    function it_is_a_decorating_type()
-    {
-        $this->shouldImplement(DecoratingType::class);
-    }
-
     function it_decorates_a_type(Type $decorated)
     {
+        $this->shouldImplement(DecoratingType::class);
         $this->decoratedType()->shouldBe($decorated);
     }
 
@@ -50,36 +46,36 @@ class NullableTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('?(string|int)');
     }
 
-    function it_allows_non_null_values_if_the_decorated_type_allows_it(Type $decorated)
+    function it_accepts_non_null_values_if_the_decorated_type_accepts_it(Type $decorated)
     {
         $passedType = new StringType();
-        $decorated->allows($passedType)->willReturn(false);
-        $this->allows($passedType)->shouldBe(false);
+        $decorated->accepts($passedType)->willReturn(false);
+        $this->accepts($passedType)->shouldBe(false);
 
-        $decorated->allows($passedType)->willReturn(true);
-        $this->allows($passedType)->shouldBe(true);
+        $decorated->accepts($passedType)->willReturn(true);
+        $this->accepts($passedType)->shouldBe(true);
     }
 
-    function it_allows_null_values()
+    function it_accepts_null_values()
     {
-        $this->allows(new NullType());
+        $this->accepts(new NullType());
     }
 
-    function it_allows_nullable_types_if_the_decorated_type_is_allowed(Type $decorated)
+    function it_accepts_nullable_types_if_the_decorated_type_is_allowed(Type $decorated)
     {
-        $decorated->allows(Argument::type(StringType::class))->willReturn(true);
-        $decorated->allows(Argument::type(VoidType::class))->willReturn(false);
+        $decorated->accepts(Argument::type(StringType::class))->willReturn(true);
+        $decorated->accepts(Argument::type(VoidType::class))->willReturn(false);
 
-        $this->allows(new NullableType(new StringType()))->shouldBe(true);
-        $this->allows(new NullableType(new VoidType()))->shouldBe(false);
+        $this->accepts(new NullableType(new StringType()))->shouldBe(true);
+        $this->accepts(new NullableType(new VoidType()))->shouldBe(false);
     }
 
-    function it_allows_composed_types_if_all_types_are_allowed(Type $decorated)
+    function it_accepts_composed_types_if_all_types_are_allowed(Type $decorated)
     {
-        $decorated->allows(Argument::type(StringType::class))->willReturn(false);
+        $decorated->accepts(Argument::type(StringType::class))->willReturn(false);
 
-        $this->allows(new ComposedType(new NullType(), new NullType()))->shouldBe(true);
+        $this->accepts(new ComposedType(new NullType(), new NullType()))->shouldBe(true);
 
-        $this->allows(new ComposedType(new NullType(), new StringType()))->shouldBe(false);
+        $this->accepts(new ComposedType(new NullType(), new StringType()))->shouldBe(false);
     }
 }

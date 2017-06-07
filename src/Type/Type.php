@@ -5,6 +5,6 @@ namespace Dkplus\Reflection\Type;
 
 interface Type
 {
-    public function allows(Type $type): bool;
+    public function accepts(Type $type): bool;
     public function __toString(): string;
 }

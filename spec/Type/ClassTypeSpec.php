@@ -3,20 +3,21 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type;
 
-use Dkplus\Reflection\ClassReflection_;
+use ArrayObject;
+use DateTimeImmutable;
 use Dkplus\Reflection\Type\ClassType;
-use Dkplus\Reflection\Type\CollectionType;
-use Dkplus\Reflection\Type\StringType;
 use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
-use Traversable;
+use Prophecy\Argument;
+use ReflectionClass;
+use Serializable;
+use stdClass;
 
 class ClassTypeSpec extends ObjectBehavior
 {
-    function let(ClassReflection_ $reflection)
+    function let(ReflectionClass $reflection)
     {
-        $reflection->name()->willReturn('MyClass');
+        $reflection->getName()->willReturn('MyClass');
         $this->beConstructedWith($reflection);
     }
 
@@ -30,53 +31,73 @@ class ClassTypeSpec extends ObjectBehavior
         $this->shouldImplement(Type::class);
     }
 
-    function it_has_a_reflection(ClassReflection_ $reflection)
+    function it_knows_whether_its_invokable(ReflectionClass $reflection)
     {
-        $this->reflection()->shouldBe($reflection);
+        $reflection->hasMethod('__invoke')->willReturn(true);
+        $this->isInvokable()->shouldBe(true);
+
+        $reflection->hasMethod('__invoke')->willReturn(false);
+        $this->isInvokable()->shouldBe(false);
+    }
+
+    function it_has_a_className()
+    {
+        $this->className()->shouldBe('\\MyClass');
     }
 
     function its_string_representation_is_its_class_name()
     {
-        $this->__toString()->shouldBe('MyClass');
+        $this->__toString()->shouldBe('\\MyClass');
     }
 
-    function it_allows_objects_of_the_same_class()
+    function it_allows_objects_of_the_same_class(ReflectionClass $reflection)
     {
-        $this->allows(new ClassType(
-            ClassReflectionStubBuilder::build()->withClassName('MyClass')->finish()
-        ))->shouldBe(true);
+        $this->accepts(new ClassType($reflection->getWrappedObject()))->shouldBe(true);
     }
 
-    function it_allows_objects_that_implement_it()
+    function it_allows_objects_that_implement_it(ReflectionClass $anotherReflection)
     {
-        $anotherClass = ClassReflectionStubBuilder::build()->implement('MyClass')->finish();
+        $anotherReflection->getName()->willReturn('AnotherClass');
+        $anotherReflection->isSubclassOf(Argument::any())->willReturn(false);
+        $anotherReflection->implementsInterface('\\MyClass')->willReturn(true);
+        $anotherClass = new ClassType($anotherReflection->getWrappedObject());
 
-        $this->allows(new ClassType($anotherClass))->shouldBe(true);
+        $this->accepts($anotherClass)->shouldBe(true);
+
+        $anotherReflection->implementsInterface('\\MyClass')->willReturn(false);
+        $this->accepts($anotherClass)->shouldBe(false);
     }
 
-    function it_allows_objects_that_extend_it()
+    function it_allows_objects_that_extend_it(ReflectionClass $anotherReflection)
     {
-        $anotherClass = ClassReflectionStubBuilder::build()->extend('MyClass')->finish();
+        $anotherReflection->getName()->willReturn('AnotherClass');
+        $anotherReflection->implementsInterface(Argument::any())->willReturn(false);
+        $anotherReflection->isSubclassOf('\\MyClass')->willReturn(true);
+        $anotherClass = new ClassType($anotherReflection->getWrappedObject());
 
-        $this->allows(new ClassType($anotherClass))->shouldBe(true);
+        $this->accepts($anotherClass)->shouldBe(true);
+
+        $anotherReflection->isSubclassOf('\\MyClass')->willReturn(false);
+        $this->accepts($anotherClass)->shouldBe(false);
     }
 
-    function it_allows_collections_if_the_collection_class_is_of_this_class(ClassReflection_ $reflection)
+    function it_knows_whether_its_implements_or_extends_one_class(ReflectionClass $reflection)
     {
-        $sameClassReflection = ClassReflectionStubBuilder::build()
-            ->implement(Traversable::class)
-            ->withClassName('MyClass')
-            ->finish();
-        $anotherClassReflection = ClassReflectionStubBuilder::build()
-            ->implement(Traversable::class)
-            ->finish();
+        $reflection->implementsInterface(Argument::any())->willReturn(false);
+        $reflection->isSubclassOf(Argument::any())->willReturn(false);
+        $reflection->implementsInterface(Serializable::class)->willReturn(true);
+        $reflection->implementsInterface(DateTimeImmutable::class)->willReturn(false);
+        $reflection->isSubclassOf(stdClass::class)->willReturn(true);
+        $reflection->isSubclassOf(ArrayObject::class)->willReturn(false);
 
-        $this->allows(new CollectionType(new ClassType($sameClassReflection), new StringType()))->shouldBe(true);
-        $this->allows(new CollectionType(new ClassType($anotherClassReflection), new StringType()))->shouldBe(false);
+        $this->implementsOrIsSubClassOf(Serializable::class)->shouldBe(true);
+        $this->implementsOrIsSubClassOf(DateTimeImmutable::class)->shouldBe(false);
+        $this->implementsOrIsSubClassOf(stdClass::class)->shouldBe(true);
+        $this->implementsOrIsSubClassOf(ArrayObject::class)->shouldBe(false);
     }
 
     function it_does_not_allow_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

@@ -12,7 +12,7 @@ class Builder
 {
     public static function create(): Builder
     {
-        return new Builder();
+        return new self();
     }
 
     private function __construct()

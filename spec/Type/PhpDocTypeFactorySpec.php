@@ -29,6 +29,7 @@ use Traversable;
 
 class PhpDocTypeFactorySpec extends ObjectBehavior
 {
+    a
     function let(TypeFactory $decorated)
     {
         $this->beConstructedWith($decorated);

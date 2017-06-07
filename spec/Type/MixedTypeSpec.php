@@ -25,9 +25,9 @@ class MixedTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('mixed');
     }
 
-    function it_allows_all_types_except_void(Type $type)
+    function it_accepts_all_types_except_void(Type $type)
     {
-        $this->allows($type)->shouldBe(true);
-        $this->allows(new VoidType())->shouldBe(false);
+        $this->accepts($type)->shouldBe(true);
+        $this->accepts(new VoidType())->shouldBe(false);
     }
 }

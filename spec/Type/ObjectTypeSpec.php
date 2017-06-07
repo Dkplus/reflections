@@ -28,16 +28,16 @@ class ObjectTypeSpec extends ObjectBehavior
 
     function it_allows_objects_to_be_passed()
     {
-        $this->allows(new ObjectType())->shouldBe(true);
+        $this->accepts(new ObjectType())->shouldBe(true);
     }
 
     function it_allows_classes_to_be_passed()
     {
-        $this->allows(new ClassType(ClassReflectionStubBuilder::build()->finish()));
+        $this->accepts(new ClassType(ClassReflectionStubBuilder::build()->finish()));
     }
 
     function it_does_not_allow_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

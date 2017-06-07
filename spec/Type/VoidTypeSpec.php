@@ -26,6 +26,6 @@ class VoidTypeSpec extends ObjectBehavior
 
     function it_does_not_allow_any_value(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }

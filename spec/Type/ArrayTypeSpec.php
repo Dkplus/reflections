@@ -40,24 +40,24 @@ class ArrayTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('array');
     }
 
-    function it_allows_other_arrays_of_allowed_decorated_types()
+    function it_accepts_other_arrays_of_accepted_decorated_types()
     {
         $this->beConstructedWith(new StringType());
 
-        $this->allows(new StringType())->shouldBe(false);
-        $this->allows(new ArrayType(new StringType()))->shouldBe(true);
-        $this->allows(new ArrayType(new IntegerType()))->shouldBe(false);
+        $this->accepts(new StringType())->shouldBe(false);
+        $this->accepts(new ArrayType(new StringType()))->shouldBe(true);
+        $this->accepts(new ArrayType(new IntegerType()))->shouldBe(false);
     }
 
-    function it_allows_composed_types_if_all_parts_are_allowed()
+    function it_accepts_composed_types_if_all_parts_are_accepted()
     {
         $this->beConstructedWith(new BooleanType());
 
         $this
-            ->allows(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new BooleanType())))
+            ->accepts(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new BooleanType())))
             ->shouldBe(true);
         $this
-            ->allows(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new StringType())))
+            ->accepts(new ComposedType(new ArrayType(new BooleanType()), new ArrayType(new StringType())))
             ->shouldBe(false);
     }
 }

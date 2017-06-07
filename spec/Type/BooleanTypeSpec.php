@@ -28,17 +28,17 @@ class BooleanTypeSpec extends ObjectBehavior
 
     function it_allows_other_booleans()
     {
-        $this->allows(new BooleanType())->shouldBe(true);
+        $this->accepts(new BooleanType())->shouldBe(true);
     }
 
     function it_allows_composed_types_if_all_parts_are_allowed()
     {
-        $this->allows(new ComposedType(new BooleanType(), new BooleanType()))->shouldBe(true);
-        $this->allows(new ComposedType(new BooleanType(), new StringType()))->shouldBe(false);
+        $this->accepts(new ComposedType(new BooleanType(), new BooleanType()))->shouldBe(true);
+        $this->accepts(new ComposedType(new BooleanType(), new StringType()))->shouldBe(false);
     }
 
     function it_allows_no_other_types(Type $type)
     {
-        $this->allows($type)->shouldBe(false);
+        $this->accepts($type)->shouldBe(false);
     }
 }
