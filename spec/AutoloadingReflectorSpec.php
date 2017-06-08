@@ -6,7 +6,7 @@ use Dkplus\Reflection\AutoloadingReflectorStrategy;
 use Dkplus\Reflection\ClassReflection_;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\ReflectorStrategy;
-use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
 /**

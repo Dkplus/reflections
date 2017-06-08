@@ -26,7 +26,7 @@ final class IterableType implements DecoratingType
             return ! in_array(false, array_map([$this, 'accepts'], $type->decoratedTypes()));
         }
         if ($this->type instanceof MixedType && $type instanceof ClassType) {
-            return $type->reflection()->implementsInterface(Traversable::class);
+            return $type->implementsOrIsSubClassOf(Traversable::class);
         }
         if ($type instanceof self || $type instanceof ArrayType || $type instanceof CollectionType) {
             return $this->decoratedType()->accepts($type->decoratedType());

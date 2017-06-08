@@ -5,7 +5,6 @@ namespace Dkplus\Reflection\ReflectorStrategy;
 
 use Dkplus\Reflection\Annotation\AnnotationFactory;
 use Dkplus\Reflection\Annotation\AnnotationReflector;
-use Dkplus\Reflection\Annotation\FqcnResolver;
 use Dkplus\Reflection\Annotation\HoaParser;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
@@ -13,7 +12,6 @@ use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\Methods;
 use Dkplus\Reflection\Properties;
 use Dkplus\Reflection\ReflectorStrategy;
-use Dkplus\Reflection\Scanner\ImportScanner;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;

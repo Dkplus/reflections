@@ -5,21 +5,20 @@ namespace spec\Dkplus\Reflection\Type;
 
 use Dkplus\Reflection\Type\ArrayType;
 use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\CollectionType;
 use Dkplus\Reflection\Type\ComposedType;
 use Dkplus\Reflection\Type\DecoratingType;
 use Dkplus\Reflection\Type\IntegerType;
 use Dkplus\Reflection\Type\IterableType;
 use Dkplus\Reflection\Type\MixedType;
-use Dkplus\Reflection\Type\ClassType;
 use Dkplus\Reflection\Type\StringType;
 use PhpSpec\ObjectBehavior;
-use spec\Dkplus\Reflection\Mock\ClassReflectionStubBuilder;
+use ReflectionClass;
 use Traversable;
 
 class IterableTypeSpec extends ObjectBehavior
 {
-    a
     function it_is_initializable()
     {
         $this->shouldHaveType(IterableType::class);
@@ -47,7 +46,7 @@ class IterableTypeSpec extends ObjectBehavior
         $this->__toString()->shouldBe('(string|int)[]');
     }
 
-    function it_allows_other_iterable_of_allowed_decorated_types()
+    function it_accepts_other_iterable_of_accepted_decorated_types()
     {
         $this->beConstructedWith(new StringType());
 
@@ -56,7 +55,7 @@ class IterableTypeSpec extends ObjectBehavior
         $this->accepts(new IterableType(new IntegerType()))->shouldBe(false);
     }
 
-    function it_allows_arrays_of_allowed_decorated_types()
+    function it_accepts_arrays_of_allowed_decorated_types()
     {
         $this->beConstructedWith(new StringType());
 
@@ -64,27 +63,33 @@ class IterableTypeSpec extends ObjectBehavior
         $this->accepts(new ArrayType(new IntegerType()))->shouldBe(false);
     }
 
-    function it_allows_traversable_objects_instances_if_its_decorated_type_is_mixed()
-    {
-        $traversable = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
-        $nonTraversable = ClassReflectionStubBuilder::build()->finish();
+    function it_accepts_traversable_objects_instances_if_its_decorated_type_is_mixed(
+        ReflectionClass $traversable,
+        ReflectionClass $nonTraversable
+    ) {
+        $traversable->implementsInterface(Traversable::class)->willReturn(true);
 
-        $this->accepts(new ClassType($traversable))->shouldBe(true);
-        $this->accepts(new ClassType($nonTraversable))->shouldBe(false);
+        $this->accepts(new ClassType($traversable->getWrappedObject()))->shouldBe(true);
+        $this->accepts(new ClassType($nonTraversable->getWrappedObject()))->shouldBe(false);
     }
 
-    function it_allows_collections_instances_if_its_decorated_type_matches_the_generic_type()
-    {
+    function it_accepts_collections_instances_if_its_decorated_type_matches_the_generic_type(
+        ReflectionClass $reflection
+    ) {
         $this->beConstructedWith(new StringType());
+
+        $reflection->implementsInterface(Traversable::class)->willReturn(true);
+
         $matchingType = new StringType();
         $notMatchingType = new MixedType();
-        $classReflection = ClassReflectionStubBuilder::build()->implement(Traversable::class)->finish();
 
-        $this->accepts(new CollectionType(new ClassType($classReflection), $matchingType))->shouldBe(true);
-        $this->accepts(new CollectionType(new ClassType($classReflection), $notMatchingType))->shouldBe(false);
+        $this->accepts(new CollectionType(new ClassType($reflection->getWrappedObject()),
+            $matchingType))->shouldBe(true);
+        $this->accepts(new CollectionType(new ClassType($reflection->getWrappedObject()),
+            $notMatchingType))->shouldBe(false);
     }
 
-    function it_allows_composed_types_if_all_parts_are_allowed()
+    function it_accepts_composed_types_if_all_parts_are_accepted()
     {
         $this->beConstructedWith(new BooleanType());
 

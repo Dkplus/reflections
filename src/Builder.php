@@ -2,11 +2,11 @@
 
 namespace Dkplus\Reflection;
 
-use Dkplus\Reflection\Type\MixedTypeFactory;
-use Dkplus\Reflection\Type\NullableTypeFactory;
-use Dkplus\Reflection\Type\PhpDocTypeFactory;
-use Dkplus\Reflection\Type\TypeFactory;
-use Dkplus\Reflection\Type\TypeHintTypeFactory;
+use Dkplus\Reflection\Type\Factory\MixedTypeFactory;
+use Dkplus\Reflection\Type\Factory\NullableTypeFactory;
+use Dkplus\Reflection\Type\Factory\PhpDocTypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeHintTypeFactory;
 
 class Builder
 {

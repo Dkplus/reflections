@@ -3,7 +3,7 @@ namespace spec\Dkplus\Reflection;
 
 use Dkplus\Reflection\AutoloadingReflectorStrategy;
 use Dkplus\Reflection\Builder;
-use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
 /**

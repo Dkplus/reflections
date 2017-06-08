@@ -1,12 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace spec\Dkplus\Reflection\Type;
+namespace spec\Dkplus\Reflection\Type\Factory;
 
-use Dkplus\Reflection\ReflectorStrategy;
+use Dkplus\Reflection\Type\Factory\MixedTypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
 use Dkplus\Reflection\Type\MixedType;
-use Dkplus\Reflection\Type\MixedTypeFactory;
-use Dkplus\Reflection\Type\TypeFactory;
 use phpDocumentor\Reflection\Type;
 use PhpSpec\ObjectBehavior;
 
@@ -22,10 +21,10 @@ class MixedTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_creates_a_mixed_types_whatever_is_passed(Type $type, ReflectorStrategy $reflector)
+    function it_creates_a_mixed_types_whatever_is_passed(Type $type)
     {
         $this
-            ->create($reflector, $type, [], true)
+            ->create($type, [], true)
             ->shouldBeAnInstanceOf(MixedType::class);
     }
 }

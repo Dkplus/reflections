@@ -1,10 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Type;
+namespace Dkplus\Reflection\Type\Factory;
 
-use phpDocumentor\Reflection\Type as PhpDocumentorType;
 use Dkplus\Reflection\ReflectorStrategy;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\CallableType;
+use Dkplus\Reflection\Type\FloatType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\ObjectType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\VoidType;
+use phpDocumentor\Reflection\Type as PhpDocType;
 use phpDocumentor\Reflection\Types\Array_;
 use phpDocumentor\Reflection\Types\Boolean;
 use phpDocumentor\Reflection\Types\Callable_;
@@ -24,7 +32,7 @@ class TypeHintTypeFactory implements TypeFactory
         $this->decorated = $decorated;
     }
 
-    public function create(ReflectorStrategy $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(PhpDocType $type, array $docTypes, bool $nullable): Type
     {
         if ($type instanceof String_) {
             return new StringType();
@@ -46,22 +54,20 @@ class TypeHintTypeFactory implements TypeFactory
         }
         if ($type instanceof Array_) {
             return $this->decorated->create(
-                $reflector,
                 $type,
-                array_unique(array_merge($phpDocTypes, ['array'])),
+                array_unique(array_merge($docTypes, ['array'])),
                 $nullable
             );
         }
         if (! $type instanceof Object_) {
-            return $this->decorated->create($reflector, $type, $phpDocTypes, $nullable);
+            return $this->decorated->create($type, $docTypes, $nullable);
         }
         if ($type->getFqsen() === null) {
             return new ObjectType();
         }
         return $this->decorated->create(
-            $reflector,
             $type,
-            array_unique(array_merge($phpDocTypes, [$type->getFqsen()->getName()])),
+            array_unique(array_merge($docTypes, [$type->getFqsen()->getName()])),
             $nullable
         );
     }

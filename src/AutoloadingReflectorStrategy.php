@@ -12,7 +12,7 @@ use Composer\Autoload\ClassLoader;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Dkplus\Reflection\Scanner\ImportScanner;
-use Dkplus\Reflection\Type\TypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
 use Dkplus\Reflections\BetterReflectionClassReflection;
 
 final class AutoloadingReflectorStrategy implements ReflectorStrategy

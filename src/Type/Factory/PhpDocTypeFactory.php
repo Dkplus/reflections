@@ -1,10 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Type;
+namespace Dkplus\Reflection\Type\Factory;
 
-use phpDocumentor\Reflection\Type as PhpDocumentorType;
-use Dkplus\Reflection\ReflectorStrategy;
+use Dkplus\Reflection\Type\ArrayType;
+use Dkplus\Reflection\Type\BooleanType;
+use Dkplus\Reflection\Type\CallableType;
+use Dkplus\Reflection\Type\ClassReflector;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\CollectionType;
+use Dkplus\Reflection\Type\ComposedType;
+use Dkplus\Reflection\Type\FloatType;
+use Dkplus\Reflection\Type\IntegerType;
+use Dkplus\Reflection\Type\IterableType;
+use Dkplus\Reflection\Type\ObjectType;
+use Dkplus\Reflection\Type\ResourceType;
+use Dkplus\Reflection\Type\StringType;
+use Dkplus\Reflection\Type\Type;
+use Dkplus\Reflection\Type\VoidType;
+use phpDocumentor\Reflection\Type as PhpDocType;
 use phpDocumentor\Reflection\Types\Mixed;
 use Traversable;
 
@@ -13,23 +27,27 @@ class PhpDocTypeFactory implements TypeFactory
     /** @var TypeFactory */
     private $decorated;
 
-    public function __construct(TypeFactory $decorated)
+    /** @var ClassReflector */
+    private $classReflector;
+
+    public function __construct(TypeFactory $decorated, ClassReflector $classReflector)
     {
         $this->decorated = $decorated;
+        $this->classReflector = $classReflector;
     }
 
-    public function create(ReflectorStrategy $reflector, PhpDocumentorType $type, array $phpDocTypes, bool $nullable): Type
+    public function create(PhpDocType $type, array $docTypes, bool $nullable): Type
     {
-        if (count($phpDocTypes) > 1 || substr((string) current($phpDocTypes), -2) === '[]') {
-            $nonTraversableDocTypes = array_filter($phpDocTypes, function (string $type) {
+        if (count($docTypes) > 1 || substr((string) current($docTypes), -2) === '[]') {
+            $nonTraversableDocTypes = array_filter($docTypes, function (string $type) {
                 return substr($type, -2) !== '[]';
             });
-            $traversableDocTypes = array_diff($phpDocTypes, $nonTraversableDocTypes);
+            $traversableDocTypes = array_diff($docTypes, $nonTraversableDocTypes);
 
             if (count($traversableDocTypes) > 0 && count($nonTraversableDocTypes) <= 1) {
                 $traversableTypes = array_map(
-                    function (string $traversablePhpDocType) use ($reflector) {
-                        return $this->create($reflector, new Mixed(), [substr($traversablePhpDocType, 0, -2)], false);
+                    function (string $traversablePhpDocType) {
+                        return $this->create(new Mixed(), [substr($traversablePhpDocType, 0, -2)], false);
                     },
                     $traversableDocTypes
                 );
@@ -43,20 +61,20 @@ class PhpDocTypeFactory implements TypeFactory
                     return new ArrayType($decoratedType);
                 }
 
-                $nonTraversableType = $this->create($reflector, new Mixed(), $nonTraversableDocTypes, $nullable);
+                $nonTraversableType = $this->create(new Mixed(), $nonTraversableDocTypes, $nullable);
                 if ($nonTraversableType instanceof ClassType
-                    && $nonTraversableType->reflection()->implementsInterface(Traversable::class)
+                    && $nonTraversableType->implementsOrIsSubClassOf(Traversable::class)
                 ) {
                     return new CollectionType($nonTraversableType, $decoratedType);
                 }
             }
 
-            return new ComposedType(...array_map(function (string $phpDocType) use ($type, $nullable, $reflector) {
-                return $this->create($reflector, $type, [$phpDocType], $nullable);
-            }, $phpDocTypes));
+            return new ComposedType(...array_map(function (string $phpDocType) use ($type, $nullable) {
+                return $this->create($type, [$phpDocType], $nullable);
+            }, $docTypes));
         }
-        if (count($phpDocTypes) === 1) {
-            switch (current($phpDocTypes)) {
+        if (count($docTypes) === 1) {
+            switch (current($docTypes)) {
                 case 'string':
                     return new StringType();
                 case 'integer':
@@ -83,9 +101,9 @@ class PhpDocTypeFactory implements TypeFactory
                 case 'iterable':
                     return new IterableType();
                 default:
-                    return new ClassType($reflector->reflectClass(current($phpDocTypes)));
+                    return new ClassType($this->classReflector->reflect(current($docTypes)));
             }
         }
-        return $this->decorated->create($reflector, $type, $phpDocTypes, $nullable);
+        return $this->decorated->create($type, $docTypes, $nullable);
     }
 }
