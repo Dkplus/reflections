@@ -82,15 +82,14 @@ class TypeHintTypeFactorySpec extends ObjectBehavior
     }
 
     function it_let_the_decorated_factory_create_the_type_if_a_object_type_with_fqsen_is_given(
-        ReflectorStrategy $reflector,
         TypeFactory $decorated,
         Type $type
     ) {
         $givenType = new Object_(new Fqsen('\\Collection'));
-        $decorated->create($reflector, $givenType, ['string[]', 'Collection'], false)->willReturn($type);
+        $decorated->create($givenType, ['string[]', 'Collection'], false)->willReturn($type);
 
-        $this->create($reflector, $givenType, ['string[]'], false)->shouldBe($type);
-        $this->create($reflector, $givenType, ['string[]', 'Collection'], false)->shouldBe($type);
+        $this->create($givenType, ['string[]'], false)->shouldBe($type);
+        $this->create($givenType, ['string[]', 'Collection'], false)->shouldBe($type);
     }
 
     function it_let_the_decorated_factory_create_the_type_if_a_array_type_is_given(

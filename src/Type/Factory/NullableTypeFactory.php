@@ -21,7 +21,7 @@ class NullableTypeFactory implements TypeFactory
         $this->decorated = $decorated;
     }
 
-    public function create(PhpDocType $typeHint, array $docTypes, bool $nullable): Type
+    public function create(PhpDocType $typeHint, PhpDocType $docType): Type
     {
         if ($typeHint instanceof Mixed && count($docTypes) > 1 && in_array('null', $docTypes)) {
             $nullable = true;

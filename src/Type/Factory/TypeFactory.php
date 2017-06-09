@@ -8,11 +8,5 @@ use phpDocumentor\Reflection\Type as PhpDocType;
 
 interface TypeFactory
 {
-    /**
-     * @param PhpDocType $typeHint
-     * @param string[] $docTypes
-     * @param bool $nullable
-     * @return Type
-     */
-    public function create(PhpDocType $typeHint, array $docTypes, bool $nullable): Type;
+    public function create(PhpDocType $typeHint, PhpDocType $docType, TypeFactory $factory): Type;
 }

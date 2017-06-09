@@ -5,12 +5,9 @@ namespace spec\Dkplus\Reflection\Type\Factory;
 
 use Dkplus\Reflection\Type\Factory\NullableTypeFactory;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
-use Dkplus\Reflection\Type\FloatType;
-use Dkplus\Reflection\Type\IntegerType;
 use Dkplus\Reflection\Type\MixedType;
 use Dkplus\Reflection\Type\NullableType;
 use Dkplus\Reflection\Type\NullType;
-use Dkplus\Reflection\Type\StringType;
 use Dkplus\Reflection\Type\Type;
 use Dkplus\Reflection\Type\VoidType;
 use phpDocumentor\Reflection\Types\Mixed;
@@ -18,7 +15,6 @@ use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\Exception\Example\FailureException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use function var_dump;
 
 class NullableTypeFactorySpec extends ObjectBehavior
 {

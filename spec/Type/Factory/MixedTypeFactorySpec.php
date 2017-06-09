@@ -21,10 +21,10 @@ class MixedTypeFactorySpec extends ObjectBehavior
         $this->shouldImplement(TypeFactory::class);
     }
 
-    function it_creates_a_mixed_types_whatever_is_passed(Type $type)
+    function it_creates_a_mixed_types_whatever_is_passed(Type $type, TypeFactory $stub)
     {
         $this
-            ->create($type, [], true)
+            ->create($type, $type, $stub)
             ->shouldBeAnInstanceOf(MixedType::class);
     }
 }

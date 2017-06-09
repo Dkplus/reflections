@@ -9,7 +9,7 @@ use phpDocumentor\Reflection\Type as PhpDocType;
 
 class MixedTypeFactory implements TypeFactory
 {
-    public function create(PhpDocType $typeHint, array $docTypes, bool $nullable): Type
+    public function create(PhpDocType $typeHint, PhpDocType $docType, TypeFactory $factory): Type
     {
         return new MixedType();
     }
