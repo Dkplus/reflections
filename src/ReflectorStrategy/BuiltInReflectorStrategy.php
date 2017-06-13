@@ -6,14 +6,25 @@ namespace Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Annotation\AnnotationFactory;
 use Dkplus\Reflection\Annotation\AnnotationReflector;
 use Dkplus\Reflection\Annotation\HoaParser;
+use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\Exception\ClassNotFound;
+use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Methods;
+use Dkplus\Reflection\Parameters;
 use Dkplus\Reflection\Properties;
 use Dkplus\Reflection\ReflectorStrategy;
+use Dkplus\Reflection\Type\Factory\TypeConverter;
+use Dkplus\Reflection\Type\Factory\TypeFactory;
+use Dkplus\Reflection\Type\Factory\TypeNormalizer;
+use Dkplus\Reflection\Type\MixedType;
+use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
+use phpDocumentor\Reflection\TypeResolver;
+use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
+use phpDocumentor\Reflection\Types\Mixed;
 use ReflectionClass;
 use ReflectionException;
 use function array_filter;
@@ -27,12 +38,16 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
     /** @var ContextFactory */
     private $contextFactory;
 
+    /** @var TypeFactory */
+    private $typeFactory;
+
     public function __construct()
     {
         $this->annotationReflector = new AnnotationReflector(
             new HoaParser(),
             new AnnotationFactory($this, new FqsenResolver())
         );
+        $this->typeFactory = new TypeFactory(new TypeConverter(new BuiltInClassReflector()), new TypeNormalizer());
         $this->contextFactory = new ContextFactory();
     }
 
@@ -64,7 +79,10 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
         $traits = new Classes(...array_map([$this, 'reflectClass'], $traits));
 
         $context = $this->contextFactory->createFromReflector($class);
-        $annotations = $this->annotationReflector->reflectDocBlock($class->getDocComment(), $context);
+        $annotations = new Annotations();
+        if ($class->getDocComment()) {
+            $annotations = $this->annotationReflector->reflectDocBlock($class->getDocComment(), $context);
+        }
 
         return new ClassReflection(
             $class,
@@ -73,8 +91,43 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
             $interfaces,
             $traits,
             new Properties($className),
-            new Methods($className)
+            $this->reflectMethods($class, $context)
         );
+    }
+
+    private function reflectMethods(ReflectionClass $class, Context $context): Methods
+    {
+        $methods = [];
+        foreach ($class->getMethods() as $eachMethod) {
+            $annotations = new Annotations();
+            if ($eachMethod->getDocComment()) {
+                $annotations = $this->annotationReflector->reflectDocBlock($eachMethod->getDocComment(), $context);
+            }
+
+            // return type
+            $docType = new Mixed();
+            if ($annotations->contains('return')) {
+                $docType = $annotations->oneNamed('return')->attributes()['type'];
+            }
+            $typeHint = new Mixed();
+            if ($eachMethod->getReturnType()) {
+                if ($eachMethod->getReturnType()->isBuiltin()) {
+                    $typeHint = (new TypeResolver())->resolve((string) $eachMethod->getReturnType(), $context);
+                } else {
+                    $typeHint = (new TypeResolver())->resolve('\\' . $eachMethod->getReturnType(), $context);
+                }
+            }
+            $fqsen = new Fqsen('\\' . $class->getName() . '::' . $eachMethod->getName() . '()');
+            $returnType = $this->typeFactory->create($typeHint, $docType, $fqsen);
+
+            $methods[] = new MethodReflection(
+                $eachMethod,
+                new Annotations(),
+                new Parameters($eachMethod->getName()),
+                $returnType
+            );
+        }
+        return new Methods($class->getName(), ...$methods);
     }
 
     private function filterNonImmediateInterfaces(array $interfaces, array $possibleParents): array

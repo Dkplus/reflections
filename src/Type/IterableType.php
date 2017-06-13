@@ -15,7 +15,7 @@ final class IterableType implements DecoratingType
         $this->type = $type ?: new MixedType();
     }
 
-    public function decoratedType(): Type
+    public function innerType(): Type
     {
         return $this->type;
     }
@@ -23,13 +23,13 @@ final class IterableType implements DecoratingType
     public function accepts(Type $type): bool
     {
         if ($type instanceof ComposedType) {
-            return ! in_array(false, array_map([$this, 'accepts'], $type->decoratedTypes()));
+            return ! in_array(false, array_map([$this, 'accepts'], $type->innerTypes()));
         }
         if ($this->type instanceof MixedType && $type instanceof ClassType) {
             return $type->implementsOrIsSubClassOf(Traversable::class);
         }
         if ($type instanceof self || $type instanceof ArrayType || $type instanceof CollectionType) {
-            return $this->decoratedType()->accepts($type->decoratedType());
+            return $this->innerType()->accepts($type->decoratedType());
         }
         return false;
     }

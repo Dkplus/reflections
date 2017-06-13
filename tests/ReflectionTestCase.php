@@ -6,6 +6,7 @@ namespace test\Dkplus\Reflection;
 use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\Type\Type;
 use PHPUnit\Framework\TestCase;
 use function json_encode;
 
@@ -81,6 +82,111 @@ class ReflectionTestCase extends TestCase
         self::assertEquals($parents, $classes->map(function (ClassReflection $class) {
             return $class->name();
         }));
+    }
+
+    public static function assertClassHasMethod(ClassReflection $class, string $methodName)
+    {
+        self::assertThat(
+            $class->methods()->contains($methodName),
+            self::isTrue(),
+            'Class ' . $class->name() . ' does not contain a method ' . $methodName
+        );
+    }
+
+    public static function assertMethodIsFinal(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isFinal(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not final"
+        );
+    }
+
+    public static function assertMethodIsNotFinal(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isFinal(),
+            self::isFalse(),
+            'Method ' . $class->name() . "::$methodName is final"
+        );
+    }
+
+    public static function assertMethodIsPublic(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isPublic(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not public"
+        );
+    }
+
+    public static function assertMethodIsProtected(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isProtected(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not protected"
+        );
+    }
+
+    public static function assertMethodIsPrivate(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isPrivate(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not private"
+        );
+    }
+
+    public static function assertMethodIsAbstract(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isAbstract(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not abstract"
+        );
+    }
+
+    public static function assertMethodIsNotAbstract(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isAbstract(),
+            self::isFalse(),
+            'Method ' . $class->name() . "::$methodName is abstract"
+        );
+    }
+
+    public static function assertMethodIsStatic(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isStatic(),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName is not static"
+        );
+    }
+
+    public static function assertMethodIsNotStatic(ClassReflection $class, string $methodName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->isStatic(),
+            self::isFalse(),
+            'Method ' . $class->name() . "::$methodName is static"
+        );
+    }
+
+    public static function assertReturnTypeIs(ClassReflection $class, string $methodName, Type $type)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertEquals($type, $class->methods()->named($methodName)->returnType());
     }
 
     public static function assertAnnotationIsNotFullyQualified(string $name, Annotations $annotations)

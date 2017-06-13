@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\Type\Factory;
 
-use function array_diff;
-use function array_filter;
-use function array_map;
-use function array_walk;
 use Dkplus\Reflection\Type\ArrayType;
 use Dkplus\Reflection\Type\BooleanType;
 use Dkplus\Reflection\Type\CallableType;
@@ -25,8 +21,6 @@ use Dkplus\Reflection\Type\ScalarType;
 use Dkplus\Reflection\Type\StringType;
 use Dkplus\Reflection\Type\Type;
 use Dkplus\Reflection\Type\VoidType;
-use function explode;
-use function in_array;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\Type as PhpDocType;
 use phpDocumentor\Reflection\Types\Array_;
@@ -46,9 +40,14 @@ use phpDocumentor\Reflection\Types\Scalar;
 use phpDocumentor\Reflection\Types\Self_;
 use phpDocumentor\Reflection\Types\Static_;
 use phpDocumentor\Reflection\Types\String_;
-use ReflectionClass;
 use phpDocumentor\Reflection\Types\This;
 use phpDocumentor\Reflection\Types\Void_;
+use ReflectionClass;
+use function array_diff;
+use function array_filter;
+use function array_map;
+use function explode;
+use function in_array;
 
 class TypeConverter
 {
@@ -135,11 +134,11 @@ class TypeConverter
         $isNullable = false;
         if ($type instanceof NullableType) {
             $isNullable = true;
-            $type = $type->decoratedType();
+            $type = $type->innerType();
         }
 
         if ($type instanceof ComposedType) {
-            $type = $this->compose(...$type->decoratedTypes());
+            $type = $this->compose(...$type->innerTypes());
         }
         if ($isNullable) {
             $type = new NullableType($type);
@@ -149,26 +148,18 @@ class TypeConverter
 
     private function compose(Type ...$types)
     {
-        if (count($types) === 4
-            && in_array(new IntegerType(), $types)
-            && in_array(new FloatType(), $types)
-            && in_array(new StringType(), $types)
-            && in_array(new BooleanType(), $types)
-        ) {
-            return new ScalarType();
-        }
         if (in_array(new ArrayType(), $types)) {
             $arrays = array_filter($types, function (Type $type) {
                 return $type instanceof ArrayType
-                    && $type->decoratedType() instanceof Mixed;
+                    && $type->innerType() instanceof Mixed;
             });
             $iterableTypes = array_filter($types, function (Type $type) {
                 return $type instanceof IterableType
-                    && ! $type->decoratedType() instanceof Mixed;
+                    && ! $type->innerType() instanceof Mixed;
             });
             if (count($iterableTypes) > 0) {
                 $type = new ArrayType($this->createFromTypes(...array_map(function (IterableType $type) {
-                    return $type->decoratedType();
+                    return $type->innerType();
                 }, $iterableTypes)));
                 return $this->createFromTypes($type, ...array_diff($types, $iterableTypes, $arrays));
             }
@@ -182,14 +173,14 @@ class TypeConverter
         $types = array_merge([], ...array_map(function (Type $type) use (&$isNullable) {
             if ($type instanceof NullableType) {
                 $isNullable = true;
-                $type = $type->decoratedType();
+                $type = $type->innerType();
             }
             if ($type instanceof NullType) {
                 $isNullable = true;
                 return [];
             }
             if ($type instanceof ComposedType) {
-                return $type->decoratedTypes();
+                return $type->innerTypes();
             }
             return [$type];
         }, $types));

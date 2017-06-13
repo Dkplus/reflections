@@ -28,7 +28,7 @@ class NullableTypeSpec extends ObjectBehavior
     function it_decorates_a_type(Type $decorated)
     {
         $this->shouldImplement(DecoratingType::class);
-        $this->decoratedType()->shouldBe($decorated);
+        $this->innerType()->shouldBe($decorated);
     }
 
     function it_prepends_the_string_representation_of_its_decorated_type_with_a_question_mark(Type $decorated)

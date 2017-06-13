@@ -6,6 +6,10 @@ namespace test\Dkplus\Reflection\ReflectorStrategy;
 use ArrayIterator;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\ReflectorStrategy\BuiltInReflectorStrategy;
+use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\StringType;
+use ReflectionClass;
 use stdClass;
 use test\Dkplus\Reflection\Fixtures\AbstractClass;
 use test\Dkplus\Reflection\Fixtures\AnotherInterface;
@@ -13,6 +17,7 @@ use test\Dkplus\Reflection\Fixtures\AnotherTrait;
 use test\Dkplus\Reflection\Fixtures\ClassWithExplicitPackageDeclaration;
 use test\Dkplus\Reflection\Fixtures\ClassWithExplicitSubpackageDeclaration;
 use test\Dkplus\Reflection\Fixtures\ClassWithInterface;
+use test\Dkplus\Reflection\Fixtures\ClassWithMethods;
 use test\Dkplus\Reflection\Fixtures\ClassWithoutExplicitPackageDeclaration;
 use test\Dkplus\Reflection\Fixtures\ClassWithParent;
 use test\Dkplus\Reflection\Fixtures\ClassWithTrait;
@@ -23,6 +28,7 @@ use test\Dkplus\Reflection\Fixtures\InterfaceWithTwoParents;
 use test\Dkplus\Reflection\Fixtures\OneClass;
 use test\Dkplus\Reflection\Fixtures\OneInterface;
 use test\Dkplus\Reflection\Fixtures\OneTrait;
+use test\Dkplus\Reflection\Fixtures\PhpDocAnnotations;
 use test\Dkplus\Reflection\Fixtures\TraitUsesTrait;
 use test\Dkplus\Reflection\ReflectionTestCase;
 
@@ -207,6 +213,88 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
         self::assertClassesHaveNames(
             [TraitUsesTrait::class, AnotherTrait::class, OneTrait::class],
             $this->underTest->reflectClass(ClassWithTrait::class)->usedTraits()
+        );
+    }
+
+    /** @test */
+    function it_reflects_the_annotations_of_a_class()
+    {
+        self::assertAnnotationExistsWithAttributes(
+            'internal',
+            ['description' => ''],
+            $this->underTest->reflectClass(PhpDocAnnotations::class)->annotations()
+        );
+    }
+
+    /** @test */
+    function it_reflects_the_methods_of_a_class()
+    {
+        self::assertClassHasMethod(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'oneMethod'
+        );
+    }
+
+    /** @test */
+    function it_knows_whether_a_method_is_final()
+    {
+        self::assertMethodIsFinal(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'finalMethod'
+        );
+        self::assertMethodIsNotFinal(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'oneMethod'
+        );
+    }
+
+    /** @test */
+    function it_knows_the_visibility_of_a_method()
+    {
+        self::assertMethodIsPublic($this->underTest->reflectClass(ClassWithMethods::class), 'publicMethod');
+        self::assertMethodIsProtected($this->underTest->reflectClass(ClassWithMethods::class), 'protectedMethod');
+        self::assertMethodIsPrivate($this->underTest->reflectClass(ClassWithMethods::class), 'privateMethod');
+    }
+
+    /** @test */
+    function it_knows_whether_a_method_is_abstract()
+    {
+        self::assertMethodIsAbstract($this->underTest->reflectClass(ClassWithMethods::class), 'abstractMethod');
+        self::assertMethodIsNotAbstract($this->underTest->reflectClass(ClassWithMethods::class), 'oneMethod');
+    }
+
+    /** @test */
+    function it_knows_whether_a_method_is_static()
+    {
+        self::assertMethodIsStatic($this->underTest->reflectClass(ClassWithMethods::class), 'staticMethod');
+        self::assertMethodIsNotStatic($this->underTest->reflectClass(ClassWithMethods::class), 'oneMethod');
+    }
+
+    /** @test */
+    function it_uses_mixed_as_return_type_if_no_return_type_is_available()
+    {
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'noReturnType', new MixedType());
+    }
+
+    /** @test */
+    function it_uses_the_return_type_hint_as_return_type()
+    {
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnType', new StringType());
+    }
+
+    /** @test */
+    function it_uses_the_return_tag_as_return_type()
+    {
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnTag', new StringType());
+    }
+
+    /** @test */
+    function it_supports_class_return_types()
+    {
+        self::assertReturnTypeIs(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'returnsObject',
+            new ClassType(new ReflectionClass(OneClass::class))
         );
     }
 }

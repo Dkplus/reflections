@@ -33,7 +33,7 @@ class CollectionTypeSpec extends ObjectBehavior
 
     function it_decorates_the_generic_type(Type $generic)
     {
-        $this->decoratedType()->shouldBe($generic);
+        $this->innerType()->shouldBe($generic);
     }
 
     function its_class_must_be_traversable(ReflectionClass $reflection)

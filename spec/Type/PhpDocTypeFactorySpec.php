@@ -181,12 +181,12 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
                 }
                 if (count($expectedTypes) === 1) {
                     $expectedType = current($expectedTypes);
-                    return $subject->decoratedType() instanceof $expectedType;
+                    return $subject->innerType() instanceof $expectedType;
                 }
-                if (! $subject->decoratedType() instanceof ComposedType) {
+                if (! $subject->innerType() instanceof ComposedType) {
                     return false;
                 }
-                foreach ($subject->decoratedType() as $i => $each) {
+                foreach ($subject->innerType() as $i => $each) {
                     if (! $each instanceof $expectedTypes[$i]) {
                         return false;
                     }
@@ -199,12 +199,12 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
                 }
                 if (count($expectedTypes) === 1) {
                     $expectedType = current($expectedTypes);
-                    return $subject->decoratedType() instanceof $expectedType;
+                    return $subject->innerType() instanceof $expectedType;
                 }
-                if (! $subject->decoratedType() instanceof ComposedType) {
+                if (! $subject->innerType() instanceof ComposedType) {
                     return false;
                 }
-                foreach ($subject->decoratedType() as $i => $each) {
+                foreach ($subject->innerType() as $i => $each) {
                     if (! $each instanceof $expectedTypes[$i]) {
                         return false;
                     }
@@ -217,12 +217,12 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
                 }
                 if (count($expectedTypes) === 1) {
                     $expectedType = current($expectedTypes);
-                    return $subject->decoratedType() instanceof $expectedType;
+                    return $subject->innerType() instanceof $expectedType;
                 }
-                if (! $subject->decoratedType() instanceof ComposedType) {
+                if (! $subject->innerType() instanceof ComposedType) {
                     return false;
                 }
-                foreach ($subject->decoratedType() as $i => $each) {
+                foreach ($subject->innerType() as $i => $each) {
                     if (! $each instanceof $expectedTypes[$i]) {
                         return false;
                     }
@@ -233,7 +233,7 @@ class PhpDocTypeFactorySpec extends ObjectBehavior
                 if (! $subject instanceof ComposedType) {
                     return false;
                 }
-                foreach ($subject->decoratedTypes() as $i => $each) {
+                foreach ($subject->innerTypes() as $i => $each) {
                     if (! $each instanceof $expectedClasses[$i]) {
                         return false;
                     }

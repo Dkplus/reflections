@@ -16,7 +16,7 @@ final class NullableType implements DecoratingType
     public function accepts(Type $type): bool
     {
         if ($type instanceof ComposedType) {
-            return ! in_array(false, array_map([$this, 'accepts'], $type->decoratedTypes()));
+            return ! in_array(false, array_map([$this, 'accepts'], $type->innerTypes()));
         }
         if ($type instanceof NullType) {
             return true;
@@ -35,7 +35,7 @@ final class NullableType implements DecoratingType
         return '?' . $this->decorated;
     }
 
-    public function decoratedType(): Type
+    public function innerType(): Type
     {
         return $this->decorated;
     }

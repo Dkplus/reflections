@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection\Type\Factory;
 
-use ArrayObject;
 use Dkplus\Reflection\Type\ArrayType;
 use Dkplus\Reflection\Type\BooleanType;
 use Dkplus\Reflection\Type\CallableType;

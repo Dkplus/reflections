@@ -24,7 +24,7 @@ class ComposedTypeSpec extends ObjectBehavior
 
     function it_is_a_decorating_multiple_type()
     {
-        $this->decoratedTypes()->shouldBeLike([new StringType(), new IntegerType()]);
+        $this->innerTypes()->shouldBeLike([new StringType(), new IntegerType()]);
     }
 
     function its_string_representation_separates_each_type_with_a_pipe()

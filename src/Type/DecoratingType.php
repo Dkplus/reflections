@@ -5,5 +5,5 @@ namespace Dkplus\Reflection\Type;
 
 interface DecoratingType extends Type
 {
-    public function decoratedType(): Type;
+    public function innerType(): Type;
 }

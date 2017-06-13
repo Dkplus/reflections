@@ -31,9 +31,9 @@ class CollectionType extends ClassType implements DecoratingType
             && $this->iterableGeneric->accepts($type->iterableGeneric);
     }
 
-    public function decoratedType(): Type
+    public function innerType(): Type
     {
-        return $this->iterableGeneric->decoratedType();
+        return $this->iterableGeneric->innerType();
     }
 
     public function __toString(): string

@@ -31,7 +31,7 @@ class IterableTypeSpec extends ObjectBehavior
 
     function it_decorates_the_mixed_type_by_default()
     {
-        $this->decoratedType()->shouldBeLike(new MixedType());
+        $this->innerType()->shouldBeLike(new MixedType());
     }
 
     function its_string_representation_appends_array_brackets_to_the_decorated_type()

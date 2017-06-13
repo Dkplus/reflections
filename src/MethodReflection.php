@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
+
 namespace Dkplus\Reflection;
 
-use BetterReflection\Reflection\ReflectionMethod;
 use Dkplus\Reflection\Type\Type;
+use ReflectionMethod;
 
 /**
  * @api
@@ -69,7 +71,7 @@ class MethodReflection
         return $this->reflection->isAbstract();
     }
 
-    public function returnType()
+    public function returnType(): Type
     {
         return $this->returnType;
     }

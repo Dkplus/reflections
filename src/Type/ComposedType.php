@@ -15,18 +15,18 @@ class ComposedType implements Type
 
     public function accepts(Type $type): bool
     {
-        return in_array(true, array_map(function (Type $decorated) use ($type) {
-            return $decorated->accepts($type);
-        }, $this->decoratedTypes()));
+        return in_array(true, array_map(function (Type $inner) use ($type) {
+            return $inner->accepts($type);
+        }, $this->innerTypes()));
     }
 
     public function __toString(): string
     {
-        return implode('|', array_map('strval', $this->decoratedTypes()));
+        return implode('|', array_map('strval', $this->innerTypes()));
     }
 
-    /** @return DecoratingType[] */
-    public function decoratedTypes(): array
+    /** @return Type[] */
+    public function innerTypes(): array
     {
         return $this->types;
     }

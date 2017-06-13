@@ -19,7 +19,6 @@ use ReflectionMethod;
 use ReflectionProperty;
 use test\Dkplus\Reflection\Fixtures\PhpDocAnnotations;
 use test\Dkplus\Reflection\ReflectionTestCase;
-use function var_dump;
 
 class AnnotationReflectorTest extends ReflectionTestCase
 {

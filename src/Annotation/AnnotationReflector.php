@@ -20,7 +20,7 @@ final class AnnotationReflector
         $this->annotationFactory = $annotationFactory;
     }
 
-    public function reflectDocBlock($docBlock, Context $context): Annotations
+    public function reflectDocBlock(string $docBlock, Context $context): Annotations
     {
         $annotations = $this->parser->parseDockBlock(
             $docBlock,

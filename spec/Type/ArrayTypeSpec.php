@@ -26,7 +26,7 @@ class ArrayTypeSpec extends ObjectBehavior
 
     function it_decorates_the_mixed_type_by_default()
     {
-        $this->decoratedType()->shouldBeAnInstanceOf(MixedType::class);
+        $this->innerType()->shouldBeAnInstanceOf(MixedType::class);
     }
 
     function its_string_representation_contains_the_decorated_type()

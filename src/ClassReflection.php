@@ -169,15 +169,18 @@ class ClassReflection
         );
     }
 
-    public function property(string $name): PropertyReflection
+    public function properties(): Properties
     {
+        return $this->properties;
     }
 
-    public function method(string $name): MethodReflection
+    public function methods(): Methods
     {
+        return $this->methods;
     }
 
     public function annotations(): Annotations
     {
+        return $this->annotations;
     }
 }
