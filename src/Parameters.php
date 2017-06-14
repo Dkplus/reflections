@@ -18,22 +18,22 @@ class Parameters extends IteratorIterator implements Countable
     /** @var string */
     private $method;
 
-    /** @var Parameter[] */
+    /** @var ParameterReflection[] */
     private $parameters;
 
-    public function __construct(string $method, Parameter ...$parameters)
+    public function __construct(string $method, ParameterReflection ...$parameters)
     {
         parent::__construct(new ArrayIterator($parameters));
         $this->method = $method;
         $this->parameters = array_combine(
-            array_map(function (Parameter $reflection) {
+            array_map(function (ParameterReflection $reflection) {
                 return $reflection->name();
             }, $parameters),
             $parameters
         );
     }
 
-    /** @return Parameter|false */
+    /** @return ParameterReflection|false */
     public function current()
     {
         return parent::current();
@@ -49,7 +49,7 @@ class Parameters extends IteratorIterator implements Countable
         return isset($this->parameters[$name]);
     }
 
-    public function named(string $name): Parameter
+    public function named(string $name): ParameterReflection
     {
         if ($this->contains($name)) {
             return $this->parameters[$name];
@@ -57,7 +57,7 @@ class Parameters extends IteratorIterator implements Countable
         throw MissingParameter::named($name, $this->method);
     }
 
-    public function atPosition(int $position): Parameter
+    public function atPosition(int $position): ParameterReflection
     {
         if ($position >= 0 && $this->count() > $position) {
             return array_values($this->parameters)[$position];
@@ -68,7 +68,7 @@ class Parameters extends IteratorIterator implements Countable
     public function allows(Type ...$types): bool
     {
         $parameters = array_values($this->parameters);
-        /* @var $parameter Parameter */
+        /* @var $parameter ParameterReflection */
         while ($parameter = array_shift($parameters)) {
             $type = array_shift($types);
             if (! $type && ! $parameter->canBeOmitted()) {

@@ -12,13 +12,13 @@ use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Methods;
+use Dkplus\Reflection\ParameterReflection;
 use Dkplus\Reflection\Parameters;
 use Dkplus\Reflection\Properties;
 use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\Factory\TypeConverter;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
 use Dkplus\Reflection\Type\Factory\TypeNormalizer;
-use Dkplus\Reflection\Type\MixedType;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
@@ -27,8 +27,11 @@ use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Mixed;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
+use ReflectionType;
 use function array_filter;
 use function array_map;
+use function var_dump;
 
 final class BuiltInReflectorStrategy implements ReflectorStrategy
 {
@@ -109,25 +112,89 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
             if ($annotations->contains('return')) {
                 $docType = $annotations->oneNamed('return')->attributes()['type'];
             }
-            $typeHint = new Mixed();
-            if ($eachMethod->getReturnType()) {
-                if ($eachMethod->getReturnType()->isBuiltin()) {
-                    $typeHint = (new TypeResolver())->resolve((string) $eachMethod->getReturnType(), $context);
-                } else {
-                    $typeHint = (new TypeResolver())->resolve('\\' . $eachMethod->getReturnType(), $context);
-                }
-            }
+            $typeHint = $this->phpDocTypeFromReflectionType($eachMethod->getReturnType(), $context);
             $fqsen = new Fqsen('\\' . $class->getName() . '::' . $eachMethod->getName() . '()');
             $returnType = $this->typeFactory->create($typeHint, $docType, $fqsen);
 
             $methods[] = new MethodReflection(
                 $eachMethod,
-                new Annotations(),
-                new Parameters($eachMethod->getName()),
+                $annotations,
+                $this->reflectParameters($eachMethod, $annotations, $context, $fqsen),
                 $returnType
             );
         }
         return new Methods($class->getName(), ...$methods);
+    }
+
+    private function reflectParameters(
+        ReflectionMethod $eachMethod,
+        Annotations $annotations,
+        Context $context,
+        Fqsen $fqsen
+    ): Parameters {
+        $parameters = [];
+        $phpDocParamsByName = [];
+        foreach ($annotations->named('param') as $eachParameter) {
+            $attributes = $eachParameter->attributes();
+            $phpDocParamsByName[substr(str_replace('...', '', $attributes['name']), 1)] = $attributes;
+        }
+        foreach ($eachMethod->getParameters() as $eachParameter) {
+            $type = $this->typeFactory->create(
+                $this->phpDocTypeFromReflectionType(
+                    $eachParameter->getType(),
+                    $context,
+                    $eachParameter->allowsNull(),
+                    $eachParameter->isVariadic()
+                ),
+                $phpDocParamsByName[$eachParameter->getName()]['type'] ?? new Mixed(),
+                $fqsen
+            );
+            $handledTypes[] = $eachParameter->getName();
+            $parameters[] = new ParameterReflection(
+                $eachParameter->getName(),
+                $type,
+                $eachParameter->getPosition(),
+                $eachParameter->isOptional(),
+                $eachParameter->isVariadic(),
+                $phpDocParamsByName[$eachParameter->getName()]['description'] ?? ''
+            );
+            if (isset($phpDocParamsByName[$eachParameter->getName()])) {
+                unset($phpDocParamsByName[$eachParameter->getName()]);
+            }
+        }
+        foreach ($phpDocParamsByName as $eachName => $attributes) {
+            $parameters[] = new ParameterReflection(
+                $eachName,
+                $this->typeFactory->create(new Mixed(), $attributes['type'], $fqsen),
+                count($parameters),
+                false,
+                false,
+                $attributes['description']
+            );
+        }
+        return new Parameters($eachMethod->getName(), ...$parameters);
+    }
+
+    private function phpDocTypeFromReflectionType(
+        ?ReflectionType $type,
+        Context $context,
+        bool $allowsNull = false,
+        bool $variadic = false
+    ) {
+        if (! $type) {
+            return new Mixed();
+        }
+        $stringType = (string) $type;
+        if ($variadic) {
+            $stringType .= '[]';
+        }
+        if ($allowsNull) {
+            $stringType .= '|null';
+        }
+        if ($type->isBuiltin()) {
+            return (new TypeResolver())->resolve($stringType, $context);
+        }
+        return (new TypeResolver())->resolve('\\' . $stringType, $context);
     }
 
     private function filterNonImmediateInterfaces(array $interfaces, array $possibleParents): array

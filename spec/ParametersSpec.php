@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace spec\Dkplus\Reflection;
 
 use Dkplus\Reflection\Exception\MissingParameter;
-use Dkplus\Reflection\Parameter;
+use Dkplus\Reflection\ParameterReflection;
 use Dkplus\Reflection\Parameters;
 use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
@@ -14,7 +14,7 @@ use PhpSpec\ObjectBehavior;
  */
 class ParametersSpec extends ObjectBehavior
 {
-    function let(Parameter $parameter)
+    function let(ParameterReflection $parameter)
     {
         $parameter->name()->willReturn('foo');
         $parameter->position()->willReturn(0);
@@ -37,7 +37,7 @@ class ParametersSpec extends ObjectBehavior
         $this->contains('bar')->shouldBe(false);
     }
 
-    function it_iterates_over_all_parameters(Parameter $first, Parameter $second)
+    function it_iterates_over_all_parameters(ParameterReflection $first, ParameterReflection $second)
     {
         $first->name()->willReturn('foo');
         $first->position()->willReturn(0);
@@ -50,14 +50,14 @@ class ParametersSpec extends ObjectBehavior
         $this->shouldIterateAs([$first, $second]);
     }
 
-    function it_provides_a_parameter_by_name(Parameter $parameter)
+    function it_provides_a_parameter_by_name(ParameterReflection $parameter)
     {
         $this->named('foo')->shouldBe($parameter);
 
         $this->shouldThrow(MissingParameter::named('bar', 'MyClass::myMethod'))->during('named', ['bar']);
     }
 
-    function it_provides_a_parameter_by_its_position(Parameter $parameter)
+    function it_provides_a_parameter_by_its_position(ParameterReflection $parameter)
     {
         $this->atPosition(0)->shouldBe($parameter);
 
@@ -65,8 +65,8 @@ class ParametersSpec extends ObjectBehavior
     }
 
     function it_allows_types_if_all_types_are_allowed_by_the_parameters(
-        Parameter $firstParameter,
-        Parameter $secondParameter,
+        ParameterReflection $firstParameter,
+        ParameterReflection $secondParameter,
         Type $firstType,
         Type $secondType
     ) {
@@ -85,8 +85,8 @@ class ParametersSpec extends ObjectBehavior
     }
 
     function it_also_allows_types_if_parameters_of_missing_types_can_be_omitted(
-        Parameter $firstParameter,
-        Parameter $secondParameter,
+        ParameterReflection $firstParameter,
+        ParameterReflection $secondParameter,
         Type $firstType
     ) {
         $firstParameter->canBeOmitted()->willReturn(false);

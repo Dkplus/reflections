@@ -6,10 +6,10 @@ namespace Dkplus\Reflection;
 use Dkplus\Reflection\Type\Type;
 use ReflectionParameter;
 
-class Parameter
+class ParameterReflection
 {
-    /** @var ReflectionParameter */
-    private $reflection;
+    /** @var string */
+    private $name;
 
     /** @var Type */
     private $type;
@@ -23,23 +23,28 @@ class Parameter
     /** @var bool */
     private $variadic;
 
+    /** @var string */
+    private $description;
+
     public function __construct(
-        ReflectionParameter $parameter,
+        string $name,
         Type $type,
         int $position,
         bool $omittable,
-        bool $variadic
+        bool $variadic,
+        string $description
     ) {
-        $this->reflection = $parameter;
+        $this->name = $name;
         $this->type = $type;
         $this->position = $position;
         $this->omittable = $omittable;
         $this->variadic = $variadic;
+        $this->description = $description;
     }
 
     public function name(): string
     {
-        return $this->reflection->getName();
+        return $this->name;
     }
 
     public function type(): Type
@@ -50,6 +55,11 @@ class Parameter
     public function position(): int
     {
         return $this->position;
+    }
+
+    public function description(): string
+    {
+        return $this->description;
     }
 
     public function allows(Type $type): bool

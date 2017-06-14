@@ -6,9 +6,14 @@ namespace test\Dkplus\Reflection\ReflectorStrategy;
 use ArrayIterator;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\ReflectorStrategy\BuiltInReflectorStrategy;
+use Dkplus\Reflection\Type\ArrayType;
 use Dkplus\Reflection\Type\ClassType;
+use Dkplus\Reflection\Type\IterableType;
 use Dkplus\Reflection\Type\MixedType;
+use Dkplus\Reflection\Type\NullableType;
 use Dkplus\Reflection\Type\StringType;
+use phpDocumentor\Reflection\Types\Mixed;
+use phpDocumentor\Reflection\Types\String_;
 use ReflectionClass;
 use stdClass;
 use test\Dkplus\Reflection\Fixtures\AbstractClass;
@@ -295,6 +300,155 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
             $this->underTest->reflectClass(ClassWithMethods::class),
             'returnsObject',
             new ClassType(new ReflectionClass(OneClass::class))
+        );
+    }
+
+    /** @test */
+    public function it_knows_method_parameters()
+    {
+        self::assertMethodHasParameter(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithParameters',
+            'value'
+        );
+    }
+
+    /** @test */
+    function it_knows_the_position_of_parameters()
+    {
+        self::assertMethodParameterHasPosition(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithParameters',
+            'value',
+            0
+        );
+    }
+
+    /** @test */
+    function it_considers_the_type_hint_for_parameter_types()
+    {
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithTypeHintParameter',
+            'stringParam',
+            new StringType()
+        );
+    }
+
+    /** @test */
+    function it_considers_the_doc_type_for_parameter_types()
+    {
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithDocTypeParameter',
+            'stringParam',
+            new StringType()
+        );
+    }
+
+    /** @test */
+    function it_combines_the_type_hint_and_the_doc_types_for_parameters_if_both_are_available()
+    {
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithDocTypeAndTypeHintParameter',
+            'stringArrayParam',
+            new ArrayType(new StringType())
+        );
+    }
+
+    /** @test */
+    function it_appends_parameters_from_phpdoc_if_they_are_not_available_as_real_parameters()
+    {
+        self::assertMethodParameterHasPosition(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithAdditionalDocBlockTags',
+            'docBlock',
+            1
+        );
+    }
+
+    /** @test */
+    function it_adds_the_description_from_phpdoc_if_available()
+    {
+        self::assertMethodParameterDescriptionEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithParameterDescription',
+            'parameter',
+            'Parameter description'
+        );
+    }
+
+    /** @test */
+    public function it_supports_omittable_parameters()
+    {
+        self::assertMethodParameterCanBeOmitted(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithOmittableParameter',
+            'omittable'
+        );
+        self::assertMethodParameterCannotBeOmitted(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithOmittableParameter',
+            'nonOmittable'
+        );
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithOmittableParameter',
+            'omittable',
+            new NullableType(new StringType())
+        );
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithOmittableParameter',
+            'omittableWithStringDefault',
+            new StringType()
+        );
+    }
+
+    /** @test */
+    public function it_supports_variadic_parameters()
+    {
+        self::assertMethodParameterIsNotVariadic(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithVariadic',
+            'nonVariadic'
+        );
+        self::assertMethodParameterIsVariadic(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithVariadic',
+            'variadic'
+        );
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithVariadic',
+            'variadic',
+            new IterableType(new StringType())
+        );
+    }
+
+    /** @test */
+    public function it_supports_variadic_parameters_with_phpdoc()
+    {
+        self::assertMethodParameterTypeEquals(
+            $this->underTest->reflectClass(ClassWithMethods::class),
+            'methodWithVariadicAndDocBlock',
+            'variadic',
+            new IterableType(new StringType())
+        );
+    }
+
+    /** @test */
+    function it_parses_the_method_annotations()
+    {
+        self::assertAnnotationExistsWithAttributes(
+            'return',
+            ['type' => new String_(), 'description' => ''],
+            $this->underTest
+                ->reflectClass(ClassWithMethods::class)
+                ->methods()
+                ->named('stringReturnTag')
+                ->annotations()
         );
     }
 }

@@ -189,6 +189,121 @@ class ReflectionTestCase extends TestCase
         self::assertEquals($type, $class->methods()->named($methodName)->returnType());
     }
 
+
+    public static function assertMethodHasParameter(ClassReflection $class, string $methodName, string $parameterName)
+    {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertThat(
+            $class->methods()->named($methodName)->parameters()->contains($parameterName),
+            self::isTrue(),
+            'Method ' . $class->name() . "::$methodName() has no parameter $parameterName"
+        );
+    }
+
+    public static function assertMethodParameterHasPosition(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName,
+        int $expectedPosition
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertEquals(
+            $expectedPosition,
+            $parameter->position(),
+            sprintf('Expected position %d but got position %d', $expectedPosition, $parameter->position())
+        );
+    }
+
+
+    public static function assertMethodParameterDescriptionEquals(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName,
+        string $expectedDescription
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertEquals(
+            $expectedDescription,
+            $parameter->description()
+        );
+    }
+
+    public static function assertMethodParameterTypeEquals(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName,
+        Type $expectedType
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertEquals($expectedType, $parameter->type());
+    }
+
+    public static function assertMethodParameterCanBeOmitted(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertThat(
+            $parameter->canBeOmitted(),
+            self::isTrue(),
+            "Parameter $parameterName cannot be omitted"
+        );
+    }
+
+    public static function assertMethodParameterCannotBeOmitted(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertThat(
+            $parameter->canBeOmitted(),
+            self::isFalse(),
+            "Parameter $parameterName can be omitted"
+        );
+    }
+
+    public static function assertMethodParameterIsVariadic(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertThat(
+            $parameter->isVariadic(),
+            self::isTrue(),
+            "Parameter $parameterName is not variadic"
+        );
+    }
+
+    public static function assertMethodParameterIsNotVariadic(
+        ClassReflection $class,
+        string $methodName,
+        string $parameterName
+    ) {
+        self::assertClassHasMethod($class, $methodName);
+        self::assertMethodHasParameter($class, $methodName, $parameterName);
+        $parameter = $class->methods()->named($methodName)->parameters()->named($parameterName);
+        self::assertThat(
+            $parameter->isVariadic(),
+            self::isFalse(),
+            "Parameter $parameterName is variadic"
+        );
+    }
+
     public static function assertAnnotationIsNotFullyQualified(string $name, Annotations $annotations)
     {
         foreach ($annotations->named($name) as $each) {

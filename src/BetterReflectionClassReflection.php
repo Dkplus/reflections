@@ -113,7 +113,7 @@ class BetterReflectionClassReflection
                 $method->getReturnType() ? $method->getReturnType()->allowsNull() : false
             );
             $parameters = array_map(function (ReflectionParameter $parameter) {
-                return new Parameter(
+                return new ParameterReflection(
                     $parameter,
                     $this->typeFactory->create(
                         $this->reflector,

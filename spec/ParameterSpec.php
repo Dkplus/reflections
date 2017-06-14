@@ -2,12 +2,12 @@
 namespace spec\Dkplus\Reflection;
 
 use BetterReflection\Reflection\ReflectionParameter;
-use Dkplus\Reflection\Parameter;
+use Dkplus\Reflection\ParameterReflection;
 use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin Parameter
+ * @mixin ParameterReflection
  */
 class ParameterSpec extends ObjectBehavior
 {
@@ -18,7 +18,7 @@ class ParameterSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType(Parameter::class);
+        $this->shouldHaveType(ParameterReflection::class);
     }
 
     function it_has_a_name(ReflectionParameter $parameter)
