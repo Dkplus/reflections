@@ -1,9 +1,9 @@
 <?php
 namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\AutoloadingReflectorStrategy;
 use Dkplus\Reflection\ClassReflection_;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\Factory\TypeFactory;

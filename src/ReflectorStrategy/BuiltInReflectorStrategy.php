@@ -3,22 +3,24 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\ReflectorStrategy;
 
-use Dkplus\Reflection\Annotation\AnnotationFactory;
-use Dkplus\Reflection\Annotation\AnnotationReflector;
-use Dkplus\Reflection\Annotation\HoaParser;
-use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\DocBlock\AnnotationFactory;
+use Dkplus\Reflection\DocBlock\AnnotationReflector;
+use Dkplus\Reflection\DocBlock\Annotations;
+use Dkplus\Reflection\DocBlock\HoaParser;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Methods;
 use Dkplus\Reflection\ParameterReflection;
 use Dkplus\Reflection\Parameters;
 use Dkplus\Reflection\Properties;
+use Dkplus\Reflection\PropertyReflection;
 use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\Factory\TypeConverter;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
 use Dkplus\Reflection\Type\Factory\TypeNormalizer;
+use Dkplus\Reflection\Type\MixedType;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
@@ -31,7 +33,6 @@ use ReflectionMethod;
 use ReflectionType;
 use function array_filter;
 use function array_map;
-use function var_dump;
 
 final class BuiltInReflectorStrategy implements ReflectorStrategy
 {
@@ -93,9 +94,31 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
             $parents,
             $interfaces,
             $traits,
-            new Properties($className),
+            $this->reflectProperties($class, $context),
             $this->reflectMethods($class, $context)
         );
+    }
+
+    private function reflectProperties(ReflectionClass $class, Context $context): Properties
+    {
+        $properties = [];
+        foreach ($class->getProperties() as $eachProperty) {
+            $annotations = new Annotations();
+            if ($eachProperty->getDocComment()) {
+                $annotations = $this->annotationReflector->reflectDocBlock($eachProperty->getDocComment(), $context);
+            }
+            $type = new MixedType();
+            if ($annotations->contains('var')) {
+                $fqsen = new Fqsen('\\' . $class->getName() . '::$' . $eachProperty->getName());
+                $type = $this->typeFactory->create(
+                    new Mixed(),
+                    $annotations->oneNamed('var')->attributes()['type'],
+                    $fqsen
+                );
+            }
+            $properties[] = new PropertyReflection($eachProperty, $type, $annotations);
+        }
+        return new Properties($class->getName(), ...$properties);
     }
 
     private function reflectMethods(ReflectionClass $class, Context $context): Methods

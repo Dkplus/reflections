@@ -1,8 +1,8 @@
 <?php
 namespace spec\Dkplus\Reflection\Mock;
 
-use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\ClassReflection_;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Methods;
 use Dkplus\Reflection\Properties;
 

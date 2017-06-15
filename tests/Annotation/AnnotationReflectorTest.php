@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace test\Dkplus\Reflection\Annotation;
 
-use Dkplus\Reflection\Annotation\AnnotationFactory;
-use Dkplus\Reflection\Annotation\AnnotationReflector;
-use Dkplus\Reflection\Annotation\HoaParser;
+use Dkplus\Reflection\DocBlock\AnnotationFactory;
+use Dkplus\Reflection\DocBlock\AnnotationReflector;
+use Dkplus\Reflection\DocBlock\HoaParser;
 use Dkplus\Reflection\ReflectorStrategy\BuiltInReflectorStrategy;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;

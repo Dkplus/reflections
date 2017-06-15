@@ -6,7 +6,7 @@
 %skip   star                [*]
 
 %token  at                  @                             -> annot
-%token  text                [^@](?!\*/)*
+%token  text                ((?!(@|\*/)).)+
 
 %token  annot:identifier    [\\]?[a-zA-Z_][\\a-zA-Z0-9_\-]* -> values
 
@@ -19,7 +19,7 @@
 %token  values:_brace       }                           -> value
 %token  values:parenthesis_ \(                          -> value
 %token  values:_parenthesis \)                          -> default
-%token  values:text         [^@]((?!\*\/).)*            -> default
+%token  values:text         ((?!(\W@|\*\/)).)+          -> default
 
 %skip   value:star          [*]
 %skip   value:_doc          [*/]
@@ -39,14 +39,17 @@
 %token  value:string        "(.*?)(?<!\\)"
 
 #docblock:
-    (comments() | annotations() )*
+    short()? comments()* annotations()?
+
+#short:
+    text()
 
 #annotations:
     annotation()+
 
 #annotation:
     ::at:: identifier() comments()
-  | ::at:: identifier() ( parameters() | comments() )?
+  | ::at:: identifier() ( parameters() | comments()+ )?
 
 #comments:
     text()+

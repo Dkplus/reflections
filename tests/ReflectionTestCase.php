@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace test\Dkplus\Reflection;
 
-use Dkplus\Reflection\Annotations;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Type\Type;
 use PHPUnit\Framework\TestCase;
 use function json_encode;
@@ -332,6 +332,71 @@ class ReflectionTestCase extends TestCase
             self::contains($values, false, false),
             "There are annotations named $name but they have other attributes "
             . '(found: ' . json_encode($actualAttributes) . ')'
+        );
+    }
+
+    public static function assertPropertyExists(ClassReflection $class, string $property)
+    {
+        self::assertThat(
+            $class->properties()->contains($property),
+            self::isTrue(),
+            sprintf('Expected %s to contain a property %s but it does not', $class->name(), $property)
+        );
+    }
+
+    public static function assertPropertyTypeEquals(ClassReflection $class, string $property, Type $expectedType)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertEquals($expectedType, $class->properties()->named($property)->type());
+    }
+
+    public static function assertPropertyIsPublic(ClassReflection $class, string $property)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertThat(
+            $class->properties()->named($property)->isPublic(),
+            self::isTrue(),
+            sprintf('Expected %s::%s to be public but it is not', $class->name(), $property)
+        );
+    }
+
+    public static function assertPropertyIsProtected(ClassReflection $class, string $property)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertThat(
+            $class->properties()->named($property)->isProtected(),
+            self::isTrue(),
+            sprintf('Expected %s::%s to be protected but it is not', $class->name(), $property)
+        );
+    }
+
+    public static function assertPropertyIsPrivate(ClassReflection $class, string $property)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertThat(
+            $class->properties()->named($property)->isPrivate(),
+            self::isTrue(),
+            sprintf('Expected %s::%s to be private but it is not', $class->name(), $property)
+        );
+    }
+
+    public static function assertPropertyIsStatic(ClassReflection $class, string $property)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertThat(
+            $class->properties()->named($property)->isStatic(),
+            self::isTrue(),
+            sprintf('Expected %s::%s to be static but it is not', $class->name(), $property)
+        );
+    }
+    
+    public static function assertPropertyIsNotStatic(ClassReflection $class, string $property)
+    {
+        self::assertPropertyExists($class, $property);
+        self::assertThat(
+            $class->properties()->named($property)->isStatic(),
+            self::isFalse(),
+            sprintf('Expected %s::%s not to be static but it is', $class->name(), $property)
         );
     }
 }

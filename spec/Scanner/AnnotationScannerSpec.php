@@ -1,7 +1,7 @@
 <?php
 namespace spec\Dkplus\Reflection\Scanner;
 
-use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Doctrine\Common\Annotations\Annotation\Attribute;
 use Doctrine\Common\Annotations\Annotation\Attributes;

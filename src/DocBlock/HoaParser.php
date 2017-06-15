@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Annotation;
+namespace Dkplus\Reflection\DocBlock;
 
 use Hoa\Compiler\Llk\Llk;
 use Hoa\Compiler\Llk\Parser;
 use Hoa\File\Read;
 use Hoa\Visitor\Visit;
 
-final class HoaParser
+class HoaParser
 {
     /** @var \Hoa\Compiler\Llk\Parser */
     private $parser;

@@ -1,14 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Annotation;
+namespace Dkplus\Reflection\DocBlock;
 
-use Dkplus\Reflection\Annotation\AttributeFormatter\FqsenResolvingAttributeFormatter;
-use Dkplus\Reflection\Annotation\AttributeFormatter\MethodAttributeFormatter;
-use Dkplus\Reflection\Annotation\AttributeFormatter\NamedAttributeFormatter;
-use Dkplus\Reflection\Annotation\AttributeFormatter\RegexAttributeFormatter;
-use Dkplus\Reflection\Annotation\AttributeFormatter\TypeAttributeFormatter;
-use Dkplus\Reflection\AnnotationReflection;
+use Dkplus\Reflection\DocBlock\AttributeFormatter\FqsenResolvingAttributeFormatter;
+use Dkplus\Reflection\DocBlock\AttributeFormatter\MethodAttributeFormatter;
+use Dkplus\Reflection\DocBlock\AttributeFormatter\NamedAttributeFormatter;
+use Dkplus\Reflection\DocBlock\AttributeFormatter\RegexAttributeFormatter;
+use Dkplus\Reflection\DocBlock\AttributeFormatter\TypeAttributeFormatter;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\ReflectorStrategy;
 use InvalidArgumentException;

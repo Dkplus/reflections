@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace spec\Dkplus\Reflection;
 
-use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\PropertyReflection;
 use Dkplus\Reflection\Type\Type;
 use PhpSpec\ObjectBehavior;

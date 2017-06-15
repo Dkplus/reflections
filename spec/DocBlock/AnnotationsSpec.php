@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace spec\Dkplus\Reflection;
+namespace spec\Dkplus\Reflection\DocBlock;
 
-use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Exception\MissingAnnotation;
 use Doctrine\Common\Annotations\Annotation\Enum;
 use Doctrine\Common\Annotations\Annotation\Target;

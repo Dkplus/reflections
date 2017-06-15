@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Annotation;
+namespace Dkplus\Reflection\DocBlock;
 
 use Dkplus\Reflection\Exception\ParserException;
 use Hoa\Compiler\Llk\TreeNode;

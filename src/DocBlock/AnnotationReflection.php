@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection;
+namespace Dkplus\Reflection\DocBlock;
+
+use Dkplus\Reflection\ClassReflection;
 
 final class AnnotationReflection
 {

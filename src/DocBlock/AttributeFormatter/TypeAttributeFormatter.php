@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\Annotation\AttributeFormatter;
+namespace Dkplus\Reflection\DocBlock\AttributeFormatter;
 
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\Context;

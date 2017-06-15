@@ -12,10 +12,10 @@ use Dkplus\Reflection\Type\IterableType;
 use Dkplus\Reflection\Type\MixedType;
 use Dkplus\Reflection\Type\NullableType;
 use Dkplus\Reflection\Type\StringType;
-use phpDocumentor\Reflection\Types\Mixed;
 use phpDocumentor\Reflection\Types\String_;
 use ReflectionClass;
 use stdClass;
+use test\Dkplus\Reflection\Annotation\ClassWithProperties;
 use test\Dkplus\Reflection\Fixtures\AbstractClass;
 use test\Dkplus\Reflection\Fixtures\AnotherInterface;
 use test\Dkplus\Reflection\Fixtures\AnotherTrait;
@@ -278,19 +278,22 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
     /** @test */
     function it_uses_mixed_as_return_type_if_no_return_type_is_available()
     {
-        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'noReturnType', new MixedType());
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'noReturnType',
+            new MixedType());
     }
 
     /** @test */
     function it_uses_the_return_type_hint_as_return_type()
     {
-        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnType', new StringType());
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnType',
+            new StringType());
     }
 
     /** @test */
     function it_uses_the_return_tag_as_return_type()
     {
-        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnTag', new StringType());
+        self::assertReturnTypeIs($this->underTest->reflectClass(ClassWithMethods::class), 'stringReturnTag',
+            new StringType());
     }
 
     /** @test */
@@ -448,6 +451,61 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
                 ->reflectClass(ClassWithMethods::class)
                 ->methods()
                 ->named('stringReturnTag')
+                ->annotations()
+        );
+    }
+
+    /** @test */
+    function it_knows_all_properties_of_a_class()
+    {
+        self::assertPropertyExists(
+            $this->underTest->reflectClass(ClassWithProperties::class),
+            'publicProperty'
+        );
+    }
+
+    /** @test */
+    function it_knows_the_type_of_the_properties()
+    {
+        self::assertPropertyTypeEquals(
+            $this->underTest->reflectClass(ClassWithProperties::class),
+            'propertyWithType',
+            new StringType()
+        );
+    }
+
+    /** @test */
+    function it_knows_the_visibility_of_the_properties()
+    {
+        $reflection = $this->underTest->reflectClass(ClassWithProperties::class);
+        self::assertPropertyIsPublic($reflection, 'publicProperty');
+        self::assertPropertyIsProtected($reflection, 'protectedProperty');
+        self::assertPropertyIsPrivate($reflection, 'privateProperty');
+    }
+
+    /** @test */
+    function it_knows_whether_a_property_is_static()
+    {
+        self::assertPropertyIsStatic(
+            $this->underTest->reflectClass(ClassWithProperties::class),
+            'staticProperty'
+        );
+        self::assertPropertyIsNotStatic(
+            $this->underTest->reflectClass(ClassWithProperties::class),
+            'publicProperty'
+        );
+    }
+
+    /** @test */
+    function it_knows_the_annotations_of_the_properties()
+    {
+        self::assertAnnotationExistsWithAttributes(
+            'var',
+            ['type' => new String_(), 'description' => ''],
+            $this->underTest
+                ->reflectClass(ClassWithProperties::class)
+                ->properties()
+                ->named('propertyWithType')
                 ->annotations()
         );
     }

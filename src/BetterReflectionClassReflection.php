@@ -5,6 +5,7 @@ use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionParameter;
 use BetterReflection\Reflection\ReflectionProperty;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
 use phpDocumentor\Reflection\Types\Mixed;

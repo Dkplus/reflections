@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection;
 
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Type\Type;
 use ReflectionProperty;
 

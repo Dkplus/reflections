@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection;
+namespace Dkplus\Reflection\DocBlock;
 
 use ArrayIterator;
 use Countable;

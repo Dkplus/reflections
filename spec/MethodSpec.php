@@ -4,13 +4,11 @@ namespace spec\Dkplus\Reflection;
 use BetterReflection\Reflection\ReflectionClass;
 use BetterReflection\Reflection\ReflectionMethod;
 use BetterReflection\Reflection\ReflectionType;
-use Dkplus\Reflection\Annotations;
+use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Parameters;
 use Dkplus\Reflection\Scanner\AnnotationScanner;
 use Dkplus\Reflection\Type\Type;
-use phpDocumentor\Reflection\Types\Array_;
-use phpDocumentor\Reflection\Types\String_;
 use PhpSpec\ObjectBehavior;
 
 /**
