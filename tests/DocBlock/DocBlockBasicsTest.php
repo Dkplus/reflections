@@ -10,6 +10,7 @@ use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionProperty;
 use test\Dkplus\Reflection\DocBlock\Fixtures\DocBlockBasics;
+use test\Dkplus\Reflection\DocBlock\TestCase\DocBlockTestCase;
 
 /**
  * @covers AnnotationFactory
@@ -23,10 +24,7 @@ class DocBlockBasicsTest extends DocBlockTestCase
 
     protected function setUp()
     {
-        $this->reflector = new DocBlockReflector(
-            new BuiltInClassReflector(),
-            new FqsenResolver()
-        );
+        $this->reflector = new DocBlockReflector(new BuiltInClassReflector(), new FqsenResolver());
     }
 
     /** @test */

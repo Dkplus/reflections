@@ -7,8 +7,8 @@ use InvalidArgumentException;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
+use ReflectionClass;
 use ReflectionException;
-use function array_merge;
 
 /** @internal */
 final class AnnotationFactory
@@ -41,10 +41,10 @@ final class AnnotationFactory
     public function createReflection(string $tag, array $attributes, Context $context): AnnotationReflection
     {
         try {
-            $fqsen = (string) $this->fqsenResolver->resolve($tag, $context);
-            $this->classReflector->reflect($fqsen); // check whether fully qualified
-            $providedTags = $this->reflectAnnotationsFromClass($fqsen);
-            return AnnotationReflection::fullyQualified($fqsen, $attributes, ...$providedTags);
+            $annotationClassName = (string) $this->fqsenResolver->resolve($tag, $context);
+            $reflection = $this->classReflector->reflect($annotationClassName); // check whether fully qualified
+            $inherited = $this->reflectAnnotationsFromClass($reflection);
+            return AnnotationReflection::fullyQualified($annotationClassName, $attributes, ...$inherited);
         } catch (InvalidArgumentException $exception) {
         } catch (ReflectionException $exception) {
         }
@@ -52,25 +52,12 @@ final class AnnotationFactory
         return AnnotationReflection::unqualified($tag, $attributes);
     }
 
-    private function reflectAnnotationsFromClass(string $className): array
+    private function reflectAnnotationsFromClass(ReflectionClass $class): Annotations
     {
-        $annotations = new Annotations();
-        $tags = [];
-        try {
-            $class = $this->classReflector->reflect($className);
-            if ($parent = $class->getParentClass()) {
-                $tags[] = $parent->getName();
-            }
-
-            $annotations->merge($this->docBlockReflector->reflectDocBlock(
-                $class->getDocComment(),
-                (new ContextFactory())->createFromReflector($class)
-            )->annotations());
-
-            $tags = array_unique(array_merge($tags, $docBlock->providedTags(), $class->getInterfaceNames()));
-
-        } catch (ReflectionException $exception) {
-        }
-        return $tags;
+        $annotationsDocBlock = $this->docBlockReflector->reflectDocBlock(
+            (string) $class->getDocComment(),
+            (new ContextFactory())->createFromReflector($class)
+        );
+        return $annotationsDocBlock->annotations();
     }
 }

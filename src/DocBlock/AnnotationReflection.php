@@ -14,9 +14,6 @@ final class AnnotationReflection
     /** @var array */
     private $attributes;
 
-    /** @var string[] */
-    private $providedTags;
-
     /** @var Annotations */
     private $immediatelyInherited;
 
@@ -40,9 +37,6 @@ final class AnnotationReflection
         $this->tag = $tag;
         $this->attributes = $attributes;
         $this->immediatelyInherited = $immediatelyInherited;
-        $this->providedTags = array_unique(array_merge([$tag], $this->inherited()->map(function (self $annotation) {
-            return $annotation->tag();
-        })));
     }
 
     public function tag(): string

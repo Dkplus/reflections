@@ -62,7 +62,7 @@ last_paragraph:
     (::star::? text())+ #paragraph 
 
 #annotations:
-    (::star::? annotation())+
+    (::star::* annotation())+
 
 #annotation:
     ::at:: identifier() comments()

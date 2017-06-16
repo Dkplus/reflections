@@ -6,7 +6,7 @@ namespace test\Dkplus\Reflection;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\Type\Type;
-use test\Dkplus\Reflection\DocBlock\DocBlockTestCase;
+use test\Dkplus\Reflection\DocBlock\TestCase\DocBlockTestCase;
 
 class ReflectionTestCase extends DocBlockTestCase
 {
