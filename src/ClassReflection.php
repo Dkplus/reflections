@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection;
 
 use Dkplus\Reflection\DocBlock\Annotations;
+use Dkplus\Reflection\DocBlock\DocBlockReflection;
 use ReflectionClass;
 
 class ClassReflection
@@ -11,16 +12,16 @@ class ClassReflection
     /** @var ReflectionClass */
     private $reflection;
 
-    /** @var Annotations */
-    private $annotations;
-    /** @var ReflectionClass[] */
+    /** @var DocBlockReflection */
+    private $docBlock;
 
+    /** @var Classes */
     private $immediateParentClasses;
 
-    /** @var ReflectionClass[] */
+    /** @var Classes */
     private $immediateImplementedInterfaces;
 
-    /** @var ClassReflection[] */
+    /** @var Classes */
     private $immediateUsedTraits;
 
     /** @var Properties */
@@ -29,16 +30,9 @@ class ClassReflection
     /** @var Methods */
     private $methods;
 
-
-    /**
-     * @param ClassReflection[] $parentClasses
-     * @param ClassReflection[] $parentClasses
-     * @param ClassReflection[] $implementedInterfaces
-     * @param ClassReflection[] $usedTraits
-     */
     public function __construct(
         ReflectionClass $reflection,
-        Annotations $annotations,
+        DocBlockReflection $docBlock,
         Classes $parentClasses,
         Classes $implementedInterfaces,
         Classes $usedTraits,
@@ -46,7 +40,7 @@ class ClassReflection
         Methods $methods
     ) {
         $this->reflection = $reflection;
-        $this->annotations = $annotations;
+        $this->docBlock = $docBlock;
         $this->immediateParentClasses = $parentClasses;
         $this->immediateImplementedInterfaces = $implementedInterfaces;
         $this->immediateUsedTraits = $usedTraits;
@@ -180,8 +174,8 @@ class ClassReflection
         return $this->methods;
     }
 
-    public function annotations(): Annotations
+    public function docBlock(): DocBlockReflection
     {
-        return $this->annotations;
+        return $this->docBlock;
     }
 }

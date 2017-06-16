@@ -5,8 +5,12 @@ namespace Dkplus\Reflection\DocBlock;
 
 use ArrayIterator;
 use Countable;
-use Dkplus\Reflection\Exception\MissingAnnotation;
+use Dkplus\Reflection\DocBlock\Exception\MissingAnnotation;
 use IteratorIterator;
+use const SORT_REGULAR;
+use function array_map;
+use function array_merge;
+use function array_unique;
 
 class Annotations extends IteratorIterator implements Countable
 {
@@ -19,7 +23,7 @@ class Annotations extends IteratorIterator implements Countable
         $this->annotations = $annotations;
     }
 
-    /** @return AnnotationReflection|null */
+    /** @return AnnotationReflection|false */
     public function current()
     {
         return parent::current();
@@ -30,24 +34,48 @@ class Annotations extends IteratorIterator implements Countable
         return count($this->annotations);
     }
 
-    public function oneNamed(string $name): AnnotationReflection
+    /** @throws MissingAnnotation */
+    public function oneWithTag(string $tag): AnnotationReflection
     {
-        $ofClass = $this->named($name);
-        if (count($ofClass) === 0) {
-            throw MissingAnnotation::named($name);
+        $withTag = $this->withTag($tag);
+        if (count($withTag) === 0) {
+            throw MissingAnnotation::withTag($tag);
         }
-        return current($ofClass->annotations);
+        return current($withTag->annotations);
     }
 
-    public function contains(string $name): bool
+    public function containsAtLeastOneWithTag(string $tag): bool
     {
-        return count($this->named($name)) > 0;
+        return count($this->withTag($tag)) > 0;
     }
 
-    public function named(string $name): Annotations
+    public function withTag(string $tag): Annotations
     {
-        return new self(...array_filter($this->annotations, function (AnnotationReflection $annotation) use ($name) {
-            return $annotation->name() === $name;
+        return new self(...array_filter($this->annotations, function (AnnotationReflection $annotation) use ($tag) {
+            return $annotation->tag() === $tag;
+        }));
+    }
+
+    public function map(callable $callable): array
+    {
+        return array_map($callable, $this->annotations);
+    }
+
+    public function merge(self ...$annotations): self
+    {
+        $result = array_merge(
+            $this->annotations,
+            ...array_map(function (self $annotations) {
+                return $annotations->annotations;
+            }, $annotations)
+        );
+        return new self(...array_unique($result, SORT_REGULAR));
+    }
+
+    public function includeInherited(): self
+    {
+        return $this->merge(...$this->map(function (AnnotationReflection $reflection) {
+            return $reflection->inherited();
         }));
     }
 }

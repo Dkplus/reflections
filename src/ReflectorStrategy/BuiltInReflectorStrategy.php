@@ -6,9 +6,10 @@ namespace Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\DocBlock\AnnotationFactory;
-use Dkplus\Reflection\DocBlock\AnnotationReflector;
 use Dkplus\Reflection\DocBlock\Annotations;
-use Dkplus\Reflection\DocBlock\HoaParser;
+use Dkplus\Reflection\DocBlock\ClassReflector\BuiltInClassReflector as DocblockClassReflector;
+use Dkplus\Reflection\DocBlock\DocBlockReflection;
+use Dkplus\Reflection\DocBlock\DocBlockReflector;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\MethodReflection;
 use Dkplus\Reflection\Methods;
@@ -36,8 +37,8 @@ use function array_map;
 
 final class BuiltInReflectorStrategy implements ReflectorStrategy
 {
-    /** @var AnnotationReflector */
-    private $annotationReflector;
+    /** @var DocBlockReflector */
+    private $docBlockReflector;
 
     /** @var ContextFactory */
     private $contextFactory;
@@ -47,10 +48,7 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
 
     public function __construct()
     {
-        $this->annotationReflector = new AnnotationReflector(
-            new HoaParser(),
-            new AnnotationFactory($this, new FqsenResolver())
-        );
+        $this->docBlockReflector = new DocBlockReflector(new DocblockClassReflector(), new FqsenResolver());
         $this->typeFactory = new TypeFactory(new TypeConverter(new BuiltInClassReflector()), new TypeNormalizer());
         $this->contextFactory = new ContextFactory();
     }
@@ -83,14 +81,11 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
         $traits = new Classes(...array_map([$this, 'reflectClass'], $traits));
 
         $context = $this->contextFactory->createFromReflector($class);
-        $annotations = new Annotations();
-        if ($class->getDocComment()) {
-            $annotations = $this->annotationReflector->reflectDocBlock($class->getDocComment(), $context);
-        }
+        $docBlock = $this->docBlockReflector->reflectDocBlock((string) $class->getDocComment(), $context);
 
         return new ClassReflection(
             $class,
-            $annotations,
+            $docBlock,
             $parents,
             $interfaces,
             $traits,
@@ -103,20 +98,17 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
     {
         $properties = [];
         foreach ($class->getProperties() as $eachProperty) {
-            $annotations = new Annotations();
-            if ($eachProperty->getDocComment()) {
-                $annotations = $this->annotationReflector->reflectDocBlock($eachProperty->getDocComment(), $context);
-            }
+            $docBlock = $this->docBlockReflector->reflectDocBlock((string) $eachProperty->getDocComment(), $context);
             $type = new MixedType();
-            if ($annotations->contains('var')) {
+            if ($docBlock->hasTag('var')) {
                 $fqsen = new Fqsen('\\' . $class->getName() . '::$' . $eachProperty->getName());
                 $type = $this->typeFactory->create(
                     new Mixed(),
-                    $annotations->oneNamed('var')->attributes()['type'],
+                    $docBlock->oneAnnotationWithTag('var')->attributes()['type'],
                     $fqsen
                 );
             }
-            $properties[] = new PropertyReflection($eachProperty, $type, $annotations);
+            $properties[] = new PropertyReflection($eachProperty, $type, $docBlock);
         }
         return new Properties($class->getName(), ...$properties);
     }
@@ -125,15 +117,12 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
     {
         $methods = [];
         foreach ($class->getMethods() as $eachMethod) {
-            $annotations = new Annotations();
-            if ($eachMethod->getDocComment()) {
-                $annotations = $this->annotationReflector->reflectDocBlock($eachMethod->getDocComment(), $context);
-            }
+            $docBlock = $this->docBlockReflector->reflectDocBlock((string) $eachMethod->getDocComment(), $context);
 
             // return type
             $docType = new Mixed();
-            if ($annotations->contains('return')) {
-                $docType = $annotations->oneNamed('return')->attributes()['type'];
+            if ($docBlock->hasTag('return')) {
+                $docType = $docBlock->oneAnnotationWithTag('return')->attributes()['type'];
             }
             $typeHint = $this->phpDocTypeFromReflectionType($eachMethod->getReturnType(), $context);
             $fqsen = new Fqsen('\\' . $class->getName() . '::' . $eachMethod->getName() . '()');
@@ -141,8 +130,8 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
 
             $methods[] = new MethodReflection(
                 $eachMethod,
-                $annotations,
-                $this->reflectParameters($eachMethod, $annotations, $context, $fqsen),
+                $docBlock,
+                $this->reflectParameters($eachMethod, $docBlock, $context, $fqsen),
                 $returnType
             );
         }
@@ -151,13 +140,13 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
 
     private function reflectParameters(
         ReflectionMethod $eachMethod,
-        Annotations $annotations,
+        DocBlockReflection $docBlock,
         Context $context,
         Fqsen $fqsen
     ): Parameters {
         $parameters = [];
         $phpDocParamsByName = [];
-        foreach ($annotations->named('param') as $eachParameter) {
+        foreach ($docBlock->annotationsWithTag('param') as $eachParameter) {
             $attributes = $eachParameter->attributes();
             $phpDocParamsByName[substr(str_replace('...', '', $attributes['name']), 1)] = $attributes;
         }

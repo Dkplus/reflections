@@ -3,10 +3,12 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock\AttributeFormatter;
 
+use Dkplus\Reflection\DocBlock\AttributeFormatter;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\Context;
 
-final class FqsenResolvingAttributeFormatter implements AttributeFormatter
+/** @package Dkplus\Reflection\DocBlock */
+final class FqsenAttributeFormatter implements AttributeFormatter
 {
     /** @var AttributeFormatter */
     private $decorated;
@@ -23,10 +25,9 @@ final class FqsenResolvingAttributeFormatter implements AttributeFormatter
     public function format(array $attributes, Context $context): array
     {
         $attributes = $this->decorated->format($attributes, $context);
-        if (! isset($attributes['fqsen'])) {
-            return $attributes;
+        if (isset($attributes['fqsen'])) {
+            $attributes['fqsen'] = $this->fqsenResolver->resolve($attributes['fqsen'], $context);
         }
-        $attributes['fqsen'] = $this->fqsenResolver->resolve($attributes['fqsen'], $context);
         return $attributes;
     }
 }

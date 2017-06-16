@@ -5,12 +5,10 @@ namespace test\Dkplus\Reflection;
 
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
-use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Type\Type;
-use PHPUnit\Framework\TestCase;
-use function json_encode;
+use test\Dkplus\Reflection\DocBlock\DocBlockTestCase;
 
-class ReflectionTestCase extends TestCase
+class ReflectionTestCase extends DocBlockTestCase
 {
     public static function assertPackageIs(string $expected, ClassReflection $class)
     {
@@ -301,37 +299,6 @@ class ReflectionTestCase extends TestCase
             $parameter->isVariadic(),
             self::isFalse(),
             "Parameter $parameterName is variadic"
-        );
-    }
-
-    public static function assertAnnotationIsNotFullyQualified(string $name, Annotations $annotations)
-    {
-        foreach ($annotations->named($name) as $each) {
-            self::assertThat(
-                $each->isFullyQualified(),
-                self::isFalse(),
-                "One annotation named $name is fully qualified"
-            );
-        }
-    }
-
-    public static function assertAnnotationExistsWithAttributes(string $name, array $values, Annotations $annotations)
-    {
-        $named = $annotations->named($name);
-        self::assertThat(
-            count($named),
-            self::greaterThanOrEqual(1),
-            "There is no annotation named $name"
-        );
-        $actualAttributes = [];
-        foreach ($named as $each) {
-            $actualAttributes[] = $each->attributes();
-        }
-        self::assertThat(
-            $actualAttributes,
-            self::contains($values, false, false),
-            "There are annotations named $name but they have other attributes "
-            . '(found: ' . json_encode($actualAttributes) . ')'
         );
     }
 

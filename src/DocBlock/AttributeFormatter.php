@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dkplus\Reflection\DocBlock\AttributeFormatter;
+namespace Dkplus\Reflection\DocBlock;
 
 use phpDocumentor\Reflection\Types\Context;
 

@@ -129,6 +129,6 @@ class MethodSpec extends ObjectBehavior
 
     function it_has_annotations(Annotations $annotations)
     {
-        $this->annotations()->shouldBe($annotations);
+        $this->docBlock()->shouldBe($annotations);
     }
 }

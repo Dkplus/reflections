@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection;
 
 use Dkplus\Reflection\DocBlock\Annotations;
+use Dkplus\Reflection\DocBlock\DocBlockReflection;
 use Dkplus\Reflection\Type\Type;
 use ReflectionProperty;
 
@@ -12,18 +13,18 @@ class PropertyReflection
     /** @var ReflectionProperty */
     private $reflection;
 
-    /** @var Annotations */
-    private $annotations;
+    /** @var DocBlockReflection */
+    private $docBlock;
 
     /** @var Type */
     private $type;
 
     /** @internal */
-    public function __construct(ReflectionProperty $reflection, Type $type, Annotations $annotations)
+    public function __construct(ReflectionProperty $reflection, Type $type, DocBlockReflection $docBlock)
     {
         $this->reflection = $reflection;
         $this->type = $type;
-        $this->annotations = $annotations;
+        $this->docBlock = $docBlock;
     }
 
     public function name(): string
@@ -56,9 +57,9 @@ class PropertyReflection
         return $this->type->accepts($type);
     }
 
-    public function annotations(): Annotations
+    public function docBlock(): DocBlockReflection
     {
-        return $this->annotations;
+        return $this->docBlock;
     }
 
     public function isStatic(): bool

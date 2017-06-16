@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Dkplus\Reflection;
 
 use Dkplus\Reflection\DocBlock\Annotations;
+use Dkplus\Reflection\DocBlock\DocBlockReflection;
 use Dkplus\Reflection\Type\Type;
 use ReflectionMethod;
 
@@ -16,7 +17,7 @@ class MethodReflection
     private $reflection;
 
     /** @var Annotations */
-    private $annotations;
+    private $docBlock;
 
     /** @var Type */
     private $returnType;
@@ -27,12 +28,12 @@ class MethodReflection
     /** @internal */
     public function __construct(
         ReflectionMethod $reflection,
-        Annotations $annotations,
+        DocBlockReflection $docBlock,
         Parameters $parameters,
         Type $returnType
     ) {
         $this->reflection = $reflection;
-        $this->annotations = $annotations;
+        $this->docBlock = $docBlock;
         $this->returnType = $returnType;
         $this->parameters = $parameters;
     }
@@ -98,8 +99,8 @@ class MethodReflection
         return $this->parameters()->allows(...$types);
     }
 
-    public function annotations(): Annotations
+    public function docBlock(): DocBlockReflection
     {
-        return $this->annotations;
+        return $this->docBlock;
     }
 }

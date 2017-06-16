@@ -15,7 +15,7 @@ use Dkplus\Reflection\Type\StringType;
 use phpDocumentor\Reflection\Types\String_;
 use ReflectionClass;
 use stdClass;
-use test\Dkplus\Reflection\Annotation\ClassWithProperties;
+use test\Dkplus\Reflection\DocBlock\Fixtures\PhpDocAnnotations;
 use test\Dkplus\Reflection\Fixtures\AbstractClass;
 use test\Dkplus\Reflection\Fixtures\AnotherInterface;
 use test\Dkplus\Reflection\Fixtures\AnotherTrait;
@@ -25,6 +25,7 @@ use test\Dkplus\Reflection\Fixtures\ClassWithInterface;
 use test\Dkplus\Reflection\Fixtures\ClassWithMethods;
 use test\Dkplus\Reflection\Fixtures\ClassWithoutExplicitPackageDeclaration;
 use test\Dkplus\Reflection\Fixtures\ClassWithParent;
+use test\Dkplus\Reflection\Fixtures\ClassWithProperties;
 use test\Dkplus\Reflection\Fixtures\ClassWithTrait;
 use test\Dkplus\Reflection\Fixtures\ClassWithTwoParents;
 use test\Dkplus\Reflection\Fixtures\FinalClass;
@@ -33,7 +34,6 @@ use test\Dkplus\Reflection\Fixtures\InterfaceWithTwoParents;
 use test\Dkplus\Reflection\Fixtures\OneClass;
 use test\Dkplus\Reflection\Fixtures\OneInterface;
 use test\Dkplus\Reflection\Fixtures\OneTrait;
-use test\Dkplus\Reflection\Fixtures\PhpDocAnnotations;
 use test\Dkplus\Reflection\Fixtures\TraitUsesTrait;
 use test\Dkplus\Reflection\ReflectionTestCase;
 
@@ -227,7 +227,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
         self::assertAnnotationExistsWithAttributes(
             'internal',
             ['description' => ''],
-            $this->underTest->reflectClass(PhpDocAnnotations::class)->annotations()
+            $this->underTest->reflectClass(PhpDocAnnotations::class)->docBlock()
         );
     }
 
@@ -451,7 +451,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
                 ->reflectClass(ClassWithMethods::class)
                 ->methods()
                 ->named('stringReturnTag')
-                ->annotations()
+                ->docBlock()
         );
     }
 
@@ -506,7 +506,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
                 ->reflectClass(ClassWithProperties::class)
                 ->properties()
                 ->named('propertyWithType')
-                ->annotations()
+                ->docBlock()
         );
     }
 }

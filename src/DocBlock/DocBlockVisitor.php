@@ -7,10 +7,13 @@ use Dkplus\Reflection\Exception\ParserException;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
+use function implode;
 use phpDocumentor\Reflection\Types\Context;
 use RuntimeException;
+use function var_dump;
 
-final class AnnotationVisitor implements Visit
+/** @internal */
+final class DocBlockVisitor implements Visit
 {
     /** @var AnnotationFactory */
     private $annotationFactory;
@@ -33,6 +36,12 @@ final class AnnotationVisitor implements Visit
         switch ($id) {
             case '#docblock':
                 return $this->visitDocBlock($element, $handle, $eldnah);
+            case '#summary':
+                return $this->visitSummary($element, $handle, $eldnah);
+            case '#description':
+                return $this->visitDescription($element, $handle, $eldnah);
+            case '#paragraph':
+                return $this->visitParagraph($element, $handle, $eldnah);
             case '#values':
                 return $this->visitValues($element, $handle, $eldnah);
             case '#pairs':
@@ -59,17 +68,52 @@ final class AnnotationVisitor implements Visit
 
     private function visitDocBlock(TreeNode $element, $handle, $eldnah)
     {
-        $result = [];
+        $summary = '';
+        $description = '';
+        $annotations = [];
         /* @var TreeNode $child */
         foreach ($element->getChildren() as $child) {
-            // ignore comments
-            if ($child->getid() !== '#annotations') {
+            if ($child->getId() === '#summary') {
+                $summary = $child->accept($this, $handle, $eldnah);
                 continue;
             }
-            $annots = $child->accept($this, $handle, $eldnah);
-            $result = array_merge($result, $annots);
+            if ($child->getId() === '#description') {
+                $description = $child->accept($this, $handle, $eldnah);
+                continue;
+            }
+            $annotations = array_merge($annotations, $child->accept($this, $handle, $eldnah));
         }
-        return $result;
+        return new DocBlockReflection($summary, $description, true, ...$annotations);
+    }
+
+    private function visitSummary(TreeNode $element, $handle, $eldnah): string
+    {
+        $parts = [];
+        /* @var $child TreeNode */
+        foreach ($element->getChildren() as $child) {
+            $parts[] = trim($child->accept($this, $handle, $eldnah));
+        }
+        return implode(' ', $parts);
+    }
+
+    private function visitDescription(TreeNode $element, $handle, $eldnah): string
+    {
+        $paragraphs = [];
+        /* @var $child TreeNode */
+        foreach ($element->getChildren() as $child) {
+            $paragraphs[] = $child->accept($this, $handle, $eldnah);
+        }
+        return implode("\n", $paragraphs);
+    }
+
+    private function visitParagraph(TreeNode $element, $handle, $eldnah)
+    {
+        $parts = [];
+        /* @var $child TreeNode */
+        foreach ($element->getChildren() as $child) {
+            $parts[] = trim($child->accept($this, $handle, $eldnah));
+        }
+        return implode(' ', $parts);
     }
 
     private function visitValues(TreeNode $element, $handle, $eldnah)

@@ -3,44 +3,51 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock;
 
-use Dkplus\Reflection\ClassReflection;
-
 final class AnnotationReflection
 {
     /** @var string */
-    private $name;
+    private $tag;
 
     /** @var bool */
     private $fullyQualified = false;
 
-    /** @var ClassReflection */
-    private $class;
+    /** @var array */
+    private $attributes;
 
-    /** @var mixed */
-    private $values;
+    /** @var string[] */
+    private $providedTags;
 
-    public static function fullyQualified(string $name, $values, ClassReflection $class): self
-    {
-        $result = new self($name, $values);
+    /** @var Annotations */
+    private $immediatelyInherited;
+
+    public static function fullyQualified(
+        string $tag,
+        array $attributes,
+        AnnotationReflection ...$immediatelyInherited
+    ): self {
+        $result = new self($tag, $attributes, new Annotations(...$immediatelyInherited));
         $result->fullyQualified = true;
-        $result->class = $class;
         return $result;
     }
 
-    public static function unqualified(string $name, $values): self
+    public static function unqualified(string $tag, array $attributes): self
     {
-        return new self($name, $values);
+        return new self($tag, $attributes, new Annotations());
     }
 
-    private function __construct(string $name, $values)
+    private function __construct(string $tag, array $attributes, Annotations $immediatelyInherited)
     {
-        $this->name = $name;
-        $this->values = $values;
+        $this->tag = $tag;
+        $this->attributes = $attributes;
+        $this->immediatelyInherited = $immediatelyInherited;
+        $this->providedTags = array_unique(array_merge([$tag], $this->inherited()->map(function (self $annotation) {
+            return $annotation->tag();
+        })));
     }
 
-    public function name(): string
+    public function tag(): string
     {
-        return $this->name;
+        return $this->tag;
     }
 
     public function isFullyQualified(): bool
@@ -48,13 +55,16 @@ final class AnnotationReflection
         return $this->fullyQualified;
     }
 
-    public function class(): ?ClassReflection
+    public function attributes(): array
     {
-        return $this->class;
+        return $this->attributes;
     }
 
-    public function attributes()
+    public function inherited(): Annotations
     {
-        return $this->values;
+        if (count($this->immediatelyInherited) === 0) {
+            return $this->immediatelyInherited;
+        }
+        return $this->immediatelyInherited->includeInherited();
     }
 }

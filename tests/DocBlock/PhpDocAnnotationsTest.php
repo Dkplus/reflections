@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace test\Dkplus\Reflection\Annotation;
+namespace test\Dkplus\Reflection\DocBlock;
 
-use Dkplus\Reflection\DocBlock\AnnotationFactory;
-use Dkplus\Reflection\DocBlock\AnnotationReflector;
-use Dkplus\Reflection\DocBlock\HoaParser;
-use Dkplus\Reflection\ReflectorStrategy\BuiltInReflectorStrategy;
+use Dkplus\Reflection\DocBlock\ClassReflector\BuiltInClassReflector;
+use Dkplus\Reflection\DocBlock\DocBlockReflector;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\Context;
+use phpDocumentor\Reflection\Types\ContextFactory;
 use phpDocumentor\Reflection\Types\Mixed;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\String_;
@@ -17,19 +16,23 @@ use phpDocumentor\Reflection\Types\Void_;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
-use test\Dkplus\Reflection\Fixtures\PhpDocAnnotations;
-use test\Dkplus\Reflection\ReflectionTestCase;
+use test\Dkplus\Reflection\DocBlock\Fixtures\PhpDocAnnotations;
 
-class AnnotationReflectorTest extends ReflectionTestCase
+/**
+ * @covers AnnotationFactory
+ * @covers DocBlockVisitor
+ * @covers HoaParser
+ */
+class PhpDocAnnotationsTest extends DocBlockTestCase
 {
-    /** @var AnnotationReflector */
+    /** @var DocBlockReflector */
     private $reflector;
 
     protected function setUp()
     {
-        $this->reflector = new AnnotationReflector(
-            new HoaParser(),
-            new AnnotationFactory(new BuiltInReflectorStrategy(), new FqsenResolver())
+        $this->reflector = new DocBlockReflector(
+            new BuiltInClassReflector(),
+            new FqsenResolver()
         );
     }
 
@@ -39,12 +42,13 @@ class AnnotationReflectorTest extends ReflectionTestCase
      */
     public function it_reflects_php_doc_tags(string $name, array $expectedAttributes)
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionClass(PhpDocAnnotations::class))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionClass(PhpDocAnnotations::class);
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified($name, $annotations);
-        self::assertAnnotationExistsWithAttributes($name, $expectedAttributes, $annotations);
+        self::assertAnnotationIsNotFullyQualified($name, $docBlock);
+        self::assertAnnotationExistsWithAttributes($name, $expectedAttributes, $docBlock);
     }
 
     public static function provideExpectedPhpDocTags()
@@ -100,100 +104,106 @@ class AnnotationReflectorTest extends ReflectionTestCase
     /** @test */
     public function it_reflects_the_php_doc_var_tag()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionProperty(PhpDocAnnotations::class, 'property1'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = (new ReflectionProperty(PhpDocAnnotations::class, 'property1'));
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('var', $annotations);
+        self::assertAnnotationIsNotFullyQualified('var', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'var',
             ['type' => new String_(), 'description' => ''],
-            $annotations
+            $docBlock
         );
     }
 
     /** @test */
     public function it_reflects_the_php_doc_var_tag_with_description()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionProperty(PhpDocAnnotations::class, 'property2'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionProperty(PhpDocAnnotations::class, 'property2');
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('var', $annotations);
+        self::assertAnnotationIsNotFullyQualified('var', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'var',
             ['type' => new String_(), 'description' => 'with description'],
-            $annotations
+            $docBlock
         );
     }
 
     /** @test */
     public function it_reflects_the_return_tag_with_a_description()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionMethod(PhpDocAnnotations::class, 'anotherExampleFunction'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'anotherExampleFunction');
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('return', $annotations);
+        self::assertAnnotationIsNotFullyQualified('return', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'return',
             ['type' => new Void_(), 'description' => 'will return nothing'],
-            $annotations
+            $docBlock
         );
     }
 
     /** @test */
     public function it_reflects_the_return_tag_without_a_description()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('return', $annotations);
+        self::assertAnnotationIsNotFullyQualified('return', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'return',
             ['type' => new Void_(), 'description' => ''],
-            $annotations
+            $docBlock
         );
     }
 
     /** @test */
     public function it_reflects_the_throws_tag_with_and_without_a_description()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('throws', $annotations);
+        self::assertAnnotationIsNotFullyQualified('throws', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'throws',
             ['type' => new Object_(new Fqsen('\\RuntimeException')), 'description' => 'with description'],
-            $annotations
+            $docBlock
         );
         self::assertAnnotationExistsWithAttributes(
             'throws',
             ['type' => new Object_(new Fqsen('\\RuntimeException')), 'description' => ''],
-            $annotations
+            $docBlock
         );
     }
 
     /** @test */
     public function it_reflects_the_param_tag_with_and_without_a_description()
     {
-        $annotations = $this->reflector->reflectDocBlock(
-            (new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction'))->getDocComment(),
-            new Context('test\\Dkplus\\Reflection\\Fixtures', ['RuntimeException' => 'RuntimeException'])
+        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
+        $docBlock = $this->reflector->reflectDocBlock(
+            $reflector->getDocComment(),
+            (new ContextFactory())->createFromReflector($reflector)
         );
-        self::assertAnnotationIsNotFullyQualified('param', $annotations);
+        self::assertAnnotationIsNotFullyQualified('param', $docBlock);
         self::assertAnnotationExistsWithAttributes(
             'param',
             ['type' => new String_(), 'name' => '$param1', 'description' => ''],
-            $annotations
+            $docBlock
         );
         self::assertAnnotationExistsWithAttributes(
             'param',
             ['type' => new String_(), 'name' => '$param2', 'description' => 'with description'],
-            $annotations
+            $docBlock
         );
     }
 }

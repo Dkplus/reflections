@@ -1,14 +1,15 @@
-// This file has been copied from https://github.com/FabioBatSilva/annotations/blob/2.0/src/Parser/grammar.pp 
+// This file has been originally copied from https://github.com/FabioBatSilva/annotations/blob/2.0/src/Parser/grammar.pp 
 // Full credits go to Fabio B. Silva
 %skip   space               [\x20\x09\x0a\x0d]+
-%skip   doc_                [/**]
-%skip   _doc                [*/]
-%skip   star                [*]
+%skip   doc_                (\/\*\*)
+%skip   _doc                (\*\/)
+%token  star                [*]
 
-%token  at                  @                             -> annot
-%token  text                ((?!(@|\*/)).)+
+%token  at                  @                                   -> annot
+%token  fullstop_text       ((?!(@|\*\/)).)+\.
+%token  text                ((?!(@|\*\/)).)+
 
-%token  annot:identifier    [\\]?[a-zA-Z_][\\a-zA-Z0-9_\-]* -> values
+%token  annot:identifier    [\\]?[a-zA-Z_][\\a-zA-Z0-9_\-]*     -> values
 
 %skip   values:star         [*]
 %skip   values:_doc         [*/]
@@ -39,20 +40,36 @@
 %token  value:string        "(.*?)(?<!\\)"
 
 #docblock:
-    short()? comments()* annotations()?
+    just_summary()
+  | annotations()?
+  | summary() description() annotations()?
 
-#short:
-    text()
+just_summary:
+    ( ::star::? <text> )* (::star:: <fullstop_text>)? #summary
+
+#summary:
+    ::star:: <fullstop_text> ::star::*
+  | ( ::star:: <text> )+ ::star:: ::star::+
+  | ::star:: ( <text> ::star:: )+ <fullstop_text> ::star::*
+
+#description:
+    paragraph()* last_paragraph()?
+
+#paragraph:
+    (::star::? text())+ ::star:: ::star::+
+
+last_paragraph:
+    (::star::? text())+ #paragraph 
 
 #annotations:
-    annotation()+
+    (::star::? annotation())+
 
 #annotation:
     ::at:: identifier() comments()
   | ::at:: identifier() ( parameters() | comments()+ )?
 
 #comments:
-    text()+
+    ::star::? text()+
 
 #values:
     value() ( ::comma:: value() )* ::comma::?
@@ -86,6 +103,7 @@ string:
 
 text:
     <text>
+  | <fullstop_text>
 
 number:
     <number>
