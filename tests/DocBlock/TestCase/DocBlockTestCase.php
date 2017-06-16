@@ -8,6 +8,7 @@ use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\DocBlock\DocBlockReflection;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use function implode;
 use function json_encode;
 
 class DocBlockTestCase extends TestCase
@@ -53,32 +54,58 @@ class DocBlockTestCase extends TestCase
     {
         $found = false;
         foreach ($annotations as $each) {
-            if ($each->tag() !== $expected->tag()) {
+            if (self::annotationMatches($expected, $each)) {
+                $found = true;
+                break;
+            }
+        }
+        self::assertThat(
+            $found,
+            self::isTrue(),
+            "The expected annotation \n $expected \n could not be found in \n"
+            . implode("\n", $annotations->withTag($expected->tag())->map('strval'))
+        );
+    }
+
+    private static function annotationMatches(AnnotationReflection $expected, AnnotationReflection $actual)
+    {
+        if ($expected->tag() !== $actual->tag()) {
+            return false;
+        }
+        $actualAttributes = $actual->attributes();
+        foreach ($expected->attributes() as $eachExpectedKeys => $eachExpectedAttribute) {
+            if (! isset($actualAttributes[$eachExpectedKeys])) {
+                return false;
+            }
+            if ($eachExpectedAttribute instanceof AnnotationReflection) {
+                if (! $actualAttributes[$eachExpectedKeys] instanceof AnnotationReflection) {
+                    return false;
+                }
+                if (! self::annotationMatches($eachExpectedAttribute, $actualAttributes[$eachExpectedKeys])) {
+                    return false;
+                }
                 continue;
             }
-            if ($each->isFullyQualified() !== $expected->isFullyQualified()) {
-                continue;
+            if ($eachExpectedAttribute !== $actualAttributes[$eachExpectedKeys]) {
+                return false;
             }
-            if ($each->attributes() != $expected->attributes()) {
-                continue;
-            }
-            $expectedInherited = $expected->inherited();
-            $actualInherited = $each->inherited();
-            foreach ($expectedInherited as $eachExpectedInherited) {
-                try {
-                    self::assertAnnotationsContainsOneLike($eachExpectedInherited, $actualInherited);
-                } catch (ExpectationFailedException $exception) {
+        }
+        foreach ($expected->inherited() as $eachInherited) {
+            foreach ($actual->inherited() as $eachActual) {
+                if (self::annotationMatches($eachInherited, $eachActual)) {
                     continue 2;
                 }
             }
-            $found = true;
-            break;
+            return false;
         }
-        self::assertThat($found, self::isTrue(), 'The expected annotation could not be found');
+        return true;
     }
 
-    public static function assertDocBlockHasAnnotationWithNameAndAttributes(string $name, array $values, DocBlockReflection $docBlock)
-    {
+    public static function assertDocBlockHasAnnotationWithNameAndAttributes(
+        string $name,
+        array $values,
+        DocBlockReflection $docBlock
+    ) {
         self::assertThat(
             $docBlock->hasTag($name),
             self::isTrue(),

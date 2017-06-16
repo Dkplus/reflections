@@ -72,4 +72,9 @@ class AnnotationReflectionSpec extends ObjectBehavior
         $this->inherited()->containsAtLeastOneWithTag('Doctrine\\ORM\\Mapping\\Entity')->shouldBe(true);
         $this->inherited()->containsAtLeastOneWithTag('Annotation')->shouldBe(true);
     }
+
+    function it_can_be_converted_to_string()
+    {
+        $this->__toString()->shouldBeString();
+    }
 }

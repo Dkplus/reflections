@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock;
 
-use Dkplus\Reflection\Exception\ParserException;
+use Dkplus\Reflection\DocBlock\Exception\ParserException;
 use Hoa\Compiler\Llk\TreeNode;
 use Hoa\Visitor\Element;
 use Hoa\Visitor\Visit;
-use function implode;
+use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\Context;
+use ReflectionException;
 use RuntimeException;
+use function constant;
+use function implode;
 use function var_dump;
 
 /** @internal */
@@ -21,10 +24,22 @@ final class DocBlockVisitor implements Visit
     /** @var Context */
     private $context;
 
-    public function __construct(AnnotationFactory $factory, Context $context)
-    {
+    /** @var ClassReflector */
+    private $classReflector;
+
+    /** @var FqsenResolver */
+    private $fqsenResolver;
+
+    public function __construct(
+        AnnotationFactory $factory,
+        Context $context,
+        ClassReflector $classReflector,
+        FqsenResolver $fqsenResolver
+    ) {
         $this->annotationFactory = $factory;
         $this->context = $context;
+        $this->classReflector = $classReflector;
+        $this->fqsenResolver = $fqsenResolver;
     }
 
     /**
@@ -61,7 +76,7 @@ final class DocBlockVisitor implements Visit
             case '#constant':
                 return $this->visitConstant($element, $handle, $eldnah);
             case 'token':
-                return $this->visitToken($element, $handle, $eldnah);
+                return $this->visitToken($element);
         }
         throw new RuntimeException("Unknown AST node: $id");
     }
@@ -83,7 +98,7 @@ final class DocBlockVisitor implements Visit
             }
             $annotations = array_merge($annotations, $child->accept($this, $handle, $eldnah));
         }
-        return new DocBlockReflection($summary, $description, true, ...$annotations);
+        return new DocBlockReflection($summary, $description, ...$annotations);
     }
 
     private function visitSummary(TreeNode $element, $handle, $eldnah): string
@@ -116,7 +131,7 @@ final class DocBlockVisitor implements Visit
         return implode(' ', $parts);
     }
 
-    private function visitValues(TreeNode $element, $handle, $eldnah)
+    private function visitValues(TreeNode $element, $handle, $eldnah): array
     {
         $values = [];
         /* @var $child TreeNode */
@@ -128,7 +143,7 @@ final class DocBlockVisitor implements Visit
         return $values;
     }
 
-    private function visitPairs(TreeNode $element, $handle, $eldnah)
+    private function visitPairs(TreeNode $element, $handle, $eldnah): array
     {
         $pairs = [];
         /* @var $child TreeNode */
@@ -161,7 +176,7 @@ final class DocBlockVisitor implements Visit
         return array_filter($annotations);
     }
 
-    private function visitAnnotation(TreeNode $element, $handle, $eldnah)
+    private function visitAnnotation(TreeNode $element, $handle, $eldnah): AnnotationReflection
     {
         $class = $element->getChild(0)->accept($this, $handle, $eldnah);
         $values = $element->childExists(1)
@@ -199,18 +214,20 @@ final class DocBlockVisitor implements Visit
             }
             return constant($identifier);
         }
-        $class = $this->resolveClass($identifier);
-        $name = $class . '::' . $property;
-        if ((strtolower($property) === 'class')) {
-            return $class;
+        try {
+            $class = $this->classReflector->reflect(
+                (string) $this->fqsenResolver->resolve($identifier, $this->context)
+            );
+        } catch (ReflectionException $exception) {
+            throw ParserException::invalidConstant($identifier . '::' . $property);
         }
-        if (! defined($name)) {
-            throw ParserException::invalidConstant($name);
+        if (! $class->hasConstant($property)) {
+            throw ParserException::invalidConstant($identifier . '::' . $property);
         }
-        return constant($name);
+        return $class->getConstant($property);
     }
 
-    private function visitToken(TreeNode $element, $handle, $eldnah)
+    private function visitToken(TreeNode $element)
     {
         $token = $element->getValueToken();
         $value = $element->getValueValue();
@@ -232,13 +249,6 @@ final class DocBlockVisitor implements Visit
         return $value;
     }
 
-    /**
-     * Visit a string value.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
     private function visitStringValue(string $value): string
     {
         $string = substr($value, 1, -1);

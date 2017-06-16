@@ -39,11 +39,7 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
      */
     public function it_reflects_php_doc_tags(string $name, array $expectedAttributes)
     {
-        $reflector = new ReflectionClass(PhpDocAnnotations::class);
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
-        );
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(new ReflectionClass(PhpDocAnnotations::class));
         self::assertAnnotationIsNotFullyQualified($name, $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes($name, $expectedAttributes, $docBlock);
     }
@@ -152,10 +148,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_php_doc_var_tag()
     {
-        $reflector = (new ReflectionProperty(PhpDocAnnotations::class, 'property1'));
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionProperty(PhpDocAnnotations::class, 'property1')
         );
         self::assertAnnotationIsNotFullyQualified('var', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(
@@ -168,10 +162,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_php_doc_var_tag_with_description()
     {
-        $reflector = new ReflectionProperty(PhpDocAnnotations::class, 'property2');
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionProperty(PhpDocAnnotations::class, 'property2')
         );
         self::assertAnnotationIsNotFullyQualified('var', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(
@@ -184,10 +176,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_return_tag_with_a_description()
     {
-        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'anotherExampleFunction');
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionMethod(PhpDocAnnotations::class, 'anotherExampleFunction')
         );
         self::assertAnnotationIsNotFullyQualified('return', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(
@@ -200,10 +190,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_return_tag_without_a_description()
     {
-        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction')
         );
         self::assertAnnotationIsNotFullyQualified('return', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(
@@ -216,10 +204,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_throws_tag_with_and_without_a_description()
     {
-        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction')
         );
         self::assertAnnotationIsNotFullyQualified('throws', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(
@@ -237,10 +223,8 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
     /** @test */
     public function it_reflects_the_param_tag_with_and_without_a_description()
     {
-        $reflector = new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction');
-        $docBlock = $this->reflector->reflectDocBlock(
-            $reflector->getDocComment(),
-            (new ContextFactory())->createFromReflector($reflector)
+        $docBlock = $this->reflector->reflectDocBlockFromReflector(
+            new ReflectionMethod(PhpDocAnnotations::class, 'exampleFunction')
         );
         self::assertAnnotationIsNotFullyQualified('param', $docBlock);
         self::assertDocBlockHasAnnotationWithNameAndAttributes(

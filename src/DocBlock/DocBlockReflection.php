@@ -13,32 +13,14 @@ final class DocBlockReflection
     /** @var string */
     private $description;
 
-    /** @var bool */
-    private $multiLine;
-
     /** @var Annotations */
     private $annotations;
 
-    public function __construct(
-        string $summary,
-        string $description,
-        bool $multiLine,
-        AnnotationReflection ...$annotations
-    ) {
+    public function __construct(string $summary, string $description, AnnotationReflection ...$annotations)
+    {
         $this->summary = $summary;
         $this->description = $description;
-        $this->multiLine = $multiLine;
         $this->annotations = new Annotations(...$annotations);
-    }
-
-    public function isSingleLine(): bool
-    {
-        return ! $this->multiLine;
-    }
-
-    public function isMultiLine(): bool
-    {
-        return $this->multiLine;
     }
 
     public function summary(): string

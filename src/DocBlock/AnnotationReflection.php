@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock;
 
+use function array_keys;
+use function array_map;
+use function is_array;
+use function json_encode;
+
 final class AnnotationReflection
 {
     /** @var string */
@@ -17,12 +22,23 @@ final class AnnotationReflection
     /** @var Annotations */
     private $immediatelyInherited;
 
+    private static function toString(array $data): string
+    {
+        $strings = array_map(function ($attribute) {
+            if (is_array($attribute)) {
+                return self::toString($attribute);
+            }
+            return (string) $attribute;
+        }, $data);
+        return json_encode($strings);
+    }
+
     public static function fullyQualified(
         string $tag,
         array $attributes,
         AnnotationReflection ...$immediatelyInherited
     ): self {
-        $result = new self($tag, $attributes, new Annotations(...$immediatelyInherited));
+        $result = new self(ltrim($tag, '\\'), $attributes, new Annotations(...$immediatelyInherited));
         $result->fullyQualified = true;
         return $result;
     }
@@ -60,5 +76,13 @@ final class AnnotationReflection
             return $this->immediatelyInherited;
         }
         return $this->immediatelyInherited->includeInherited();
+    }
+
+    public function __toString(): string
+    {
+        $inherited = $this->inherited()->map(function (AnnotationReflection $reflection) {
+            return (string) $reflection;
+        });
+        return '@' . $this->tag . '(' . self::toString($this->attributes) . '): ' . self::toString($inherited);
     }
 }

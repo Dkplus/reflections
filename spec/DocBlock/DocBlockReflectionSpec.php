@@ -13,7 +13,7 @@ class DocBlockReflectionSpec extends ObjectBehavior
 {
     function let()
     {
-        $this->beConstructedWith('', '', false);
+        $this->beConstructedWith('', '');
     }
 
     function it_is_initializable()
@@ -21,29 +21,15 @@ class DocBlockReflectionSpec extends ObjectBehavior
         $this->shouldHaveType(DocBlockReflection::class);
     }
 
-    function it_can_be_a_singleLine_docBlock()
-    {
-        $this->beConstructedWith('', '', false);
-        $this->isSingleLine()->shouldBe(true);
-        $this->isMultiLine()->shouldBe(false);
-    }
-
-    function it_can_be_a_multiLine_docBlock()
-    {
-        $this->beConstructedWith('', '', true);
-        $this->isSingleLine()->shouldBe(false);
-        $this->isMultiLine()->shouldBe(true);
-    }
-
     function it_has_a_summary()
     {
-        $this->beConstructedWith('My short summary', '', false);
+        $this->beConstructedWith('My short summary', '');
         $this->summary()->shouldBe('My short summary');
     }
 
     function it_has_a_description()
     {
-        $this->beConstructedWith('', 'My long description', false);
+        $this->beConstructedWith('', 'My long description');
         $this->description()->shouldBe('My long description');
     }
 
@@ -57,14 +43,14 @@ class DocBlockReflectionSpec extends ObjectBehavior
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
-        $this->beConstructedWith('', '', false, $annotation);
+        $this->beConstructedWith('', '', $annotation);
 
         $this->annotations(true)->shouldIterateAs([$annotation, $inheritedAnnotation]);
     }
 
     function it_knows_the_number_of_annotations_within_itself()
     {
-        $this->beConstructedWith('', '', false, AnnotationReflection::unqualified('Annotation', []));
+        $this->beConstructedWith('', '', AnnotationReflection::unqualified('Annotation', []));
         $this->countAnnotations()->shouldBe(1);
     }
 
@@ -72,14 +58,14 @@ class DocBlockReflectionSpec extends ObjectBehavior
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
-        $this->beConstructedWith('', '', false, $annotation);
+        $this->beConstructedWith('', '', $annotation);
 
         $this->countAnnotations(true)->shouldBe(2);
     }
 
     function it_knows_whether_a_specific_tag_has_been_set()
     {
-        $this->beConstructedWith('', '', false, AnnotationReflection::unqualified('ignore', []));
+        $this->beConstructedWith('', '', AnnotationReflection::unqualified('ignore', []));
         $this->hasTag('ignore')->shouldBe(true);
         $this->hasTag('deprecated')->shouldBe(false);
     }
@@ -88,7 +74,7 @@ class DocBlockReflectionSpec extends ObjectBehavior
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
-        $this->beConstructedWith('', '', false, $annotation);
+        $this->beConstructedWith('', '', $annotation);
 
         $this->hasTag('MyAnnotation', true)->shouldBe(true);
         $this->hasTag('Annotation', true)->shouldBe(true);
@@ -100,7 +86,6 @@ class DocBlockReflectionSpec extends ObjectBehavior
         $this->beConstructedWith(
             '',
             '',
-            false,
             AnnotationReflection::unqualified('todo', []),
             AnnotationReflection::unqualified('todo', ['description' => 'refactor'])
         );
@@ -116,7 +101,7 @@ class DocBlockReflectionSpec extends ObjectBehavior
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
-        $this->beConstructedWith('', '', false, $annotation);
+        $this->beConstructedWith('', '', $annotation);
 
         $this->oneAnnotationWithTag('Annotation', true)->shouldBe($inheritedAnnotation);
         $this->shouldThrow(MissingAnnotation::class)->during('oneAnnotationWithTag', ['Annotation']);
@@ -127,7 +112,6 @@ class DocBlockReflectionSpec extends ObjectBehavior
         $this->beConstructedWith(
             '',
             '',
-            false,
             AnnotationReflection::unqualified('deprecated', []),
             AnnotationReflection::unqualified('todo', []),
             AnnotationReflection::unqualified('todo', ['description' => 'refactor'])
@@ -141,7 +125,7 @@ class DocBlockReflectionSpec extends ObjectBehavior
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
-        $this->beConstructedWith('', '', false, $annotation);
+        $this->beConstructedWith('', '', $annotation);
 
         $this->annotationsWithTag('Annotation')->shouldHaveCount(0);
         $this->annotationsWithTag('Annotation', true)->shouldHaveCount(1);
