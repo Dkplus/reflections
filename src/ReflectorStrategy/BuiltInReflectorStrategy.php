@@ -81,7 +81,7 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
         $traits = new Classes(...array_map([$this, 'reflectClass'], $traits));
 
         $context = $this->contextFactory->createFromReflector($class);
-        $docBlock = $this->docBlockReflector->reflectDocBlock((string) $class->getDocComment(), $context);
+        $docBlock = $this->docBlockReflector->reflectDocBlockOf($class, $context);
 
         return new ClassReflection(
             $class,
@@ -98,16 +98,13 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
     {
         $properties = [];
         foreach ($class->getProperties() as $eachProperty) {
-            $docBlock = $this->docBlockReflector->reflectDocBlock((string) $eachProperty->getDocComment(), $context);
-            $type = new MixedType();
-            if ($docBlock->hasTag('var')) {
-                $fqsen = new Fqsen('\\' . $class->getName() . '::$' . $eachProperty->getName());
-                $type = $this->typeFactory->create(
-                    new Mixed(),
-                    $docBlock->oneAnnotationWithTag('var')->attributes()['type'],
-                    $fqsen
-                );
-            }
+            $docBlock = $this->docBlockReflector->reflectDocBlockOf($eachProperty, $context);
+            $fqsen = new Fqsen('\\' . $class->getName() . '::$' . $eachProperty->getName());
+            $type = $this->typeFactory->create(
+                new Mixed(),
+                $docBlock->oneAnnotationAttribute('var', 'type', new Mixed()),
+                $fqsen
+            );
             $properties[] = new PropertyReflection($eachProperty, $type, $docBlock);
         }
         return new Properties($class->getName(), ...$properties);
@@ -117,13 +114,10 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
     {
         $methods = [];
         foreach ($class->getMethods() as $eachMethod) {
-            $docBlock = $this->docBlockReflector->reflectDocBlock((string) $eachMethod->getDocComment(), $context);
+            $docBlock = $this->docBlockReflector->reflectDocBlockOf($eachMethod, $context);
 
             // return type
-            $docType = new Mixed();
-            if ($docBlock->hasTag('return')) {
-                $docType = $docBlock->oneAnnotationWithTag('return')->attributes()['type'];
-            }
+            $docType = $docBlock->oneAnnotationAttribute('return', 'type', new Mixed());
             $typeHint = $this->phpDocTypeFromReflectionType($eachMethod->getReturnType(), $context);
             $fqsen = new Fqsen('\\' . $class->getName() . '::' . $eachMethod->getName() . '()');
             $returnType = $this->typeFactory->create($typeHint, $docType, $fqsen);

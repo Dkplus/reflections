@@ -224,7 +224,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
     /** @test */
     function it_reflects_the_annotations_of_a_class()
     {
-        self::assertDocBlockHasAnnotationWithNameAndAttributes(
+        self::assertDocBlockHasAnnotationWithTagAndAttributes(
             'internal',
             ['description' => ''],
             $this->underTest->reflectClass(PhpDocAnnotations::class)->docBlock()
@@ -444,7 +444,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
     /** @test */
     function it_parses_the_method_annotations()
     {
-        self::assertDocBlockHasAnnotationWithNameAndAttributes(
+        self::assertDocBlockHasAnnotationWithTagAndAttributes(
             'return',
             ['type' => new String_(), 'description' => ''],
             $this->underTest
@@ -499,7 +499,7 @@ class BuiltInReflectorStrategyTest extends ReflectionTestCase
     /** @test */
     function it_knows_the_annotations_of_the_properties()
     {
-        self::assertDocBlockHasAnnotationWithNameAndAttributes(
+        self::assertDocBlockHasAnnotationWithTagAndAttributes(
             'var',
             ['type' => new String_(), 'description' => ''],
             $this->underTest

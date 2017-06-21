@@ -52,9 +52,9 @@ class AnnotationReflectionSpec extends ObjectBehavior
             AnnotationReflection::unqualified('Annotation', []),
             AnnotationReflection::unqualified('Target', [])
         ]);
-        $this->inherited()->containsAtLeastOneWithTag('Annotation')->shouldBe(true);
-        $this->inherited()->containsAtLeastOneWithTag('Target')->shouldBe(true);
-        $this->inherited()->containsAtLeastOneWithTag('deprecated')->shouldBe(false);
+        $this->attached()->containsAtLeastOneWithTag('Annotation')->shouldBe(true);
+        $this->attached()->containsAtLeastOneWithTag('Target')->shouldBe(true);
+        $this->attached()->containsAtLeastOneWithTag('deprecated')->shouldBe(false);
     }
 
     function it_inherited_tags_include_the_inherited_tags_of_the_inherited_tags()
@@ -69,8 +69,8 @@ class AnnotationReflectionSpec extends ObjectBehavior
                 AnnotationReflection::unqualified('Target', [])
             )
         ]);
-        $this->inherited()->containsAtLeastOneWithTag('Doctrine\\ORM\\Mapping\\Entity')->shouldBe(true);
-        $this->inherited()->containsAtLeastOneWithTag('Annotation')->shouldBe(true);
+        $this->attached()->containsAtLeastOneWithTag('Doctrine\\ORM\\Mapping\\Entity')->shouldBe(true);
+        $this->attached()->containsAtLeastOneWithTag('Annotation')->shouldBe(true);
     }
 
     function it_can_be_converted_to_string()

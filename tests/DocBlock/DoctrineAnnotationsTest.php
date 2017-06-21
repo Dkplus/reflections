@@ -36,7 +36,7 @@ class DoctrineAnnotationsTest extends DocBlockTestCase
      */
     public function it_parses_doctrine_annotations(string $class, AnnotationReflection $expectedAnnotation)
     {
-        $docBlock = $this->reflector->reflectDocBlockFromReflector(new ReflectionClass($class));
+        $docBlock = $this->reflector->reflectDocBlockOf(new ReflectionClass($class));
         self::assertDocBlockHasAnnotationLike($expectedAnnotation, $docBlock);
     }
 

@@ -6,8 +6,8 @@
 %token  star                [*]
 
 %token  at                  @                                   -> annot
-%token  fullstop_text       ((?!(@|\*\/)).)+\.
-%token  text                ((?!(@|\*\/)).)+
+%token  fullstop_text       ({@|(?!(@|\*\/)).)+\.
+%token  text                ({@|(?!(@|\*\/)).)+
 
 %token  annot:identifier    [\\]?[a-zA-Z_][\\a-zA-Z0-9_\-]*     -> values
 

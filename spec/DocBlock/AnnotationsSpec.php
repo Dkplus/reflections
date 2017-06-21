@@ -119,6 +119,6 @@ class AnnotationsSpec extends ObjectBehavior
         ));
         $this->shouldHaveCount(1);
         //one @Annotation is removed because its available twice
-        $this->includeInherited()->shouldHaveCount(4);
+        $this->includeAttached()->shouldHaveCount(4);
     }
 }

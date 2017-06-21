@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock;
 
-use function array_keys;
 use function array_map;
 use function is_array;
 use function json_encode;
@@ -20,7 +19,7 @@ final class AnnotationReflection
     private $attributes;
 
     /** @var Annotations */
-    private $immediatelyInherited;
+    private $immediatelyAttached;
 
     private static function toString(array $data): string
     {
@@ -52,7 +51,7 @@ final class AnnotationReflection
     {
         $this->tag = $tag;
         $this->attributes = $attributes;
-        $this->immediatelyInherited = $immediatelyInherited;
+        $this->immediatelyAttached = $immediatelyInherited;
     }
 
     public function tag(): string
@@ -70,17 +69,17 @@ final class AnnotationReflection
         return $this->attributes;
     }
 
-    public function inherited(): Annotations
+    public function attached(): Annotations
     {
-        if (count($this->immediatelyInherited) === 0) {
-            return $this->immediatelyInherited;
+        if (count($this->immediatelyAttached) === 0) {
+            return $this->immediatelyAttached;
         }
-        return $this->immediatelyInherited->includeInherited();
+        return $this->immediatelyAttached->includeAttached();
     }
 
     public function __toString(): string
     {
-        $inherited = $this->inherited()->map(function (AnnotationReflection $reflection) {
+        $inherited = $this->attached()->map(function (AnnotationReflection $reflection) {
             return (string) $reflection;
         });
         return '@' . $this->tag . '(' . self::toString($this->attributes) . '): ' . self::toString($inherited);

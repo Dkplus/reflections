@@ -7,9 +7,11 @@ use InvalidArgumentException;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
+use ReflectionClass;
 use Reflector;
 use function get_class;
 use function method_exists;
+use function var_dump;
 
 final class DocBlockReflector
 {
@@ -44,7 +46,7 @@ final class DocBlockReflector
         );
     }
 
-    public function reflectDocBlockFromReflector(Reflector $reflector, Context $context = null): DocBlockReflection
+    public function reflectDocBlockOf(Reflector $reflector, Context $context = null): DocBlockReflection
     {
         if (! $context) {
             $context = (new ContextFactory())->createFromReflector($reflector);
@@ -52,6 +54,11 @@ final class DocBlockReflector
         if (! method_exists($reflector, 'getDocComment')) {
             throw new InvalidArgumentException('Class ' . get_class($reflector) . ' provides no doc comment');
         }
-        return $this->reflectDocBlock((string) $reflector->getDocComment(), $context);
+        $docBlock = $this->reflectDocBlock((string) $reflector->getDocComment(), $context);
+        if ($reflector instanceof ReflectionClass && $reflector->getParentClass() instanceof Reflector) {
+            $parentDocBlock = $this->reflectDocBlockOf($reflector->getParentClass());
+            $docBlock = DocBlockReflection::inherit($docBlock, $parentDocBlock);
+        }
+        return $docBlock;
     }
 }

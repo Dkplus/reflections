@@ -72,10 +72,10 @@ class Annotations extends IteratorIterator implements Countable
         return new self(...array_unique($result, SORT_REGULAR));
     }
 
-    public function includeInherited(): self
+    public function includeAttached(): self
     {
         return $this->merge(...$this->map(function (AnnotationReflection $reflection) {
-            return $reflection->inherited();
+            return $reflection->attached();
         }));
     }
 }

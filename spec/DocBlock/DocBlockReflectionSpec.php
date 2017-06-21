@@ -39,7 +39,7 @@ class DocBlockReflectionSpec extends ObjectBehavior
         $this->annotations()->shouldIterateAs([]);
     }
 
-    function its_annotations_might_include_inherited_annotations()
+    function its_annotations_might_include_annotations_of_the_annotated_annotations_aka_attached_annotations()
     {
         $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
         $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
@@ -54,10 +54,10 @@ class DocBlockReflectionSpec extends ObjectBehavior
         $this->countAnnotations()->shouldBe(1);
     }
 
-    function it_knows_the_number_of_annotations_within_itself_including_the_inherited_annotations()
+    function it_knows_the_number_of_annotations_within_itself_including_the_attached_annotations()
     {
-        $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
-        $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
+        $attachedAnnotation = AnnotationReflection::unqualified('Annotation', []);
+        $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $attachedAnnotation);
         $this->beConstructedWith('', '', $annotation);
 
         $this->countAnnotations(true)->shouldBe(2);
@@ -72,8 +72,8 @@ class DocBlockReflectionSpec extends ObjectBehavior
 
     function it_also_knows_about_tags_written_in_the_doc_blocks_of_the_annotations()
     {
-        $inheritedAnnotation = AnnotationReflection::unqualified('Annotation', []);
-        $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $inheritedAnnotation);
+        $attachedAnnotation = AnnotationReflection::unqualified('Annotation', []);
+        $annotation = AnnotationReflection::fullyQualified('MyAnnotation', [], $attachedAnnotation);
         $this->beConstructedWith('', '', $annotation);
 
         $this->hasTag('MyAnnotation', true)->shouldBe(true);

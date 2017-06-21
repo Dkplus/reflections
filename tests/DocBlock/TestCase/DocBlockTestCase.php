@@ -6,7 +6,6 @@ namespace test\Dkplus\Reflection\DocBlock\TestCase;
 use Dkplus\Reflection\DocBlock\AnnotationReflection;
 use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\DocBlock\DocBlockReflection;
-use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use function implode;
 use function json_encode;
@@ -23,34 +22,46 @@ class DocBlockTestCase extends TestCase
         self::assertEquals($expectedDescription, $docBlock->description());
     }
 
-    public static function assertAnnotationIsNotFullyQualified(string $name, DocBlockReflection $docBlock)
+    public static function assertDocBlockHasTag(string $tag, DocBlockReflection $docBlock)
     {
-        foreach ($docBlock->annotationsWithTag($name) as $each) {
+        self::assertThat($docBlock->hasTag($tag), self::isTrue(), "There is no tag $tag");
+    }
+
+    public static function assertDocBlockDoesNotHaveTag(string $tag, DocBlockReflection $docBlock)
+    {
+        self::assertThat($docBlock->hasTag($tag), self::isFalse(), "There is a tag $tag");
+    }
+
+    public static function assertDocBlockHasUnqualifiedTag(string $tag, DocBlockReflection $docBlock)
+    {
+        self::assertDocBlockHasTag($tag, $docBlock);
+        foreach ($docBlock->annotationsWithTag($tag) as $each) {
             self::assertThat(
                 $each->isFullyQualified(),
                 self::isFalse(),
-                "One annotation named $name is fully qualified"
+                "$tag is fully qualified"
             );
         }
     }
 
-    public static function assertAnnotationIsFullyQualified(string $name, DocBlockReflection $docBlock)
+    public static function assertDocBlockHasFullyQualifiedTag(string $tag, DocBlockReflection $docBlock)
     {
-        foreach ($docBlock->annotationsWithTag($name) as $each) {
+        self::assertDocBlockHasTag($tag, $docBlock);
+        foreach ($docBlock->annotationsWithTag($tag) as $each) {
             self::assertThat(
                 $each->isFullyQualified(),
                 self::isTrue(),
-                "One annotation named $name is not fully qualified"
+                "$tag is not fully qualified"
             );
         }
     }
 
     public static function assertDocBlockHasAnnotationLike(AnnotationReflection $expected, DocBlockReflection $docBlock)
     {
-        self::assertAnnotationsContainsOneLike($expected, $docBlock->annotations());
+        self::assertAnnotationsContainOneLike($expected, $docBlock->annotations());
     }
 
-    public static function assertAnnotationsContainsOneLike(AnnotationReflection $expected, Annotations $annotations)
+    public static function assertAnnotationsContainOneLike(AnnotationReflection $expected, Annotations $annotations)
     {
         $found = false;
         foreach ($annotations as $each) {
@@ -90,8 +101,8 @@ class DocBlockTestCase extends TestCase
                 return false;
             }
         }
-        foreach ($expected->inherited() as $eachInherited) {
-            foreach ($actual->inherited() as $eachActual) {
+        foreach ($expected->attached() as $eachInherited) {
+            foreach ($actual->attached() as $eachActual) {
                 if (self::annotationMatches($eachInherited, $eachActual)) {
                     continue 2;
                 }
@@ -101,24 +112,20 @@ class DocBlockTestCase extends TestCase
         return true;
     }
 
-    public static function assertDocBlockHasAnnotationWithNameAndAttributes(
-        string $name,
-        array $values,
+    public static function assertDocBlockHasAnnotationWithTagAndAttributes(
+        string $tag,
+        array $attributes,
         DocBlockReflection $docBlock
     ) {
-        self::assertThat(
-            $docBlock->hasTag($name),
-            self::isTrue(),
-            "There is no annotation named $name"
-        );
+        self::assertDocBlockHasTag($tag, $docBlock);
         $actualAttributes = [];
-        foreach ($docBlock->annotationsWithTag($name) as $each) {
+        foreach ($docBlock->annotationsWithTag($tag) as $each) {
             $actualAttributes[] = $each->attributes();
         }
         self::assertThat(
             $actualAttributes,
-            self::contains($values, false, false),
-            "There are annotations named $name but they have other attributes "
+            self::contains($attributes, false, false),
+            "There are annotations with tag $tag but they have other attributes "
             . '(found: ' . json_encode($actualAttributes) . ')'
         );
     }
