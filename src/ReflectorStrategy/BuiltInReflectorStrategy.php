@@ -5,8 +5,6 @@ namespace Dkplus\Reflection\ReflectorStrategy;
 
 use Dkplus\Reflection\Classes;
 use Dkplus\Reflection\ClassReflection;
-use Dkplus\Reflection\DocBlock\AnnotationFactory;
-use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\DocBlock\ClassReflector\BuiltInClassReflector as DocblockClassReflector;
 use Dkplus\Reflection\DocBlock\DocBlockReflection;
 use Dkplus\Reflection\DocBlock\DocBlockReflector;
@@ -21,19 +19,20 @@ use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\Factory\TypeConverter;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
 use Dkplus\Reflection\Type\Factory\TypeNormalizer;
-use Dkplus\Reflection\Type\MixedType;
+use function get_class;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
 use phpDocumentor\Reflection\TypeResolver;
 use phpDocumentor\Reflection\Types\Context;
 use phpDocumentor\Reflection\Types\ContextFactory;
-use phpDocumentor\Reflection\Types\Mixed;
+use phpDocumentor\Reflection\Types\Mixed_;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionType;
 use function array_filter;
 use function array_map;
+use function var_dump;
 
 final class BuiltInReflectorStrategy implements ReflectorStrategy
 {
@@ -101,8 +100,8 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
             $docBlock = $this->docBlockReflector->reflectDocBlockOf($eachProperty, $context);
             $fqsen = new Fqsen('\\' . $class->getName() . '::$' . $eachProperty->getName());
             $type = $this->typeFactory->create(
-                new Mixed(),
-                $docBlock->oneAnnotationAttribute('var', 'type', new Mixed()),
+                new Mixed_(),
+                $docBlock->oneAnnotationAttribute('var', 'type', new Mixed_()),
                 $fqsen
             );
             $properties[] = new PropertyReflection($eachProperty, $type, $docBlock);
@@ -117,7 +116,7 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
             $docBlock = $this->docBlockReflector->reflectDocBlockOf($eachMethod, $context);
 
             // return type
-            $docType = $docBlock->oneAnnotationAttribute('return', 'type', new Mixed());
+            $docType = $docBlock->oneAnnotationAttribute('return', 'type', new Mixed_());
             $typeHint = $this->phpDocTypeFromReflectionType($eachMethod->getReturnType(), $context);
             $fqsen = new Fqsen('\\' . $class->getName() . '::' . $eachMethod->getName() . '()');
             $returnType = $this->typeFactory->create($typeHint, $docType, $fqsen);
@@ -152,10 +151,20 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
                     $eachParameter->allowsNull(),
                     $eachParameter->isVariadic()
                 ),
-                $phpDocParamsByName[$eachParameter->getName()]['type'] ?? new Mixed(),
+                $phpDocParamsByName[$eachParameter->getName()]['type'] ?? new Mixed_(),
                 $fqsen
             );
             $handledTypes[] = $eachParameter->getName();
+
+            if ($eachParameter->getName() === 'stringArrayParam') {
+                var_dump(
+                    get_class((new TypeNormalizer())->normalize((new TypeConverter(new BuiltInClassReflector()))->convert($phpDocParamsByName[$eachParameter->getName()]['type'] ?? new Mixed_(), $fqsen))),
+                    get_class($phpDocParamsByName[$eachParameter->getName()]['type'] ?? new Mixed_()),
+                    get_class((new TypeNormalizer())->normalize((new TypeConverter(new BuiltInClassReflector()))->convert($this->phpDocTypeFromReflectionType($eachParameter->getType(), $context, $eachParameter->allowsNull(), $eachParameter->isVariadic()), $fqsen))),
+                    get_class($this->phpDocTypeFromReflectionType($eachParameter->getType(), $context, $eachParameter->allowsNull(), $eachParameter->isVariadic())),
+                    get_class($type)
+                );
+            }
             $parameters[] = new ParameterReflection(
                 $eachParameter->getName(),
                 $type,
@@ -171,7 +180,7 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
         foreach ($phpDocParamsByName as $eachName => $attributes) {
             $parameters[] = new ParameterReflection(
                 $eachName,
-                $this->typeFactory->create(new Mixed(), $attributes['type'], $fqsen),
+                $this->typeFactory->create(new Mixed_(), $attributes['type'], $fqsen),
                 count($parameters),
                 false,
                 false,
@@ -188,7 +197,7 @@ final class BuiltInReflectorStrategy implements ReflectorStrategy
         bool $variadic = false
     ) {
         if (! $type) {
-            return new Mixed();
+            return new Mixed_();
         }
         $stringType = (string) $type;
         if ($variadic) {

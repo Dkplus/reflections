@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace test\Dkplus\Reflection\Fixtures;
 
-use function null;
-
 abstract class ClassWithMethods
 {
     public static function staticMethod()
@@ -84,8 +82,11 @@ abstract class ClassWithMethods
     {
     }
 
-    public function methodWithOmittableParameter(string $nonOmittable, string $omittable = null, string $omittableWithStringDefault = 'foo')
-    {
+    public function methodWithOmittableParameter(
+        string $nonOmittable,
+        string $omittable = null,
+        string $omittableWithStringDefault = 'foo'
+    ) {
     }
 
     public function methodWithVariadic(string $nonVariadic, string ...$variadic)

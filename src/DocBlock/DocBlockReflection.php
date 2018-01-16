@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace Dkplus\Reflection\DocBlock;
 
-use a;
+use Dkplus\Reflection\DocBlock\Exception\MissingAnnotation;
 use function array_filter;
 use function array_keys;
-use Dkplus\Reflection\DocBlock\Exception\MissingAnnotation;
-use function explode;
 use function in_array;
 use function str_replace;
 
@@ -54,7 +52,7 @@ final class DocBlockReflection
                     $parent->description() ? ' ' . trim($parent->description()) . ' ' : ' ',
                     $parent->description() ? trim(' ' . $parent->description()) : ' ',
                     $parent->description() ? trim($parent->description() . ' ') : ' ',
-                    $parent->description() ? trim($parent->description()) : ''
+                    $parent->description() ? trim($parent->description()) : '',
                 ],
                 $description
             );
@@ -118,7 +116,7 @@ final class DocBlockReflection
      */
     public function oneAnnotationAttribute(string $tag, string $attribute, $default = null)
     {
-        if (! $this->annotations()->containsAtLeastOneWithTag($tag)) {
+        if (!$this->annotations()->containsAtLeastOneWithTag($tag)) {
             return $default;
         }
         return $this->oneAnnotationWithTag($tag)->attributes()[$attribute] ?? $default;

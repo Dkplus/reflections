@@ -1,18 +1,17 @@
 <?php
+declare(strict_types=1);
+
 namespace spec\Dkplus\Reflection;
 
 use Dkplus\Reflection\AutoloadingReflectorStrategy;
-use Dkplus\Reflection\ClassReflection_;
+use Dkplus\Reflection\ClassReflection;
 use Dkplus\Reflection\DocBlock\Annotations;
 use Dkplus\Reflection\Exception\ClassNotFound;
 use Dkplus\Reflection\ReflectorStrategy;
 use Dkplus\Reflection\Type\Factory\TypeFactory;
 use PhpSpec\ObjectBehavior;
 
-/**
- * @mixin AutoloadingReflectorStrategy
- */
-class AutoloadingReflectorSpec extends ObjectBehavior
+class AutoloadingReflectorStrategySpec extends ObjectBehavior
 {
     function let(TypeFactory $typeFactory)
     {
@@ -53,10 +52,10 @@ class AutoloadingReflectorSpec extends ObjectBehavior
         $this->reflectClass('AnotherNamespace\\TestClass')->shouldBeAReflectionOfClass('AnotherNamespace\\TestClass');
     }
 
-    function getMatchers()
+    function getMatchers(): array
     {
         return [
-            'beAReflectionOfClass' => function (ClassReflection_ $reflection, $className) {
+            'beAReflectionOfClass' => function (ClassReflection $reflection, $className) {
                 return $reflection->name() === $className;
             }
         ];

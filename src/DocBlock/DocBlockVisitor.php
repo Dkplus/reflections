@@ -13,7 +13,6 @@ use ReflectionException;
 use RuntimeException;
 use function constant;
 use function implode;
-use function var_dump;
 
 /** @internal */
 final class DocBlockVisitor implements Visit
@@ -35,7 +34,8 @@ final class DocBlockVisitor implements Visit
         Context $context,
         ClassReflector $classReflector,
         FqsenResolver $fqsenResolver
-    ) {
+    )
+    {
         $this->annotationFactory = $factory;
         $this->context = $context;
         $this->classReflector = $classReflector;
@@ -137,8 +137,7 @@ final class DocBlockVisitor implements Visit
         /* @var $child TreeNode */
         foreach ($element->getChildren() as $child) {
             $result = $child->accept($this, $handle, $eldnah);
-            $values = ((array) $values) + ((array) $result);
-            // array_merge won't preserve numeric keys
+            $values = ((array)$values) + ((array)$result); // array_merge won't preserve numeric keys
         }
         return $values;
     }
@@ -208,20 +207,20 @@ final class DocBlockVisitor implements Visit
         $property = $element->childExists(3)
             ? $element->getChild(3)->accept($this, $handle, $eldnah)
             : null;
-        if (! $property) {
-            if (! defined($identifier)) {
+        if (!$property) {
+            if (!defined($identifier)) {
                 throw ParserException::invalidConstant($identifier);
             }
             return constant($identifier);
         }
         try {
             $class = $this->classReflector->reflect(
-                (string) $this->fqsenResolver->resolve($identifier, $this->context)
+                (string)$this->fqsenResolver->resolve($identifier, $this->context)
             );
         } catch (ReflectionException $exception) {
             throw ParserException::invalidConstant($identifier . '::' . $property);
         }
-        if (! $class->hasConstant($property)) {
+        if (!$class->hasConstant($property)) {
             throw ParserException::invalidConstant($identifier . '::' . $property);
         }
         return $class->getConstant($property);

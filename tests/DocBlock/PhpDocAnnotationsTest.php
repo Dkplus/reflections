@@ -7,8 +7,7 @@ use Dkplus\Reflection\DocBlock\ClassReflector\BuiltInClassReflector;
 use Dkplus\Reflection\DocBlock\DocBlockReflector;
 use phpDocumentor\Reflection\Fqsen;
 use phpDocumentor\Reflection\FqsenResolver;
-use phpDocumentor\Reflection\Types\ContextFactory;
-use phpDocumentor\Reflection\Types\Mixed;
+use phpDocumentor\Reflection\Types\Mixed_;
 use phpDocumentor\Reflection\Types\Object_;
 use phpDocumentor\Reflection\Types\String_;
 use phpDocumentor\Reflection\Types\Void_;
@@ -85,7 +84,7 @@ class PhpDocAnnotationsTest extends DocBlockTestCase
                     'name' => 'setString',
                     'params' => [
                         ['type' => new String_(), 'name' => '$param1'],
-                        ['type' => new Mixed(), 'name' => '$param2'],
+                        ['type' => new Mixed_(), 'name' => '$param2'],
                     ],
                 ],
             ],

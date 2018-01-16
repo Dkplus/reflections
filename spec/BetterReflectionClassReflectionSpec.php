@@ -205,7 +205,7 @@ BLOCK;
         $this->implementsInterface('MyInterface')->shouldBe(true);
     }
 
-    function getMatchers()
+    function getMatchers(): array
     {
         return [
             'haveSize' => function ($subject, int $expected) {

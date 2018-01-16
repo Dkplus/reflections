@@ -11,7 +11,6 @@ use ReflectionClass;
 use Reflector;
 use function get_class;
 use function method_exists;
-use function var_dump;
 
 final class DocBlockReflector
 {
@@ -31,7 +30,8 @@ final class DocBlockReflector
         ClassReflector $classReflector,
         FqsenResolver $fqsenResolver,
         MultiTagAttributeFormatter $attributeFormatter = null
-    ) {
+    )
+    {
         $this->parser = new HoaParser();
         $this->fqsenResolver = $fqsenResolver;
         $this->classReflector = $classReflector;
@@ -48,13 +48,13 @@ final class DocBlockReflector
 
     public function reflectDocBlockOf(Reflector $reflector, Context $context = null): DocBlockReflection
     {
-        if (! $context) {
+        if (!$context) {
             $context = (new ContextFactory())->createFromReflector($reflector);
         }
-        if (! method_exists($reflector, 'getDocComment')) {
+        if (!method_exists($reflector, 'getDocComment')) {
             throw new InvalidArgumentException('Class ' . get_class($reflector) . ' provides no doc comment');
         }
-        $docBlock = $this->reflectDocBlock((string) $reflector->getDocComment(), $context);
+        $docBlock = $this->reflectDocBlock((string)$reflector->getDocComment(), $context);
         if ($reflector instanceof ReflectionClass && $reflector->getParentClass() instanceof Reflector) {
             $parentDocBlock = $this->reflectDocBlockOf($reflector->getParentClass());
             $docBlock = DocBlockReflection::inherit($docBlock, $parentDocBlock);

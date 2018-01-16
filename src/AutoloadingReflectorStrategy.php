@@ -46,7 +46,7 @@ final class AutoloadingReflectorStrategy implements ReflectorStrategy
         $this->typeFactory = $typeFactory;
     }
 
-    public function reflectClass(string $className): ClassReflection_
+    public function reflectClass(string $className): ClassReflection
     {
         try {
             $reflection = $this->classReflector->reflect($className);
